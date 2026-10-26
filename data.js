@@ -226,9 +226,9 @@ const ECON122_DATA = {
       },
       {
         "title": "Tax Functions, Regressive VAT Proof & Statutory vs. Effective Incidence",
-        "tag": "Study Unit 2.2 §2.2.6–2.2.8, pp. 35–45",
-        "intuition": "Study Unit 2.2 classifies tax actions into three functions: Financing (raising revenue to reduce state borrowing), Redistributing (funding basic-needs programmes and poorer-area infrastructure), and Regulating (raising taxes to cool an overheating economy or cutting taxes to stimulate slow growth). Furthermore, statutory incidence (who legally pays the tax to SARS) differs from effective incidence (who ultimately bears the economic burden after price/wage shifting).",
-        "example": "In Study Unit 2.2's VAT proof (pp. 41–42): At a 14% VAT rate, Nicky earns R1 000/month and spends 75% (R750), paying R105 VAT → average VAT rate = 105/1 000 = 10.5%. Duncan earns R500/month and spends 100% (R500), paying R70 VAT → average VAT rate = 70/500 = 14.0%. Because the poorer household pays a higher share of income (14.0% > 10.5%), VAT is regressive.",
+        "tag": "Study Unit 2.2 §2.2.6–2.2.8, pp. 29–45",
+        "intuition": "Study Unit 2.2 classifies tax actions into three functions: Financing (raising revenue to reduce state borrowing), Redistributing (funding basic-needs programmes and poorer-area infrastructure), and Regulating (raising taxes to cool an overheating economy or cutting taxes to stimulate slow growth). In the SA revenue chart (p. 36), Individuals (41%), VAT (26%), and Companies (13%) are the top tax sources, where Individual income tax, Company tax, and Mine tax are Direct taxes while VAT, Petrol tax, Customs duties, and Excise duties are Indirect taxes.",
+        "example": "In Study Unit 2.2 (pp. 38–42): Under progressive brackets, Peter (R16 601) pays R2 550 + 21% above R15 000 = R2 886.21 (17.39% ATR) while Susan (R83 450) pays R25 000 + 43% above R80 000 = R26 483.50 (31.74% ATR). Conversely, at 14% VAT, Nicky (earns R1 000, spends R750) pays R105 VAT (10.5% ATR) while Duncan (earns R500, spends R500) pays R70 VAT (14.0% ATR), proving VAT is regressive.",
         "fallacy": "Believing that a uniform flat-rate consumption tax like VAT is proportional with respect to household income.",
         "firstPrinciples": "Because low-income households consume nearly 100% of their income while higher-income households save a larger fraction, a uniform indirect tax on consumption claims a larger percentage of poor households' income (regressive)."
       }
@@ -286,9 +286,9 @@ const ECON122_DATA = {
       },
       {
         "title": "Exchange Rate Appreciation, Depreciation & Cross-Currency Pricing",
-        "tag": "Mohr §16.4, pp. 334–341 • Study Unit 2.3 §2.3.3",
+        "tag": "Mohr §16.4, pp. 334–341 • Study Unit 2.3 §2.3.3, p. 54",
         "intuition": "In the ZAR/USD foreign exchange market, US dollars are supplied by buyers of SA exports and foreign investors bringing capital into SA, and demanded by SA importers and residents investing abroad. South Africa operates a controlled floating single exchange rate regime. To determine trade flows across multiple commodities, prices must first be converted into a common currency via the exchange rate.",
-        "example": "When the Rand appreciates against the US dollar (e.g. from R18/$ to R16/$), South African export prices in foreign currency become more expensive (hurting exporters), while import prices in Rand become cheaper (helping curb domestic cost-push inflation).",
+        "example": "In Study Unit 2.3 (p. 54): USA prices are A=$1, B=$4, C=$6, D=$8, E=$12 and British prices are A=£9, B=£7, C=£6, D=£4, E=£1. At £1=$1, USA exports A & B (C equal at $6) and imports D & E; at £1=$2 (dollar depreciation), British dollar prices double so USA exports A, B, C (D equal at $8) and imports only E; at £1=$0.50 (dollar appreciation), USA exports only A and imports B, C, D, E.",
         "fallacy": "Thinking a rise in the number R18/$ to R20/$ represents an appreciation of the Rand.",
         "firstPrinciples": "Because R/$ is a direct quote (Rands per 1 USD), paying MORE Rands for $1 (R18 -> R20) means the Rand has lost value (depreciated) and the US dollar has appreciated."
       }

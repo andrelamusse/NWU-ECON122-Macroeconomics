@@ -95,14 +95,69 @@ def extract_study_guide():
             if "study guide" in fname.lower() and fname.lower().endswith(".pdf"):
                 sg_path = os.path.join(SOURCES_DIR, fname)
                 break
+    embedded_transcriptions = {
+        52: (
+            "[EMBEDDED CHART xref=132: Sources of Revenue of the SA Government — "
+            "Individuals: 41%, VAT: 26%, Company: 13%, Customs & Excise: 13%, Other: 6%, Mining: 1%]\n"
+            "[EMBEDDED GRAPH xref=133: Laffer Curve — Total Tax Revenue (R) on vertical axis vs Tax Rate (%) on horizontal axis, peaking at optimal tax rate t* between 0% and 100%]"
+        ),
+        54: (
+            "[EMBEDDED TABLE xref=138: Personal Income Tax Brackets — "
+            "0-20 000: 19% of each R1; "
+            "20 001-30 000: R3 800 + 21% of the amount above R20 000; "
+            "30 001-40 000: R5 900 + 30% of the amount above R30 000; "
+            "40 001-60 000: R8 900 + 39% of the amount above R40 000; "
+            "60 001-70 000: R16 700 + 41% of the amount above R60 000; "
+            "70 001-80 000: R20 800 + 42% of the amount above R70 000; "
+            "80 000 and above: R25 000 + 43% of the amount above R80 000. "
+            "Susan's taxable income = R83 450 -> Tax = R25 000 + 0.43 * (83 450 - 80 000) = R26 483.50; Average tax rate = 31.74%]"
+        ),
+        56: (
+            "[EMBEDDED TABLE xref=143: Direct vs Indirect Tax Classification — "
+            "Value added tax (Indirect); Individual income tax (Direct); Company tax (Direct); "
+            "Tax on Petrol sales (Indirect); Custom taxes (Indirect); Mine tax (Direct); "
+            "Excise duties on alcoholic drinks and cigarettes (Indirect)]"
+        ),
+        70: (
+            "[EMBEDDED TABLE xref=183: Commodity Prices in the USA ($) — "
+            "Commodity A: $1; Commodity B: $4; Commodity C: $6; Commodity D: $8; Commodity E: $12. "
+            "Compared against Price in Britain (£): A=£9, B=£7, C=£6, D=£4, E=£1]"
+        ),
+        95: (
+            "[EMBEDDED DIAGRAM xref=246: Aggregate Expenditure (AE) 45-degree Keynesian Cross — "
+            "45-degree line Y = AE with equilibrium E1 at Y = 60, AE = 60]"
+        ),
+        128: (
+            "[EMBEDDED DIAGRAM xref=321: South African Business Cycle Phases — "
+            "Expansion/Upswing, Upper Turning Point (Peak), Contraction/Downswing, Lower Turning Point (Trough) along long-term growth trend]"
+        ),
+    }
     if os.path.exists(sg_path):
         doc = fitz.open(sg_path)
         pages = []
         for i, page in enumerate(doc):
-            pages.append({"page": i + 1, "text": page.get_text("text")})
+            pno = i + 1
+            txt = page.get_text("text")
+            if pno in embedded_transcriptions:
+                txt = txt + "\n" + embedded_transcriptions[pno]
+            img_xrefs = [img[0] for img in page.get_images(full=True) if img[2] > 150 and img[3] > 80]
+            page_entry = {"page": pno, "text": txt}
+            if img_xrefs:
+                page_entry["content_image_xrefs"] = img_xrefs
+            pages.append(page_entry)
         out_sg = os.path.join(ROOT, "scripts", "extracted_study_guide.json")
         with open(out_sg, "w", encoding="utf-8") as f:
-            json.dump({"page_count": len(doc), "toc": doc.get_toc(), "pages": pages}, f, indent=2, ensure_ascii=False)
+            json.dump(
+                {
+                    "page_count": len(doc),
+                    "toc": doc.get_toc(),
+                    "embedded_tables_and_figures": embedded_transcriptions,
+                    "pages": pages,
+                },
+                f,
+                indent=2,
+                ensure_ascii=False,
+            )
         print(f"[study_guide] {os.path.basename(sg_path)}: {len(doc)} pages -> {out_sg}")
         doc.close()
 
