@@ -884,7 +884,7 @@ const ECON122_DATA = {
     "source": "Chapter 15 — The Government Sector — Mohr 6e, §15.11, pp. 316–319",
     "citation": "Mohr 6e, §15.11, pp. 316–319",
     "difficulty": "Medium",
-    "stem": "Thabiso Lebotse (aged 24) starts his first job as a Junior Lecturer earning R32 000 per month (R384 000 per year). The Period/Period SARS tax bracket for R321 601 – R445 100 is 'R67 144 + 31% of the amount over R321 600', with a Primary Rebate of R14 958 (and Secondary Rebate of R8 199 for ages 65+). Calculate his total annual tax payable after rebate and his effective tax rate.",
+    "stem": "Thabiso Lebotse (aged 24) starts his first job as a Junior Lecturer earning R32 000 per month (R384 000 per year). The statutory SARS tax bracket for R321 601 – R445 100 is 'R67 144 + 31% of the amount over R321 600', with a Primary Rebate of R14 958 (and Secondary Rebate of R8 199 for ages 65+). Calculate his total annual tax payable after rebate and his effective tax rate.",
     "derivation": "Y = 32\\,000 \\times 12 = \\text{R}384\\,000. \\quad T_{\\text{gross}} = 67\\,144 + 0.31(384\\,000 - 321\\,600) = 67\\,144 + 19\\,344 = \\text{R}86\\,488. \\\\ T_{\\text{net}} = 86\\,488 - 14\\,958 = \\text{R}71\\,530. \\quad \\text{ATR} = \\frac{71\\,530}{384\\,000}\\times 100 = 18.63\\%.",
     "options": [
       {
@@ -1300,7 +1300,7 @@ const ECON122_DATA = {
     "source": "Chapter 20 — Inflation — Mohr 6e, §20.2, pp. 438–442",
     "citation": "Mohr 6e, §20.2, pp. 438–442",
     "difficulty": "Medium",
-    "stem": "The macroeconomic table below shows Nominal GDP and Real GDP (in R millions) for two consecutive years: in Year 1 (Period/Period 2), Nominal GDP = 5 130 703 and Real GDP = 4 028 475; in Year 2 (Period/Period 2), Nominal GDP = 5 643 773 and Real GDP = 4 391 038. Calculate the implicit GDP deflator for both years and the resulting annual inflation rate (rounded to 2 decimal places).",
+    "stem": "The macroeconomic table below shows Nominal GDP and Real GDP (in R millions) for two consecutive years: in Period 1, Nominal GDP = 5 130 703 and Real GDP = 4 028 475; in Period 2, Nominal GDP = 5 643 773 and Real GDP = 4 391 038. Calculate the implicit GDP deflator for both years and the resulting annual inflation rate (rounded to 2 decimal places).",
     "derivation": "\\text{Deflator}_1 = \\frac{5\\,130\\,703}{4\\,028\\,475}\\times 100 = 127.36; \\quad \\text{Deflator}_2 = \\frac{5\\,643\\,773}{4\\,391\\,038}\\times 100 = 128.53. \\\\ \\pi = \\frac{128.53 - 127.36}{127.36}\\times 100 = 0.92\\%.",
     "options": [
       {
@@ -1332,28 +1332,28 @@ const ECON122_DATA = {
     "source": "Chapter 20 — Inflation — Mohr 6e, §13.2 & §20.2, pp. 243, 441",
     "citation": "Mohr 6e, §13.2 & §20.2, pp. 243, 441",
     "difficulty": "Medium",
-    "stem": "An economy produces three goods (Period is the base year): Pizza (Period 1: Q=24, P=R22.50; Period 2: Q=36, P=R24.75), Soda (Period 1: Q=50, P=R4.00; Period 2: Q=75, P=R4.40), and Ice Cream (Period 1: Q=15, P=R8.00; Period 2: Q=22.5, P=R8.80). Calculate Period 1 Nominal/Real GDP, Period 2 Nominal and Real GDP, the Period GDP Deflator, and the Period 2 inflation rate.",
+    "stem": "An economy produces three goods (Period 1 is the base year): Pizza (Period 1: Q=24, P=R22.50; Period 2: Q=36, P=R24.75), Soda (Period 1: Q=50, P=R4.00; Period 2: Q=75, P=R4.40), and Ice Cream (Period 1: Q=15, P=R8.00; Period 2: Q=22.5, P=R8.80). Calculate Period 1 Nominal/Real GDP, Period 2 Nominal and Real GDP, the Period 2 GDP Deflator, and the Period 2 inflation rate.",
     "derivation": "\\text{GDP}_{1}^{\\text{Nom}} = \\text{GDP}_{1}^{\\text{Real}} = 24(22.5) + 50(4) + 15(8) = \\text{R}860. \\\\ \\text{GDP}_{2}^{\\text{Nom}} = 36(24.75) + 75(4.4) + 22.5(8.8) = \\text{R}1\\,419; \\quad \\text{GDP}_{2}^{\\text{Real}} = 36(22.5) + 75(4) + 22.5(8) = \\text{R}1\\,290. \\\\ \\text{Deflator}_{2} = \\frac{1419}{1290}\\times 100 = 110.0 \\implies \\pi_{2} = 10.0\\%.",
     "options": [
       {
-        "text": "Period GDP is R860; Period 2 Nominal is R1 419 and Real is R1 290; Period 1 Deflator is 110 and inflation is 10%.",
+        "text": "Period 1 GDP is R860; Period 2 Nominal is R1 419 and Real is R1 290; Period 2 Deflator is 110 and inflation is 10%.",
         "isCorrect": true,
-        "refutation": "Correct! Period GDP = 540 + 200 + 120 = R860; Period 2 Nominal = 891 + 330 + 198 = R1 419; Period 2 Real = 810 + 300 + 180 = R1 290; Deflator = 110, so inflation = 10%."
+        "refutation": "Correct! Period 1 GDP = 540 + 200 + 120 = R860; Period 2 Nominal = 891 + 330 + 198 = R1 419; Period 2 Real = 810 + 300 + 180 = R1 290; Deflator = 110, so inflation = 10%."
       },
       {
-        "text": "Period GDP is R860; Period 2 Nominal is R1 419 and Real is R1 290; Period 1 Deflator is 110 and inflation is 50%.",
+        "text": "Period 1 GDP is R860; Period 2 Nominal is R1 419 and Real is R1 290; Period 2 Deflator is 110 and inflation is 50%.",
         "isCorrect": false,
         "refutation": "50% is the real output growth rate [(1 290 - 860)/860 × 100 = 50%], whereas price inflation is [(110 - 100)/100 × 100] = 10%."
       },
       {
-        "text": "Period GDP is R860; Period 2 Nominal is R1 290 and Real is R1 419; Period 1 Deflator is 90.9 and inflation is -9.1%.",
+        "text": "Period 1 GDP is R860; Period 2 Nominal is R1 290 and Real is R1 419; Period 2 Deflator is 90.9 and inflation is -9.1%.",
         "isCorrect": false,
-        "refutation": "This swaps Period 2 Nominal GDP (current prices = R1 419) with Period 2 Real GDP (Period constant prices = R1 290)."
+        "refutation": "This swaps Period 2 Nominal GDP (current prices = R1 419) with Period 2 Real GDP (Period 1 constant prices = R1 290)."
       },
       {
-        "text": "Period GDP is R946; Period 2 Nominal is R1 419 and Real is R1 290; Period 1 Deflator is 110 and inflation is 65%.",
+        "text": "Period 1 GDP is R946; Period 2 Nominal is R1 419 and Real is R1 290; Period 2 Deflator is 110 and inflation is 65%.",
         "isCorrect": false,
-        "refutation": "R946 values Period quantities at Period prices, and 65% is the nominal GDP growth rate [(1 419 - 860)/860 × 100 = 65%], not the inflation rate."
+        "refutation": "R946 values Period 1 quantities at Period 2 prices, and 65% is the nominal GDP growth rate [(1 419 - 860)/860 × 100 = 65%], not the inflation rate."
       }
     ],
     "chapterId": "ch20"
@@ -1396,7 +1396,7 @@ const ECON122_DATA = {
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Mohr 6e, §21.1, pp. 469–471",
     "citation": "Mohr 6e, §21.1, pp. 469–471",
     "difficulty": "Medium",
-    "stem": "In the economy of Elaria (Q2 Period), workforce statistics are: Employed = 6 750 000; Unemployed (actively seeking work) = 2 220 000; Discouraged work seekers = 1 030 000; Students = 2 950 000; Homemakers = 1 280 000; Too old/young to work = 740 000; Illness = 640 000; Disability = 560 000. Calculate the strict (narrow) and broad (expanded) unemployment rates.",
+    "stem": "In the economy of Elaria (quarterly survey), workforce statistics are: Employed = 6 750 000; Unemployed (actively seeking work) = 2 220 000; Discouraged work seekers = 1 030 000; Students = 2 950 000; Homemakers = 1 280 000; Too old/young to work = 740 000; Illness = 640 000; Disability = 560 000. Calculate the strict (narrow) and broad (expanded) unemployment rates.",
     "derivation": "u_{\\text{strict}} = \\frac{2\\,220\\,000}{6\\,750\\,000 + 2\\,220\\,000}\\times 100 = \\frac{2.22\\text{m}}{8.97\\text{m}}\\times 100 = 24.75\\%. \\\\ u_{\\text{broad}} = \\frac{2\\,220\\,000 + 1\\,030\\,000}{6\\,750\\,000 + 2\\,220\\,000 + 1\\,030\\,000}\\times 100 = \\frac{3.25\\text{m}}{10.00\\text{m}}\\times 100 = 32.50\\%.",
     "options": [
       {
@@ -3311,6 +3311,885 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21"
+  },
+  {
+    "id": "q_ch13_21",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of GNP at Market Prices from Domestic Expenditure & Factor Flows",
+    "topic": "Follow-Up Calculation of GNP at Market Prices from Domestic Expenditure & Factor Flows",
+    "difficulty": "Medium",
+    "stem": "Continuing with the National Accounts table (in R millions) where Household expenditure = 974 252, Fixed capital consumption = 170 986, Exports = 492 646, Imports = 569 321, Taxes on production and imports = 205 562, Subsidies = 11 433, and GDP at market prices (GDPmp) = 1 530 580 (with GDP at factor cost already determined as R1 336 451 million): suppose wages earned by domestic au pairs working abroad in the USA equal 1 500 and salaries paid to foreign Cuban doctors working domestically equal 1 800. Calculate Gross National Product at market prices (GNPmp) and Net Foreign Factor Income.",
+    "derivation": [
+      "\\text{Prerequisite Context: }\\text{GDP}_{mp} = \\text{R}1\\,530\\,580\\text{m}\\quad (\\text{and }\\text{GDP}_{fc} = 1\\,530\\,580 - 205\\,562 + 11\\,433 = \\text{R}1\\,336\\,451\\text{m})",
+      "\\text{Factor Income Receipts from Rest of World (Au pairs in USA)} = +\\text{R}1\\,500\\text{m}",
+      "\\text{Factor Income Payments to Rest of World (Cuban doctors domestically)} = -\\text{R}1\\,800\\text{m}",
+      "\\text{GNP}_{mp} = \\text{GDP}_{mp} + \\text{Factor Receipts} - \\text{Factor Payments} = 1\\,530\\,580 + 1\\,500 - 1\\,800 = \\text{R}1\\,530\\,280\\text{ million}"
+    ],
+    "options": [
+      {
+        "text": "GNP at market prices is R1 530 280 million because net foreign factor income is -R300 million (+1 500 - 1 800).",
+        "isCorrect": true,
+        "refutation": "Correct! Adding factor income earned abroad by domestic residents (+1 500) and subtracting factor income paid to foreign residents working domestically (-1 800) yields GNPmp = R1 530 280 million."
+      },
+      {
+        "text": "GNP at market prices is R1 530 880 million because net foreign factor income is +R300 million (+1 800 - 1 500).",
+        "isCorrect": false,
+        "refutation": "R1 530 880 million reverses the foreign factor flows by adding payments to foreign doctors (+1 800) and subtracting receipts from domestic au pairs (-1 500)."
+      },
+      {
+        "text": "GNP at market prices is R1 336 151 million by applying net foreign factor income (-R300 million) to GDP at factor cost.",
+        "isCorrect": false,
+        "refutation": "Applying net foreign factor income (-300) to GDP at factor cost (1 336 451) yields GNP at factor cost (R1 336 151m), whereas the question asks for GNP at market prices."
+      },
+      {
+        "text": "GNP at market prices is R1 453 905 million by subtracting net exports (-R76 675 million) from GDP at market prices.",
+        "isCorrect": false,
+        "refutation": "Exports (492 646) and imports (569 321) are already included inside GDPmp; converting GDPmp to GNPmp requires adjusting strictly for net primary factor income (-300)."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_22",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Derivation of National Income Using Prerequisite GDP at Factor Cost and Depreciation",
+    "topic": "Follow-Up Derivation of National Income Using Prerequisite GDP at Factor Cost and Depreciation",
+    "difficulty": "Hard",
+    "stem": "In a macroeconomic account where Consumption = R105 500, Investment = R46 850, Government spending = R103 600, Exports = R40 000, Imports = R30 000, Value-Added Tax = R16 000, and Subsidies = R43 300, the preceding calculation established GDE at market prices = R255 950, GDP at market prices = R265 950, and GDP at factor cost (GDPfc) = R293 250. Given further that the capital goods stock is R40 000 (depreciating at 8% per annum), domestic cricket players earn R35 200 in the UK, and UK Airlines earns R125 600 in profits within the domestic economy, calculate National Income (Net National Income at factor cost).",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }\\text{GDP}_{fc} = \\text{R}293\\,250\\quad (\\text{from }\\text{GDP}_{mp} = 265\\,950 - 16\\,000 + 43\\,300)",
+      "\\text{Depreciation (Consumption of Fixed Capital)} = 0.08 \\times \\text{R}40\\,000 = \\text{R}3\\,200",
+      "\\text{Net Foreign Factor Income} = +\\text{R}35\\,200\\text{ (cricket players in UK)} - \\text{R}125\\,600\\text{ (UK Airlines profits)} = -\\text{R}90\\,400",
+      "\\text{National Income (NI)} = \\text{GDP}_{fc} - \\text{Depreciation} + \\text{Net Factor Income} = 293\\,250 - 3\\,200 + 35\\,200 - 125\\,600 = \\text{R}199\\,650"
+    ],
+    "options": [
+      {
+        "text": "National Income is R199 650 (subtracting R3 200 depreciation and R90 400 net foreign factor outflow from R293 250).",
+        "isCorrect": true,
+        "refutation": "Correct! Starting from GDPfc = R293 250, subtracting 8% depreciation on capital goods (-R3 200), adding factor receipts (+R35 200), and subtracting factor payments (-R125 600) gives R199 650."
+      },
+      {
+        "text": "National Income is R202 850 (adjusting R293 250 for the R90 400 net factor outflow but omitting R3 200 depreciation).",
+        "isCorrect": false,
+        "refutation": "R202 850 is Gross National Product at factor cost (GNPfc); National Income is a net aggregate that requires subtracting the 8% capital depreciation of R3 200."
+      },
+      {
+        "text": "National Income is R380 450 (subtracting R3 200 depreciation but adding +R90 400 as a net foreign factor inflow).",
+        "isCorrect": false,
+        "refutation": "R380 450 reverses the foreign factor income signs by adding UK Airlines' domestic profits (+125 600) and subtracting domestic cricket players' foreign earnings (-35 200)."
+      },
+      {
+        "text": "National Income is R172 350 (applying the R3 200 depreciation and R90 400 factor outflow directly to GDPmp of R265 950).",
+        "isCorrect": false,
+        "refutation": "National Income is defined at factor cost (NNIfc), so you must start from GDPfc = R293 250 (which includes net subsidies of +R27 300) rather than GDPmp = R265 950."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_23",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of GDE at Market Prices Using Prerequisite GDP at Factor Cost",
+    "topic": "Follow-Up Calculation of GDE at Market Prices Using Prerequisite GDP at Factor Cost",
+    "difficulty": "Hard",
+    "stem": "In an economy where National Income = 870 760, Depreciation = 11 100, Factor income earned by foreigners domestically = 120 800, Factor income earned by residents abroad = 234 000, Value-Added Tax (VAT) = 120 000, and Subsidies = 9 000, the first stage of analysis established that GDP at factor cost (GDPfc) = 768 660. Given further that Exports = 553 200 and Imports = 489 300, calculate GDP at market prices (GDPmp) and Gross Domestic Expenditure at market prices (GDEmp).",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }\\text{GDP}_{fc} = 870\\,760 + 11\\,100 + 120\\,800 - 234\\,000 = 768\\,660",
+      "\\text{Convert to Market Prices: }\\text{GDP}_{mp} = \\text{GDP}_{fc} + \\text{VAT} - \\text{Subsidies} = 768\\,660 + 120\\,000 - 9\\,000 = 879\\,660",
+      "\\text{Since }\\text{GDP}_{mp} = \\text{GDE}_{mp} + (X - Z),\\quad \\text{GDE}_{mp} = \\text{GDP}_{mp} - X + Z",
+      "\\text{GDE}_{mp} = 879\\,660 - 553\\,200 + 489\\,300 = 879\\,660 - 63\\,900 = 815\\,760"
+    ],
+    "options": [
+      {
+        "text": "GDP at market prices is 879 660 and Gross Domestic Expenditure (GDEmp) is 815 760 after subtracting net exports of 63 900.",
+        "isCorrect": true,
+        "refutation": "Correct! Adding net indirect taxes (+120 000 - 9 000 = +111 000) to GDPfc (768 660) gives GDPmp = 879 660, and subtracting net exports (553 200 - 489 300 = 63 900) gives GDEmp = 815 760."
+      },
+      {
+        "text": "GDP at market prices is 879 660 and Gross Domestic Expenditure (GDEmp) is 943 560 after adding net exports of 63 900.",
+        "isCorrect": false,
+        "refutation": "Because GDP = GDE + (X - Z), rearranging for GDE requires subtracting exports (-553 200) and adding imports (+489 300), whereas 943 560 adds net exports instead."
+      },
+      {
+        "text": "GDP at market prices is 657 660 and Gross Domestic Expenditure (GDEmp) is 593 760 by subtracting VAT and adding subsidies.",
+        "isCorrect": false,
+        "refutation": "Moving from factor cost to market prices requires adding indirect taxes (+120 000) and subtracting subsidies (-9 000), not the reverse."
+      },
+      {
+        "text": "GDP at market prices is 879 660 and Gross Domestic Expenditure (GDEmp) is 704 760 by omitting indirect tax adjustments.",
+        "isCorrect": false,
+        "refutation": "704 760 subtracts net exports (63 900) directly from GDP at factor cost (768 660) instead of converting to market prices first (879 660 - 63 900 = 815 760)."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_24",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of GDE at Factor Cost Given GDP at Market Prices and Net Exports",
+    "topic": "Follow-Up Calculation of GDE at Factor Cost Given GDP at Market Prices and Net Exports",
+    "difficulty": "Medium",
+    "stem": "Continuing with the National Accounts table (in R millions) where GDP at market prices (GDPmp) = 1 204, Consumption of fixed capital = 72, Indirect taxes = 148, Subsidies = 15, Factor income to abroad = 67, Factor income from abroad = 78 (from which National Income was calculated as R1 010 million), Exports = 64, and Imports = 100: calculate Gross Domestic Expenditure at market prices (GDEmp) and Gross Domestic Expenditure at factor cost (GDEfc).",
+    "derivation": [
+      "\\text{Since }\\text{GDP}_{mp} = \\text{GDE}_{mp} + X - Z,\\quad \\text{GDE}_{mp} = \\text{GDP}_{mp} - X + Z = 1\\,204 - 64 + 100 = \\text{R}1\\,240\\text{ million}",
+      "\\text{Alternatively, }\\text{GDP}_{fc} = \\text{GDP}_{mp} - T_{\\text{ind}} + \\text{Subsidies} = 1\\,204 - 148 + 15 = \\text{R}1\\,071\\text{ million}",
+      "\\text{GDE}_{fc} = \\text{GDE}_{mp} - T_{\\text{ind}} + \\text{Subsidies} = 1\\,240 - 148 + 15 = \\text{R}1\\,107\\text{ million}\\quad (\\text{or } 1\\,071 - 64 + 100 = \\text{R}1\\,107\\text{m})"
+    ],
+    "options": [
+      {
+        "text": "GDE at market prices is R1 240 million and GDE at factor cost is R1 107 million (with GDPfc equal to R1 071 million).",
+        "isCorrect": true,
+        "refutation": "Correct! Subtracting exports (-64) and adding imports (+100) to GDPmp (1 204) gives GDEmp = R1 240m, and subtracting net indirect taxes (-148 + 15 = -133) yields GDEfc = R1 107m."
+      },
+      {
+        "text": "GDE at market prices is R1 168 million and GDE at factor cost is R1 035 million (by adding exports and subtracting imports).",
+        "isCorrect": false,
+        "refutation": "R1 168m and R1 035m mistakenly add exports (+64) and subtract imports (-100); since net exports are negative (X - Z = -36), domestic expenditure GDE exceeds GDP by +36."
+      },
+      {
+        "text": "GDE at market prices is R1 240 million and GDE at factor cost is R1 373 million (by adding indirect taxes to GDEmp).",
+        "isCorrect": false,
+        "refutation": "Moving from market prices (R1 240m) to factor cost requires subtracting indirect taxes (-148) and adding subsidies (+15), not adding net indirect taxes (+133)."
+      },
+      {
+        "text": "GDE at market prices is R1 046 million and GDE at factor cost is R1 010 million (by using National Income as the baseline).",
+        "isCorrect": false,
+        "refutation": "R1 010m is Net National Income at factor cost (which already deducted R72m depreciation and added +R11m net foreign factor income), not GDE at factor cost."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_25",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of Nominal Growth Rate and Real GDP from Three-Good Output Data",
+    "topic": "Follow-Up Calculation of Nominal Growth Rate and Real GDP from Three-Good Output Data",
+    "difficulty": "Medium",
+    "stem": "In the three-good economy producing Cell phones (Period 1: Q=20, P=R5; Period 2: Q=22, P=R5), Tablets (Period 1: Q=40, P=R2; Period 2: Q=45, P=R2), and Laptops (Period 1: Q=10, P=R2; Period 2: Q=12.5, P=R4), the preceding calculation established Period 1 Nominal GDP = R200 (20×5 + 40×2 + 10×2) and Period 2 Nominal GDP = R250 (22×5 + 45×2 + 12.5×4). Using Period 1 as the base period, calculate (1) the percentage growth in Nominal GDP, (2) Period 2 Real GDP at constant Period 1 prices, and (3) the percentage growth in Real GDP.",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }\\text{Nominal GDP}_1 = \\text{Real GDP}_1 = \\text{R}200;\\quad \\text{Nominal GDP}_2 = \\text{R}250",
+      "\\text{Nominal GDP Growth} = \\frac{250 - 200}{200} \\times 100 = +25.0\\%",
+      "\\text{Period 2 Real GDP (at Period 1 prices)} = (22 \\times 5) + (45 \\times 2) + (12.5 \\times 2) = 110 + 90 + 25 = \\text{R}225",
+      "\\text{Real GDP Growth} = \\frac{225 - 200}{200} \\times 100 = +12.5\\%"
+    ],
+    "options": [
+      {
+        "text": "Nominal GDP grows by 25.0% (R200 to R250), while Period 2 Real GDP at Period 1 prices is R225, giving 12.5% real growth.",
+        "isCorrect": true,
+        "refutation": "Correct! Nominal growth is (250 - 200)/200 = 25.0%; valuing Period 2 quantities at Period 1 constant prices yields 110 + 90 + 25 = R225, so real output grew by (225 - 200)/200 = 12.5%."
+      },
+      {
+        "text": "Nominal GDP grows by 20.0% (R200 to R250), while Period 2 Real GDP at Period 1 prices is R225, giving 11.1% real growth.",
+        "isCorrect": false,
+        "refutation": "20.0% (50/250) and 11.1% (25/225) divide the output change by Period 2 values instead of the Period 1 base value (R200)."
+      },
+      {
+        "text": "Nominal GDP grows by 25.0% (R200 to R250), while Period 2 Real GDP at Period 1 prices is R250, giving 25.0% real growth.",
+        "isCorrect": false,
+        "refutation": "R250 values Period 2 Laptops at their inflated Period 2 price (R4) instead of their constant Period 1 base price (R2), overstating real output by R25."
+      },
+      {
+        "text": "Nominal GDP grows by 50.0% (R200 to R250), while Period 2 Real GDP at Period 1 prices is R220, giving 10.0% real growth.",
+        "isCorrect": false,
+        "refutation": "50 is the absolute Rand increase in Nominal GDP (not the percentage growth rate of 25.0%), and 12.5 Laptops at R2 equals R25 (giving R225, not R220)."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_26",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of Percentage Real GDP Growth Using Prerequisite Real GDP Totals",
+    "topic": "Follow-Up Calculation of Percentage Real GDP Growth Using Prerequisite Real GDP Totals",
+    "difficulty": "Medium",
+    "stem": "In the economy producing Clothes (Period 1: Q=750, P=R32; Period 2: Q=840, P=R29), Food (Period 1: Q=1 030, P=R11; Period 2: Q=950, P=R13), and Drink (Period 1: Q=210, P=R5.50; Period 2: Q=100, P=R11.70), the preceding step established that Real GDP (at constant Period 1 base prices) is R36 385 in Period 1 and R37 755 in Period 2. Using these prerequisite totals, calculate the percentage Real GDP growth rate between Period 1 and Period 2, and compare it with Period 2 Nominal GDP.",
+    "derivation": [
+      "\\text{Prerequisite Real GDP Totals: }\\text{Real GDP}_1 = \\text{R}36\\,385;\\quad \\text{Real GDP}_2 = (840 \\times 32) + (950 \\times 11) + (100 \\times 5.50) = \\text{R}37\\,755",
+      "\\text{Real GDP Growth Rate} = \\frac{\\text{Real GDP}_2 - \\text{Real GDP}_1}{\\text{Real GDP}_1} \\times 100 = \\frac{37\\,755 - 36\\,385}{36\\,385} \\times 100 = \\frac{1\\,370}{36\\,385} \\times 100 = +3.77\\%",
+      "\\text{Period 2 Nominal GDP} = (840 \\times 29) + (950 \\times 13) + (100 \\times 11.70) = 24\\,360 + 12\\,350 + 1\\,170 = \\text{R}37\\,880\\quad (+4.11\\%\\text{ nominal growth})"
+    ],
+    "options": [
+      {
+        "text": "Real GDP increased by R1 370, yielding a real economic growth rate of +3.77% (while Period 2 Nominal GDP is R37 880, or +4.11%).",
+        "isCorrect": true,
+        "refutation": "Correct! Subtracting Period 1 Real GDP (R36 385) from Period 2 Real GDP (R37 755) gives +R1 370, and dividing by R36 385 yields a real growth rate of +3.77%."
+      },
+      {
+        "text": "Real GDP increased by R1 495, yielding a real economic growth rate of +4.11% (using Period 2 Nominal GDP of R37 880).",
+        "isCorrect": false,
+        "refutation": "R37 880 and +4.11% measure Period 2 Nominal GDP at current prices rather than Real GDP at constant Period 1 base prices (R37 755, or +3.77%)."
+      },
+      {
+        "text": "Real GDP increased by R1 370, yielding a real economic growth rate of +3.63% (by dividing R1 370 by Period 2 Real GDP of R37 755).",
+        "isCorrect": false,
+        "refutation": "3.63% divides the real output gain (R1 370) by Period 2 Real GDP (R37 755) instead of the initial Period 1 base value (R36 385)."
+      },
+      {
+        "text": "Real GDP contracted by R125, yielding a negative growth rate of -0.33% (by comparing Period 2 Real GDP with Period 2 Nominal GDP).",
+        "isCorrect": false,
+        "refutation": "Comparing Period 2 Real GDP (R37 755) with Period 2 Nominal GDP (R37 880) reflects the Period 2 price deflator (100.33), not inter-temporal real output growth."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_27",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Calculation of the GDP Deflator Using Prerequisite Nominal and Real GDP",
+    "topic": "Follow-Up Calculation of the GDP Deflator Using Prerequisite Nominal and Real GDP",
+    "difficulty": "Medium",
+    "stem": "In the economy producing Fish (Period 1: Q=100, P=$50; Period 3: Q=125, P=$55), Pork (Period 1: Q=200, P=$25; Period 3: Q=250, P=$20), and Beef (Period 1: Q=0, P=$0; Period 3: Q=40, P=$50), the preceding step established that Period 3 Nominal GDP (at current Period 3 prices) is $13 875 and Period 3 Real GDP (at constant Period 1 base prices, valuing Beef at its initial base price of $0) is $11 250. Using these prerequisite results, calculate the Period 3 GDP Deflator and the cumulative price change since Period 1.",
+    "derivation": [
+      "\\text{Prerequisite Period 3 Totals: }\\text{Nominal GDP}_3 = \\$13\\,875;\\quad \\text{Real GDP}_3 = (125 \\times 50) + (250 \\times 25) + (40 \\times 0) = \\$11\\,250",
+      "\\text{GDP Deflator}_3 = \\frac{\\text{Nominal GDP}_3}{\\text{Real GDP}_3} \\times 100 = \\frac{13\\,875}{11\\,250} \\times 100 = 123.33",
+      "\\text{Cumulative Price Level Change from Base Period 1 (where Deflator = 100)} = 123.33 - 100 = +23.33\\%"
+    ],
+    "options": [
+      {
+        "text": "The Period 3 GDP Deflator is 123.33 (or 123.3), indicating that the aggregate price level is 23.33% higher than in base Period 1.",
+        "isCorrect": true,
+        "refutation": "Correct! Dividing Period 3 Nominal GDP ($13 875) by Period 3 Real GDP ($11 250) and multiplying by 100 yields a GDP Deflator of 123.33 (+23.33% above the base index of 100)."
+      },
+      {
+        "text": "The Period 3 GDP Deflator is 81.08 (or 81.1), indicating that the aggregate price level fell by 18.92% relative to base Period 1.",
+        "isCorrect": false,
+        "refutation": "81.08 inverts the deflator formula by dividing Real GDP ($11 250) by Nominal GDP ($13 875) instead of (Nominal GDP / Real GDP) × 100."
+      },
+      {
+        "text": "The Period 3 GDP Deflator is 138.75 (or 138.8), indicating that the aggregate price level is 38.75% higher than in base Period 1.",
+        "isCorrect": false,
+        "refutation": "138.75 divides Period 3 Nominal GDP ($13 875) by Period 1 Nominal GDP ($10 000), which measures nominal GDP expansion (+38.75%) rather than the price deflator."
+      },
+      {
+        "text": "The Period 3 GDP Deflator is 112.50 (or 112.5), indicating that the aggregate price level is 12.50% higher than in base Period 1.",
+        "isCorrect": false,
+        "refutation": "112.50 divides Period 3 Real GDP ($11 250) by Period 1 Real GDP ($10 000), which measures real output growth (+12.50%) rather than the price deflator."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch13_28",
+    "chapterId": "ch13",
+    "source": "Chapter 13 — Measuring the Performance of the Economy — Follow-Up Analysis of Gini Coefficient Extremes and Standard Inequality Measures",
+    "topic": "Follow-Up Analysis of Gini Coefficient Extremes and Standard Inequality Measures",
+    "difficulty": "Easy",
+    "stem": "In the Lorenz curve diagram where cumulative population percentage is plotted on the horizontal axis, cumulative income percentage is plotted on the vertical axis, the 45-degree diagonal 0B represents the line of perfect equality, and the shaded lens 0AB between the diagonal and the Lorenz curve represents the area of inequality: (1) What does a Gini coefficient of 0.67 imply about a country's income distribution? (2) What are the three standard statistical methods used by economists to measure income inequality?",
+    "derivation": [
+      "\\text{Gini Coefficient} = \\frac{\\text{Area of Inequality (0AB)}}{\\text{Total Area Under Diagonal } 0B} \\in [0, 1]\\text{ (or } [0, 100]\\text{ as a Gini index)}",
+      "\\text{Gini} = 0 \\implies \\text{Perfect equality (Lorenz curve coincides with } 0B);\\quad \\text{Gini} = 1 \\implies \\text{Perfect inequality (one person receives 100\\% of income)}",
+      "\\text{Gini} = 0.67 \\implies \\text{Extremely high/skewed income inequality (among the most unequal distributions globally)}",
+      "\\text{Three Standard Inequality Measures: (1) Lorenz curve, (2) Gini coefficient, (3) Quantile ratio (e.g., decile or quintile ratio)}"
+    ],
+    "options": [
+      {
+        "text": "A Gini of 0.67 indicates severe income inequality (since 0 is perfect equality and 1 is complete inequality); the three measures are the Lorenz curve, Gini coefficient, and Quantile ratio.",
+        "isCorrect": true,
+        "refutation": "Correct! Because the Gini coefficient ranges from 0 (perfect equality) to 1 (complete inequality), 0.67 reflects a highly skewed distribution, measured via the Lorenz curve, Gini coefficient, and quantile ratios."
+      },
+      {
+        "text": "A Gini of 0.67 indicates near-perfect income equality (since 1 is perfect equality and 0 is complete inequality); the three measures are CPI, PPI, and the Implicit GDP Deflator.",
+        "isCorrect": false,
+        "refutation": "This reverses the Gini scale (0 is perfect equality, 1 is perfect inequality), and CPI, PPI, and the GDP Deflator measure price inflation rather than income distribution."
+      },
+      {
+        "text": "A Gini of 0.67 means that 67% of the workforce is employed in the formal sector; the three measures are Gross Domestic Product, Gross National Income, and Gross Domestic Expenditure.",
+        "isCorrect": false,
+        "refutation": "The Gini coefficient is the geometric ratio of the area of inequality to the triangle under the line of equality, not an employment rate or aggregate output total."
+      },
+      {
+        "text": "A Gini of 0.67 indicates moderate equality because it is below 50; the three measures are the Repo rate, the Cash reserve requirement, and the Open-market bond yield.",
+        "isCorrect": false,
+        "refutation": "When expressed as a decimal (0 to 1), 0.67 corresponds to a Gini index of 67 (well above 50, signifying severe inequality), and repo/reserve rates are monetary instruments."
+      }
+    ],
+    "chapter": "ch13"
+  },
+  {
+    "id": "q_ch14_12",
+    "chapterId": "ch14",
+    "source": "Chapter 14 — The Monetary Sector — Contrasting an Interest Rate Hike (7% to 8%) with an Autonomous Decline in Money Demand",
+    "topic": "Contrasting an Interest Rate Hike (7% to 8%) with an Autonomous Decline in Money Demand",
+    "difficulty": "Medium",
+    "stem": "Under the central bank's endogenous (demand-determined) money supply framework—where there is no independent vertical money supply curve and the interest rate is anchored horizontally via the accommodation policy repo rate—contrast what happens on the money market diagram in two distinct scenarios: (Scenario A) The central bank raises the repo rate so the market interest rate increases from 7% to 8%, ceteris paribus; (Scenario B) Total demand for money decreases (due to a fall in real income $Y$) while the central bank keeps the interest rate unchanged at $i_0$.",
+    "derivation": [
+      "\\text{Endogenous Rule: } M \\text{ is demand-determined at the intersection of the horizontal interest rate line } i \\text{ and money demand } L(Y, i)",
+      "\\text{Scenario A (} i \\text{ rises from } 7\\% \\text{ to } 8\\%\\text{): Horizontal rate line shifts UPWARD along fixed } L \\text{ curve } \\implies \\text{equilibrium quantity of money } M \\text{ decreases }(M_0 \\to M_1)",
+      "\\text{Scenario B (Money demand falls at constant } i_0\\text{): } L \\text{ curve shifts LEFTWARD along fixed horizontal line } i_0 \\implies \\text{equilibrium quantity of money } M \\text{ decreases }(M_0 \\to M_1)"
+    ],
+    "options": [
+      {
+        "text": "Scenario A shifts the horizontal interest rate line upward from 7% to 8% (moving up along L so M falls); Scenario B shifts the L curve leftward along constant i0 (so M also falls).",
+        "isCorrect": true,
+        "refutation": "Correct! In Scenario A, a higher interest rate causes an upward movement along L that contracts credit and money M; in Scenario B, a leftward shift of L at fixed i0 also reduces equilibrium M."
+      },
+      {
+        "text": "Scenario A shifts a vertical money supply curve leftward to raise interest rates from 7% to 8%; Scenario B shifts the L curve leftward and lowers the market interest rate below i0.",
+        "isCorrect": false,
+        "refutation": "Under the endogenous accommodation system, there is no independent vertical money supply curve, and the central bank holds the interest rate horizontal at i0 in Scenario B."
+      },
+      {
+        "text": "Scenario A shifts the L curve rightward when interest rates rise from 7% to 8% (increasing M); Scenario B shifts the horizontal interest rate line downward (increasing M).",
+        "isCorrect": false,
+        "refutation": "A change in the interest rate causes a movement along the L curve (not a shift of L), and higher interest rates reduce (not increase) the quantity of credit and money demanded."
+      },
+      {
+        "text": "Scenario A leaves the equilibrium quantity of money M unchanged when rates rise from 7% to 8%; Scenario B increases the equilibrium quantity of money M at constant i0.",
+        "isCorrect": false,
+        "refutation": "Because L slopes downward, an upward shift of the interest rate line from 7% to 8% contracts M, and a leftward shift of L at constant i0 likewise contracts M."
+      }
+    ],
+    "chapter": "ch14"
+  },
+  {
+    "id": "q_ch15_13",
+    "chapterId": "ch15",
+    "source": "Chapter 15 — The Government Sector — Calculating Gross Tax, Net Tax After Rebate, and Effective Tax Rate for R475 000 Income",
+    "topic": "Calculating Gross Tax, Net Tax After Rebate, and Effective Tax Rate for R475 000 Income",
+    "difficulty": "Medium",
+    "stem": "A taxpayer under age 65 earns a taxable income of R475 000 during the tax year. According to the statutory progressive tax table, the bracket for R393 001 – R550 000 specifies: 'R103 000 + 40% of taxable income above R393 000', and the primary tax rebate is R15 000. Calculate (1) the gross tax liability before the rebate, (2) the net tax payable after deducting the primary rebate, and (3) the effective (average) tax rate after the rebate.",
+    "derivation": [
+      "\\text{Income Excess Above Bracket Threshold} = 475\\,000 - 393\\,000 = \\text{R}82\\,000",
+      "\\text{Gross Tax Before Rebate} = 103\\,000 + 0.40(82\\,000) = 103\\,000 + 32\\,800 = \\text{R}135\\,800\\quad (\\text{Pre-rebate ATR} = 28.59\\%)",
+      "\\text{Net Tax Payable After Rebate} = 135\\,800 - 15\\,000 = \\text{R}120\\,800",
+      "\\text{Effective (Average) Tax Rate} = \\frac{120\\,800}{475\\,000} \\times 100 = 25.43\\%\\quad (\\text{while Marginal Tax Rate} = 40\\%)"
+    ],
+    "options": [
+      {
+        "text": "Gross tax is R135 800, net tax after the R15 000 rebate is R120 800, and the effective tax rate is 25.43% (28.59% pre-rebate).",
+        "isCorrect": true,
+        "refutation": "Correct! 40% of the R82 000 excess above R393 000 is R32 800; adding R103 000 gives R135 800 gross tax, and subtracting the R15 000 rebate gives R120 800 (25.43% of R475 000)."
+      },
+      {
+        "text": "Gross tax is R190 000, net tax after the R15 000 rebate is R175 000, and the effective tax rate is 36.84% (40.00% pre-rebate).",
+        "isCorrect": false,
+        "refutation": "R190 000 erroneously multiplies the entire R475 000 income by 40% instead of applying 40% only to the R82 000 excess above R393 000."
+      },
+      {
+        "text": "Gross tax is R135 800, net tax after the R15 000 rebate is R150 800, and the effective tax rate is 31.75% (28.59% pre-rebate).",
+        "isCorrect": false,
+        "refutation": "R150 800 adds the R15 000 primary rebate to gross tax instead of subtracting it; a tax rebate directly reduces the taxpayer's liability."
+      },
+      {
+        "text": "Gross tax is R103 000, net tax after the R15 000 rebate is R88 000, and the effective tax rate is 18.53% (21.68% pre-rebate).",
+        "isCorrect": false,
+        "refutation": "R103 000 is only the base tax on the first R393 000 of income, omitting the 40% marginal tax (R32 800) on the R82 000 earned above R393 000."
+      }
+    ],
+    "chapter": "ch15"
+  },
+  {
+    "id": "q_ch15_14",
+    "chapterId": "ch15",
+    "source": "Chapter 15 — The Government Sector — Follow-Up Analysis of Tax Liability, MTR, and ATR When Income Rises Across Brackets",
+    "topic": "Follow-Up Analysis of Tax Liability, MTR, and ATR When Income Rises Across Brackets",
+    "difficulty": "Medium",
+    "stem": "In a multi-bracket personal income tax schedule (with zero rebate), Judy initially earns R18 900 in the R15 001 – R20 000 bracket ('R2 550 + 21% of income above R15 000'), where the first-part calculation established her initial tax payable as R3 369 (2 550 + 0.21×3 900), her marginal tax rate (MTR) as 21%, and her average tax rate (ATR) as 17.83%. Suppose Judy completes her degree and is promoted to a salary of R83 450 in the top R80 001+ bracket ('R25 000 + 43% of income above R80 000'). Calculate her new tax payable, new MTR, and new ATR, and classify the tax schedule.",
+    "derivation": [
+      "\\text{Prerequisite Baseline at } Y_0 = \\text{R}18\\,900:\\quad T_0 = \\text{R}3\\,369,\\quad \\text{MTR}_0 = 21\\%, \\quad \\text{ATR}_0 = \\frac{3\\,369}{18\\,900} = 17.83\\%",
+      "\\text{New Tax at } Y_1 = \\text{R}83\\,450:\\quad T_1 = 25\\,000 + 0.43(83\\,450 - 80\\,000) = 25\\,000 + 0.43(3\\,450) = 25\\,000 + 1\\,483.50 = \\text{R}26\\,483.50",
+      "\\text{New Marginal Tax Rate (MTR}_1\\text{)} = 43\\%;\\quad \\text{New Average Tax Rate (ATR}_1\\text{)} = \\frac{26\\,483.50}{83\\,450} \\times 100 = 31.74\\%",
+      "\\text{Classification: Progressive tax because ATR rises as income rises }(17.83\\% \\to 31.74\\%)\\text{ and MTR} > \\text{ATR}"
+    ],
+    "options": [
+      {
+        "text": "New tax is R26 483.50, MTR is 43%, and ATR rises from 17.83% to 31.74%, confirming that the tax system is progressive.",
+        "isCorrect": true,
+        "refutation": "Correct! Tax on the R3 450 excess above R80 000 is R1 483.50; adding R25 000 gives R26 483.50 (ATR = 31.74%), and because ATR rises with income (17.83% to 31.74%), the tax is progressive."
+      },
+      {
+        "text": "New tax is R35 883.50, MTR is 43%, and ATR rises from 17.83% to 43.00%, confirming that the tax system is proportional.",
+        "isCorrect": false,
+        "refutation": "R35 883.50 erroneously applies the 43% marginal rate to Judy's entire R83 450 salary instead of only the R3 450 excess above R80 000."
+      },
+      {
+        "text": "New tax is R26 483.50, MTR is 31.74%, and ATR is 43.00%, confirming that the tax system is regressive across brackets.",
+        "isCorrect": false,
+        "refutation": "This swaps the marginal tax rate (43% on income above R80 000) with the average tax rate (26 483.50 / 83 450 = 31.74%), and rising ATR defines a progressive (not regressive) tax."
+      },
+      {
+        "text": "New tax is R25 000.00, MTR is 43%, and ATR rises from 17.83% to 29.96%, confirming that the tax system is progressive.",
+        "isCorrect": false,
+        "refutation": "R25 000 omits the 43% marginal tax (R1 483.50) payable on the R3 450 earned above the R80 000 bracket threshold."
+      }
+    ],
+    "chapter": "ch15"
+  },
+  {
+    "id": "q_ch15_15",
+    "chapterId": "ch15",
+    "source": "Chapter 15 — The Government Sector — Comparing Annual Tax Liability and Effective Tax Rates Across Adjacent Tax Brackets",
+    "topic": "Comparing Annual Tax Liability and Effective Tax Rates Across Adjacent Tax Brackets",
+    "difficulty": "Medium",
+    "stem": "Twins Joe and Bella earn monthly salaries of R35 000 per month (R420 000 per year) and R35 500 per month (R426 000 per year), respectively. The statutory annual tax table specifies: Bracket A (R305 851 – R423 300): 'R63 853 + 31% of taxable income above R305 850'; Bracket B (R423 301 – R555 600): 'R100 263 + 36% of taxable income above R423 300'. Calculate the gross annual tax liability and pre-rebate effective (average) tax rate for both Joe and Bella, and identify the tax structure.",
+    "derivation": [
+      "\\text{Joe (}Y = 35\\,000 \\times 12 = \\text{R}420\\,000\\text{ in Bracket A): } T_{\\text{Joe}} = 63\\,853 + 0.31(420\\,000 - 305\\,850) = 63\\,853 + 35\\,386.50 = \\text{R}99\\,239.50",
+      "\\text{Joe Effective Rate} = \\frac{99\\,239.50}{420\\,000} \\times 100 = 23.63\\%",
+      "\\text{Bella (}Y = 35\\,500 \\times 12 = \\text{R}426\\,000\\text{ in Bracket B): } T_{\\text{Bella}} = 100\\,263 + 0.36(426\\,000 - 423\\,300) = 100\\,263 + 972.00 = \\text{R}101\\,235.00",
+      "\\text{Bella Effective Rate} = \\frac{101\\,235.00}{426\\,000} \\times 100 = 23.76\\%\\quad (\\text{Progressive since ATR rises from } 23.63\\% \\text{ to } 23.76\\%)"
+    ],
+    "options": [
+      {
+        "text": "Joe pays R99 239.50 (23.63% effective rate) and Bella pays R101 235.00 (23.76% effective rate), illustrating a progressive tax.",
+        "isCorrect": true,
+        "refutation": "Correct! Joe's R420 000 annual income yields 63 853 + 0.31(114 150) = R99 239.50 (23.63%), while Bella's R426 000 yields 100 263 + 0.36(2 700) = R101 235.00 (23.76%)."
+      },
+      {
+        "text": "Joe pays R130 200.00 (31.00% effective rate) and Bella pays R153 360.00 (36.00% effective rate), illustrating a progressive tax.",
+        "isCorrect": false,
+        "refutation": "Multiplying total annual income by the bracket marginal rate (31% or 36%) ignores the lower marginal rates applied to earlier income brackets."
+      },
+      {
+        "text": "Joe pays R99 239.50 (31.00% effective rate) and Bella pays R101 235.00 (36.00% effective rate), illustrating a proportional tax.",
+        "isCorrect": false,
+        "refutation": "31% and 36% are the marginal tax rates on the top Rand earned in each bracket, whereas the effective (average) tax rates are 23.63% and 23.76%."
+      },
+      {
+        "text": "Joe pays R63 853.00 (15.20% effective rate) and Bella pays R100 263.00 (23.54% effective rate), illustrating a regressive tax.",
+        "isCorrect": false,
+        "refutation": "R63 853 and R100 263 are only the base bracket thresholds before adding 31% of R114 150 for Joe (+R35 386.50) and 36% of R2 700 for Bella (+R972.00)."
+      }
+    ],
+    "chapter": "ch15"
+  },
+  {
+    "id": "q_ch15_16",
+    "chapterId": "ch15",
+    "source": "Chapter 15 — The Government Sector — Follow-Up Calculation of Effective Tax Rates From Prerequisite Net Tax Liabilities",
+    "topic": "Follow-Up Calculation of Effective Tax Rates From Prerequisite Net Tax Liabilities",
+    "difficulty": "Medium",
+    "stem": "In the preceding personal income tax analyses: (Case 1) Bella Mbonambi (aged 23) earns R315 850 per year in the bracket 'R58 389 + 35% above R315 100', yielding a gross tax of R58 651.50 and a net tax payable of R47 751.50 after deducting the R10 900 primary rebate; (Case 2) A senior specialist (under 65) earns R825 000 per year in the bracket 'R179 147 + 39% above R673 000', yielding a gross tax of R238 427 and a net tax payable of R221 192 after deducting the R17 235 primary rebate. Using these prerequisite tax liabilities, calculate each taxpayer's effective (average) tax rate (ATR) and explain why ATR is strictly lower than the marginal tax rate (MTR).",
+    "derivation": [
+      "\\text{Case 1 (R315 850 salary): Net ATR} = \\frac{47\\,751.50}{315\\,850} \\times 100 = 15.12\\%\\quad (\\text{Pre-rebate ATR} = \\frac{58\\,651.50}{315\\,850} = 18.57\\%, \\text{ MTR} = 35\\%)",
+      "\\text{Case 2 (R825 000 salary): Net ATR} = \\frac{221\\,192}{825\\,000} \\times 100 = 26.81\\%\\quad (\\text{Pre-rebate ATR} = \\frac{238\\,427}{825\\,000} = 28.90\\%, \\text{ MTR} = 39\\%)",
+      "\\text{Why ATR} < \\text{MTR: Lower income tranches are taxed at lower marginal rates and the primary rebate reduces total tax paid}"
+    ],
+    "options": [
+      {
+        "text": "Case 1 net ATR is 15.12% (18.57% gross, MTR 35%) and Case 2 net ATR is 26.81% (28.90% gross, MTR 39%), as earlier tranches face lower rates.",
+        "isCorrect": true,
+        "refutation": "Correct! Dividing net tax by taxable income gives 47 751.50 / 315 850 = 15.12% for Case 1 and 221 192 / 825 000 = 26.81% for Case 2, both below their 35% and 39% marginal rates."
+      },
+      {
+        "text": "Case 1 net ATR is 35.00% (MTR 15.12%) and Case 2 net ATR is 39.00% (MTR 26.81%), because statutory bracket rates define the average burden.",
+        "isCorrect": false,
+        "refutation": "35% and 39% are the marginal tax rates on the last Rand earned in each bracket, whereas 15.12% and 26.81% are the effective (average) tax rates across total income."
+      },
+      {
+        "text": "Case 1 net ATR is 22.02% (adding the R10 900 rebate) and Case 2 net ATR is 30.99% (adding the R17 235 rebate), exceeding the marginal rate.",
+        "isCorrect": false,
+        "refutation": "22.02% and 30.99% result from adding the primary rebate to gross tax instead of subtracting it before dividing by annual taxable income."
+      },
+      {
+        "text": "Case 1 net ATR is 18.50% (58 389 / 315 850) and Case 2 net ATR is 21.71% (179 147 / 825 000), omitting marginal tax on the bracket excess.",
+        "isCorrect": false,
+        "refutation": "Dividing only the bracket base amount (58 389 or 179 147) by income ignores both the marginal tax on income above the threshold and the primary rebate."
+      }
+    ],
+    "chapter": "ch15"
+  },
+  {
+    "id": "q_ch15_17",
+    "chapterId": "ch15",
+    "source": "Chapter 15 — The Government Sector — Follow-Up Analysis of Deadweight Loss and Corrective Government Intervention",
+    "topic": "Follow-Up Analysis of Deadweight Loss and Corrective Government Intervention",
+    "difficulty": "Medium",
+    "stem": "Continuing with the polluting Highveld chemical plant where Marginal Social Cost ($MSC = MPC + MEC$) lies above Marginal Private Cost ($MPC$), so the unregulated competitive market equilibrium produces output $Q_1$ at price $P_1$ whereas the socially efficient optimum is at lower output $Q_2$ and higher price $P_2$: (1) Why does every unit produced between $Q_2$ and $Q_1$ generate a deadweight welfare loss to society? (2) What corrective policy instrument can the government use to internalise the externality and restore output to $Q_2$?",
+    "derivation": [
+      "\\text{Prerequisite Context: Unregulated Market Equilibrium at } Q_1 \\text{ where } MPC = MSB;\\quad \\text{Social Optimum at } Q_2 < Q_1 \\text{ where } MSC = MSB",
+      "\\text{For all output units } Q \\in (Q_2, Q_1):\\quad MSC(Q) > MSB(Q)\\implies \\text{social cost of each extra unit exceeds its social benefit, creating a deadweight loss triangle}",
+      "\\text{Corrective Policy: Impose a specific Pigouvian excise tax } t = MEC \\text{ per unit on the polluter, shifting } MPC \\text{ upward to coincide with } MSC \\text{ at } (Q_2, P_2)"
+    ],
+    "options": [
+      {
+        "text": "Between Q2 and Q1, Marginal Social Cost exceeds Marginal Social Benefit (MSC > MSB); government can impose a Pigouvian tax equal to the marginal external cost (MEC).",
+        "isCorrect": true,
+        "refutation": "Correct! For every unit beyond Q2 up to Q1, total cost to society (MSC) exceeds the benefit to consumers (DD = MSB), and a Pigouvian tax equal to MEC shifts private cost up to MSC."
+      },
+      {
+        "text": "Between Q2 and Q1, Marginal Social Benefit exceeds Marginal Social Cost (MSB > MSC); government should grant a production subsidy to expand chemical output beyond Q1.",
+        "isCorrect": false,
+        "refutation": "MSB > MSC and corrective subsidies apply to positive externalities (like vaccinations), whereas negative pollution externalities cause overproduction where MSC > MSB."
+      },
+      {
+        "text": "Between Q2 and Q1, Marginal Private Cost exceeds Marginal Social Cost (MPC > MSC); government should impose a maximum price ceiling below P1 to curb pollution.",
+        "isCorrect": false,
+        "refutation": "Pollution adds external damage to private cost so MSC > MPC, and setting a price ceiling below P1 would increase quantity demanded even further above Q2."
+      },
+      {
+        "text": "Between Q2 and Q1, deadweight loss is zero because private firm profits offset pollution damage; Coasean bargaining requires no property rights to reach Q2.",
+        "isCorrect": false,
+        "refutation": "Deadweight loss is strictly positive whenever MSC > MSB, and Coasean bargaining fails in atmospheric pollution because property rights are diffuse and transaction costs are prohibitive."
+      }
+    ],
+    "chapter": "ch15"
+  },
+  {
+    "id": "q_ch16_08",
+    "chapterId": "ch16",
+    "source": "Chapter 16 — The Foreign Sector — Follow-Up Calculation of Opportunity Cost of Olives Between Spain and Greece",
+    "topic": "Follow-Up Calculation of Opportunity Cost of Olives Between Spain and Greece",
+    "difficulty": "Medium",
+    "stem": "Continuing with the two-country trade model where Spain can produce either 100 kg of olives or 150 kg of tobacco per unit of resources and Greece can produce either 300 kg of olives or 300 kg of tobacco (and where the first part established that 1 kg of tobacco costs 0.67 kg of olives in Spain versus 1.00 kg of olives in Greece, giving Spain the comparative advantage in tobacco): calculate each country's opportunity cost of producing 1 kg of olives and determine which country should specialise in and export olives.",
+    "derivation": [
+      "\\text{Prerequisite Part 1: Opp. Cost of 1 kg Tobacco} = \\frac{100}{150} = 0.67\\text{ kg Olives in Spain vs } \\frac{300}{300} = 1.00\\text{ kg Olives in Greece (Spain specialises in Tobacco)}",
+      "\\text{Opp. Cost of 1 kg Olives in Spain} = \\frac{150\\text{ kg Tobacco}}{100\\text{ kg Olives}} = 1.50\\text{ kg Tobacco}",
+      "\\text{Opp. Cost of 1 kg Olives in Greece} = \\frac{300\\text{ kg Tobacco}}{300\\text{ kg Olives}} = 1.00\\text{ kg Tobacco}",
+      "\\text{Since } 1.00 < 1.50\\text{ kg Tobacco, Greece has the lower opportunity cost (comparative advantage) in Olives and exports Olives to Spain}"
+    ],
+    "options": [
+      {
+        "text": "1 kg of olives costs 1.50 kg of tobacco in Spain and 1.00 kg of tobacco in Greece, so Greece holds the comparative advantage in olives and exports olives.",
+        "isCorrect": true,
+        "refutation": "Correct! Spain sacrifices 150/100 = 1.50 kg of tobacco per kg of olives while Greece sacrifices only 300/300 = 1.00 kg of tobacco, giving Greece the comparative advantage in olives."
+      },
+      {
+        "text": "1 kg of olives costs 0.67 kg of tobacco in Spain and 1.00 kg of tobacco in Greece, so Spain holds the comparative advantage in both olives and tobacco.",
+        "isCorrect": false,
+        "refutation": "0.67 (100/150) is Spain's opportunity cost of 1 kg of tobacco in terms of olives; its reciprocal (150/100 = 1.50 kg tobacco) is Spain's opportunity cost of 1 kg of olives."
+      },
+      {
+        "text": "1 kg of olives costs 1.50 kg of tobacco in Spain and 1.00 kg of tobacco in Greece, so Spain holds the comparative advantage in olives because 1.50 exceeds 1.00.",
+        "isCorrect": false,
+        "refutation": "Comparative advantage belongs to the country with the LOWER opportunity cost (Greece at 1.00 kg tobacco < Spain at 1.50 kg tobacco), never the higher cost."
+      },
+      {
+        "text": "1 kg of olives costs 3.00 kg of tobacco in Greece because Greece produces 300 kg vs Spain's 100 kg, so Spain must export olives to Greece.",
+        "isCorrect": false,
+        "refutation": "300 kg vs 100 kg compares absolute output across countries; domestic opportunity cost divides Greece's own foregone tobacco (300) by Greece's own olive output (300) = 1.00."
+      }
+    ],
+    "chapter": "ch16"
+  },
+  {
+    "id": "q_ch16_09",
+    "chapterId": "ch16",
+    "source": "Chapter 16 — The Foreign Sector — Follow-Up Calculation of Import Cost in Domestic Currency Under Exchange Rate Shifts",
+    "topic": "Follow-Up Calculation of Import Cost in Domestic Currency Under Exchange Rate Shifts",
+    "difficulty": "Medium",
+    "stem": "Continuing with the trade model between Australia (150 surfboards or 900 bottles of sunscreen) and the USA (200 surfboards or 1 600 bottles of sunscreen)—where the first part established that Australia has the comparative advantage in surfboards (sacrificing 6 vs 8 bottles of sunscreen) while the USA has the comparative advantage in sunscreen (sacrificing 0.125 vs 0.167 surfboards): suppose Australia imports 50 bottles of sunscreen from the USA at a US price of US$1.50 per bottle. Calculate (1) how much Australia pays in Australian dollars (AUS$) when the exchange rate is US$1 = AUS$1.70, and (2) how much Australia pays if the Australian dollar appreciates to US$1 = AUS$1.50.",
+    "derivation": [
+      "\\text{Foreign Currency Invoice for 50 Bottles} = 50 \\times \\text{US}\\$1.50 = \\text{US}\\$75.00",
+      "\\text{Cost in AUS\\$ at } \\text{US}\\$1 = \\text{AUS}\\$1.70:\\quad \\text{US}\\$75.00 \\times 1.70 = \\text{AUS}\\$127.50",
+      "\\text{Cost in AUS\\$ after Appreciation to } \\text{US}\\$1 = \\text{AUS}\\$1.50:\\quad \\text{US}\\$75.00 \\times 1.50 = \\text{AUS}\\$112.50\\quad (\\text{imports become cheaper by AUS}\\$15.00)"
+    ],
+    "options": [
+      {
+        "text": "The 50 bottles cost US$75.00, which equals AUS$127.50 at AUS$1.70/US$ and falls to AUS$112.50 when the Australian dollar appreciates to AUS$1.50/US$.",
+        "isCorrect": true,
+        "refutation": "Correct! 50 × US$1.50 = US$75.00; multiplying by 1.70 gives AUS$127.50, and an appreciation of the AUS$ to 1.50 per US$ lowers the domestic import bill to AUS$112.50."
+      },
+      {
+        "text": "The 50 bottles cost US$75.00, which equals AUS$44.12 at AUS$1.70/US$ and rises to AUS$50.00 when the Australian dollar appreciates to AUS$1.50/US$.",
+        "isCorrect": false,
+        "refutation": "AUS$44.12 (75 / 1.70) divides by the exchange rate instead of multiplying US$75.00 by 1.70 AUS$/US$."
+      },
+      {
+        "text": "The 50 bottles cost US$85.00, which equals AUS$144.50 at AUS$1.70/US$ and rises to AUS$150.00 because currency appreciation makes imports more expensive.",
+        "isCorrect": false,
+        "refutation": "50 × US$1.50 is US$75.00 (not US$85.00), and an appreciation of the domestic currency makes foreign imports cheaper in domestic currency, not more expensive."
+      },
+      {
+        "text": "The 50 bottles cost US$75.00, which equals AUS$127.50 at AUS$1.70/US$, but Australia should export sunscreen because it sacrifices 0.167 vs 0.125 surfboards.",
+        "isCorrect": false,
+        "refutation": "Because 0.125 < 0.167 surfboards, the USA has the lower opportunity cost in sunscreen, so Australia imports sunscreen and exports surfboards."
+      }
+    ],
+    "chapter": "ch16"
+  },
+  {
+    "id": "q_ch16_10",
+    "chapterId": "ch16",
+    "source": "Chapter 16 — The Foreign Sector — Four Macroeconomic Determinants of Domestic Currency Appreciation and Trade Balance Impact",
+    "topic": "Four Macroeconomic Determinants of Domestic Currency Appreciation and Trade Balance Impact",
+    "difficulty": "Easy",
+    "stem": "In a floating exchange rate regime (such as the Rand against the US dollar or Russian rouble), which four fundamental macroeconomic developments cause an appreciation of the domestic currency (either by shifting foreign currency supply $SS$ rightward or foreign currency demand $DD$ leftward), and what is the resulting impact on the domestic trade balance?",
+    "derivation": [
+      "\\text{Rightward Shift of Foreign Currency Supply } (SS \\uparrow \\implies E \\downarrow, \\text{ Appreciation}):",
+      "(1)\\text{ Stronger foreign demand for domestic exports (or rising export commodity prices)};\\quad (2)\\text{ Higher domestic interest rates relative to abroad (attracting financial capital inflows)};\\quad (3)\\text{ Boom in inbound foreign tourism / FDI}",
+      "\\text{Leftward Shift of Foreign Currency Demand } (DD \\downarrow \\implies E \\downarrow, \\text{ Appreciation}): (4)\\text{ Lower domestic inflation relative to trading partners (reducing import demand)}",
+      "\\text{Trade Balance Impact: Appreciation makes exports pricier in foreign currency } (X \\downarrow) \\text{ and imports cheaper in Rand } (Z \\uparrow) \\implies \\text{Net Exports } (X - Z) \\text{ decline}"
+    ],
+    "options": [
+      {
+        "text": "Higher export demand/commodity prices, higher relative domestic interest rates (capital inflows), inbound tourism, and lower domestic inflation; appreciation reduces net exports (X - Z).",
+        "isCorrect": true,
+        "refutation": "Correct! All four factors increase foreign currency inflows or reduce outflows (appreciating the Rand), which subsequently makes exports dearer abroad and imports cheaper locally."
+      },
+      {
+        "text": "A surge in domestic import propensity, lower domestic repo rates (capital outflows), higher domestic inflation, and outbound tourism; appreciation increases net exports (X - Z).",
+        "isCorrect": false,
+        "refutation": "Higher imports, capital outflows, and high domestic inflation increase the demand for foreign currency, causing a currency depreciation rather than an appreciation."
+      },
+      {
+        "text": "Higher export demand/commodity prices, higher relative domestic interest rates, inbound tourism, and lower domestic inflation; appreciation raises Rand import prices and boosts exports.",
+        "isCorrect": false,
+        "refutation": "While the four causes of appreciation are right, an appreciation lowers (not raises) import prices in Rand and dampens (not boosts) export competitiveness."
+      },
+      {
+        "text": "Central bank purchases of foreign exchange reserves, abolishing import tariffs, domestic recessionary capital flight, and sovereign rating downgrades; appreciation leaves trade unchanged.",
+        "isCorrect": false,
+        "refutation": "Central bank buying of USD, tariff removal, and capital flight all increase demand for foreign currency, which depreciates the domestic currency."
+      }
+    ],
+    "chapter": "ch16"
+  },
+  {
+    "id": "q_ch17_06",
+    "chapterId": "ch17",
+    "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Simplifying Assumptions of the Two-Sector Model vs the Four Aggregate Expenditure Components",
+    "topic": "Simplifying Assumptions of the Two-Sector Model vs the Four Aggregate Expenditure Components",
+    "difficulty": "Easy",
+    "stem": "In the build-up of the macroeconomic income-determination model: (1) What are the fundamental simplifying assumptions of the elementary two-sector Keynesian model? (2) When the model is expanded to the full open economy with government, what are the four components of Aggregate Expenditure ($A$) and which of those components are treated as purely autonomous versus induced by income?",
+    "derivation": [
+      "\\text{Elementary Two-Sector Assumptions: (1) Only households and firms exist (no government } G=T=0, \\text{ no foreign sector } X=Z=0\\text{)};",
+      "\\text{(2) Prices and nominal wages are fixed/given (no inflation); (3) Money market and interest rates are excluded (investment } \\bar{I} \\text{ is autonomous); (4) Aggregate spending drives output } (A \\to Y)",
+      "\\text{Full Four-Sector Expenditure: } A = C + I + G + (X - Z),\\text{ where } \\bar{I}, \\bar{G}, \\bar{X} \\text{ are autonomous while } C = \\bar{C} + c(1-t)Y \\text{ and } Z = \\bar{Z} + mY \\text{ contain induced parts}"
+    ],
+    "options": [
+      {
+        "text": "Elementary assumptions: only households/firms (no G, T, X, Z), fixed prices/wages, given interest rates, and demand-driven output; Full components: C, I, G, and Net Exports (X - Z).",
+        "isCorrect": true,
+        "refutation": "Correct! The elementary model excludes the state, foreign trade, price flexibility, and financial markets to isolate C + I, before expanding to A = C + I + G + (X - Z)."
+      },
+      {
+        "text": "Elementary assumptions: flexible prices and wages, vertical aggregate supply at full employment, and Say's Law (Y drives A); Full components: Money supply M1, M2, M3, and Bonds.",
+        "isCorrect": false,
+        "refutation": "Flexible prices, automatic full employment, and Say's Law are Classical assumptions, and M1–M3 are monetary stock aggregates rather than real expenditure flows."
+      },
+      {
+        "text": "Elementary assumptions: only government and foreign sectors exist with zero household consumption; Full components: Taxes (T), Savings (S), Imports (Z), and Depreciation.",
+        "isCorrect": false,
+        "refutation": "The elementary model starts with households (C) and firms (I) while excluding G and X - Z; Taxes, Savings, and Imports are leakages rather than injections/expenditure components."
+      },
+      {
+        "text": "Elementary assumptions: only households/firms, fixed prices/wages, and demand-driven output; Full components: Land, Labour, Physical Capital, and Entrepreneurship.",
+        "isCorrect": false,
+        "refutation": "Land, labour, capital, and entrepreneurship are the four supply-side factors of production, whereas the four components of aggregate expenditure are C, I, G, and (X - Z)."
+      }
+    ],
+    "chapter": "ch17"
+  },
+  {
+    "id": "q_ch18_07",
+    "chapterId": "ch18",
+    "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Follow-Up Calculation of Equilibrium Income and ΔI = +150 Shock Using Prerequisite Multiplier",
+    "topic": "Follow-Up Calculation of Equilibrium Income and ΔI = +150 Shock Using Prerequisite Multiplier",
+    "difficulty": "Hard",
+    "stem": "Continuing with the open economy of Portofino where Autonomous consumption $\\bar{C} = 100$, MPC $c = 0.8$, proportional tax rate $t = 0.2$, Investment $\\bar{I} = 100$, Government spending $\\bar{G} = 250$, Exports $\\bar{X} = 300$, and Imports $Z = 20 + 0.1Y$: the first part of the analysis established that autonomous expenditure is $\\bar{A} = 730$ and the open-economy multiplier (rounded to two decimal places) is $\\alpha = 2.17$ (unrounded $1/0.46 \\approx 2.1739$). Using this prerequisite multiplier, calculate (1) the initial equilibrium level of income $Y_0$, (2) the change in equilibrium income $\\Delta Y$ and new equilibrium income $Y_1$ if autonomous investment increases by $\\Delta I = +150$ (from $100$ to $250$), and (3) how this shock appears on the $45^\\circ$ Keynesian diagram.",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }\\bar{A}_0 = 100 + 100 + 250 + 300 - 20 = 730;\\quad \\alpha = \\frac{1}{1 - 0.8(0.8) + 0.1} = \\frac{1}{0.46} \\approx 2.17",
+      "\\text{Initial Equilibrium Income: }Y_0 = \\alpha \\times \\bar{A}_0 = 2.17 \\times 730 = 1\\,584.10\\quad (\\text{or } \\frac{730}{0.46} = 1\\,586.96\\text{ unrounded})",
+      "\\text{Investment Shock }(\\Delta I = +150):\\quad \\Delta Y = 2.17 \\times 150 = +325.50 \\implies Y_1 = 1\\,584.10 + 325.50 = 1\\,909.60\\quad (\\text{or } \\frac{880}{0.46} = 1\\,913.04)",
+      "\\text{Diagrammatic Effect: Parallel upward shift of the Aggregate Expenditure line } A \\text{ from vertical intercept } 730 \\text{ to } 880\\text{ (slope } 0.54 \\text{ unchanged)}"
+    ],
+    "options": [
+      {
+        "text": "Initial Y0 = 1 584.10 (1 586.96 exact); ΔI = +150 raises Y by +325.50 to Y1 = 1 909.60 (1 913.04 exact) via a parallel upward shift of A from 730 to 880.",
+        "isCorrect": true,
+        "refutation": "Correct! Multiplying Ā0 = 730 by α = 2.17 yields Y0 = 1 584.10, and the +150 investment shock shifts the A curve vertically upward to 880, adding 2.17 × 150 = +325.50 to reach 1 909.60."
+      },
+      {
+        "text": "Initial Y0 = 1 584.10 (1 586.96 exact); ΔI = +150 raises Y by +150.00 to Y1 = 1 734.10 (1 736.96 exact) while steepening the slope of the A curve.",
+        "isCorrect": false,
+        "refutation": "Adding only +150 ignores the multiplier expansion (2.17 × 150 = 325.50), and an autonomous investment change shifts A in parallel without altering its slope (0.54)."
+      },
+      {
+        "text": "Initial Y0 = 1 670.90 (using Ā0 = 770); ΔI = +150 raises Y by +325.50 to Y1 = 1 996.40 via a downward rotation of the 45-degree line.",
+        "isCorrect": false,
+        "refutation": "Ā0 = 770 erroneously adds autonomous imports (+20 instead of -20), and the 45-degree reference line (A = Y) never rotates when autonomous spending changes."
+      },
+      {
+        "text": "Initial Y0 = 1 584.10 (1 586.96 exact); ΔI = +150 lowers Y by -325.50 to Y1 = 1 258.60 because higher investment crowds out net exports.",
+        "isCorrect": false,
+        "refutation": "In the Keynesian model, an increase in autonomous investment (ΔI = +150) is an injection that shifts aggregate spending upward and expands equilibrium income."
+      }
+    ],
+    "chapter": "ch18"
+  },
+  {
+    "id": "q_ch18_08",
+    "chapterId": "ch18",
+    "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Follow-Up Calculation of Tax Revenue, Budget Surplus, and Investment Drop Using Prerequisite Equilibrium",
+    "topic": "Follow-Up Calculation of Tax Revenue, Budget Surplus, and Investment Drop Using Prerequisite Equilibrium",
+    "difficulty": "Hard",
+    "stem": "In the open economy where $\\bar{C} = \\text{R}150$, $\\bar{I} = \\text{R}300$, $\\bar{G} = \\text{R}400$, $\\bar{X} = \\text{R}250$, $Z = 50 + 0.15Y$, $c = 0.75$, $t = 0.25$, and full-employment income $Y_f = \\text{R}1\\,900$: the first part of the analysis established that autonomous spending is $\\bar{A} = \\text{R}1\\,050$, the rounded multiplier is $\\alpha = 1.70$ (unrounded $1/0.5875 \\approx 1.7021$), and initial equilibrium income is $Y_0 = \\text{R}1\\,785$ (unrounded $\\text{R}1\\,787.23$). Using this prerequisite equilibrium $Y_0$, calculate (1) government tax revenue $T = tY_0$ and the government budget balance ($T - G$) at initial equilibrium, (2) the new equilibrium income $Y_1$ if autonomous investment drops from $\\text{R}300$ to $\\text{R}250$ ($\\Delta I = -50$), and (3) the required $\\Delta G$ to reach $Y_f = \\text{R}1\\,900$ from $Y_0 = \\text{R}1\\,785$.",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }\\bar{A}_0 = \\text{R}1\\,050,\\quad \\alpha = 1.70\\text{ (exact } 1.7021\\text{)},\\quad Y_0 = \\text{R}1\\,785\\text{ (exact R}1\\,787.23\\text{)}",
+      "\\text{Tax Revenue at } Y_0:\\quad T = 0.25 \\times 1\\,785 = \\text{R}446.25\\text{ (exact R}446.81\\text{)};\\quad \\text{Budget Balance} = T - G = 446.25 - 400 = +\\text{R}46.25\\text{ Surplus}",
+      "\\text{Investment Drop }(\\Delta I = 250 - 300 = -50):\\quad \\Delta Y = 1.70 \\times (-50) = -\\text{R}85 \\implies Y_1 = 1\\,785 - 85 = \\text{R}1\\,700\\text{ (exact R}1\\,702.13\\text{)}",
+      "\\text{Fiscal Injection to Reach } Y_f = 1\\,900:\\quad \\Delta Y = 1\\,900 - 1\\,785 = 115 \\implies \\Delta G = \\frac{115}{1.70} = \\text{R}67.65\\text{ (exact R}66.25\\text{)}"
+    ],
+    "options": [
+      {
+        "text": "Tax revenue is R446.25 (R446.81 exact) yielding a +R46.25 budget surplus; when I drops to R250, Y1 falls by R85 to R1 700 (and reaching Yf = R1 900 from Y0 requires ΔG = +R67.65).",
+        "isCorrect": true,
+        "refutation": "Correct! At Y0 = R1 785, T = 0.25(1 785) = R446.25 > G = R400 (+R46.25 surplus); a R50 drop in I reduces Y by 1.70 × 50 = R85 to R1 700, while closing the R115 output gap requires ΔG = 115/1.70 = R67.65."
+      },
+      {
+        "text": "Tax revenue is R475.00 (at Yf = R1 900) yielding a +R75.00 budget surplus; when I drops to R250, Y1 falls by R50 to R1 735 (and reaching Yf = R1 900 from Y0 requires ΔG = +R115.00).",
+        "isCorrect": false,
+        "refutation": "Tax revenue must be evaluated at actual equilibrium income Y0 = R1 785 (not Yf = R1 900), and both the investment shock and fiscal gap are scaled by the multiplier α = 1.70."
+      },
+      {
+        "text": "Tax revenue is R446.25 (R446.81 exact) yielding a -R46.25 budget deficit; when I drops to R250, Y1 rises by R85 to R1 870 (and reaching Yf = R1 900 from Y0 requires ΔG = -R67.65).",
+        "isCorrect": false,
+        "refutation": "Because tax revenue (R446.25) exceeds government expenditure (R400), the government runs a budget surplus (+R46.25), and a fall in investment contracts equilibrium income to R1 700."
+      },
+      {
+        "text": "Tax revenue is R425.00 (at Y1 = R1 700) yielding a +R25.00 budget surplus; when I drops to R250, Y1 falls by R125 to R1 660 using a simple multiplier of 2.50.",
+        "isCorrect": false,
+        "refutation": "Initial tax revenue at Y0 = R1 785 is R446.25, and the open-economy multiplier with taxes and imports is 1.70 (giving ΔY = -85), not 2.50."
+      }
+    ],
+    "chapter": "ch18"
+  },
+  {
+    "id": "q_ch18_09",
+    "chapterId": "ch18",
+    "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Calculating Initial Autonomous Spending, Multiplier, and Equilibrium Income Prior to a Fiscal Shift",
+    "topic": "Calculating Initial Autonomous Spending, Multiplier, and Equilibrium Income Prior to a Fiscal Shift",
+    "difficulty": "Medium",
+    "stem": "Consider the baseline open-economy Keynesian model (in R millions) prior to any fiscal reform: Autonomous consumption $\\bar{C} = 30$, Autonomous investment $\\bar{I} = 10$, Government spending $\\bar{G} = 20$, Exports $\\bar{X} = 10$, Autonomous imports $\\bar{Z} = 5$, Marginal propensity to consume $c = 0.6$ (so marginal propensity to save $s = 0.4$), average/proportional tax rate $t = 0.167$ ($1/6$), and Marginal propensity to import $m = 0.125$ ($1/8$). Calculate (1) total autonomous expenditure $\\bar{A}$, (2) the open-economy multiplier $\\alpha$, and (3) the initial equilibrium level of income $Y_0$ and initial tax revenue $T_0$.",
+    "derivation": [
+      "\\text{Autonomous Expenditure: }\\bar{A} = \\bar{C} + \\bar{I} + \\bar{G} + \\bar{X} - \\bar{Z} = 30 + 10 + 20 + 10 - 5 = \\text{R}65\\text{ million}",
+      "\\text{Induced Slope: }c(1 - t) - m = 0.6(1 - 0.167) - 0.125 = 0.6(0.8333) - 0.125 = 0.50 - 0.125 = 0.375",
+      "\\text{Multiplier: }\\alpha = \\frac{1}{1 - c(1 - t) + m} = \\frac{1}{1 - 0.50 + 0.125} = \\frac{1}{0.625} = 1.60",
+      "\\text{Initial Equilibrium Income: }Y_0 = \\alpha \\times \\bar{A} = 1.60 \\times 65 = \\text{R}104\\text{ million};\\quad T_0 = 0.167 \\times 104 = \\text{R}17.37\\text{m}"
+    ],
+    "options": [
+      {
+        "text": "Autonomous expenditure Ā is R65m, the multiplier α is 1.60 (1/0.625), initial equilibrium income Y0 is R104m, and initial tax revenue is R17.37m.",
+        "isCorrect": true,
+        "refutation": "Correct! Ā = 30 + 10 + 20 + 10 - 5 = R65m, 1 - 0.6(1 - 0.167) + 0.125 = 0.625 gives α = 1.60, and Y0 = 1.60 × 65 = R104m (which serves as the baseline before any tax-financed grant)."
+      },
+      {
+        "text": "Autonomous expenditure Ā is R75m, the multiplier α is 1.60 (1/0.625), initial equilibrium income Y0 is R120m, and initial tax revenue is R20.04m.",
+        "isCorrect": false,
+        "refutation": "Ā = R75m erroneously adds autonomous imports (+5) instead of subtracting them (-5) from autonomous aggregate expenditure."
+      },
+      {
+        "text": "Autonomous expenditure Ā is R65m, the multiplier α is 2.50 (1/0.400), initial equilibrium income Y0 is R162.5m, and initial tax revenue is R27.14m.",
+        "isCorrect": false,
+        "refutation": "A multiplier of 2.50 = 1/(1 - 0.6) uses the simple closed-economy formula, omitting both proportional income taxation (t = 0.167) and induced imports (m = 0.125)."
+      },
+      {
+        "text": "Autonomous expenditure Ā is R65m, the multiplier α is 2.00 (1/0.500), initial equilibrium income Y0 is R130m, and initial tax revenue is R21.71m.",
+        "isCorrect": false,
+        "refutation": "A multiplier of 2.00 = 1/[1 - 0.6(0.833)] accounts for the tax rate (t = 0.167) but forgets to add the marginal propensity to import (m = 0.125) to the denominator."
+      }
+    ],
+    "chapter": "ch18"
+  },
+  {
+    "id": "q_ch18_10",
+    "chapterId": "ch18",
+    "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Follow-Up Calculation of Taxes, Budget Balance, and Household Saving Given Equilibrium Income",
+    "topic": "Follow-Up Calculation of Taxes, Budget Balance, and Household Saving Given Equilibrium Income",
+    "difficulty": "Hard",
+    "stem": "In the macroeconomic model where Consumption $C = 85 + 0.5Y_d$, Investment $I = 75$, Government expenditure $G = 70$, Taxes $T = 0.25Y$, Disposable income $Y_d = Y - T$, Exports $X = 30$, and Imports $Z = 30 + 0.3Y_d$: the first part of the analysis established that autonomous spending is $\\bar{A} = 230$, the multiplier is $\\alpha = 1/0.85 \\approx 1.1765$, and equilibrium national income is $Y_0 = 270.59$ ($230 / 0.85$). Using this prerequisite equilibrium income $Y_0 = 270.59$, calculate (1) equilibrium tax revenue $T$, (2) the government budget balance ($T - G$), (3) equilibrium disposable income $Y_d$, and (4) household saving $S = Y_d - C$.",
+    "derivation": [
+      "\\text{Prerequisite Baseline: }Y_0 = \\frac{230}{1 - (0.5 - 0.3)(1 - 0.25)} = \\frac{230}{0.85} = 270.59",
+      "\\text{Equilibrium Taxes: }T = 0.25 \\times Y_0 = 0.25 \\times 270.59 = 67.65",
+      "\\text{Government Budget Balance: }T - G = 67.65 - 70.00 = -2.35\\quad (\\text{Budget Deficit of } 2.35,\\text{ since } G > T)",
+      "\\text{Disposable Income & Saving: }Y_d = 270.59 - 67.65 = 202.94;\\quad C = 85 + 0.5(202.94) = 186.47;\\quad S = Y_d - C = 202.94 - 186.47 = 16.47"
+    ],
+    "options": [
+      {
+        "text": "Taxes T = 67.65, the government budget has a deficit of -2.35 (since G = 70 > T = 67.65), disposable income Yd = 202.94, and household saving S = 16.47.",
+        "isCorrect": true,
+        "refutation": "Correct! At Y0 = 270.59, T = 0.25(270.59) = 67.65, leaving a budget deficit of 67.65 - 70 = -2.35; disposable income is 202.94, consumption is 186.47, and saving is 202.94 - 186.47 = 16.47."
+      },
+      {
+        "text": "Taxes T = 67.65, the government budget has a surplus of +2.35 (G - T), disposable income Yd = 270.59, and household saving S = 50.29.",
+        "isCorrect": false,
+        "refutation": "When government spending (G = 70) exceeds tax revenue (T = 67.65), the budget is in deficit (-2.35), and saving must be calculated from after-tax disposable income Yd = 202.94."
+      },
+      {
+        "text": "Taxes T = 57.50, the government budget has a deficit of -12.50, disposable income Yd = 172.50, and household saving S = 1.25 (evaluating at Ā = 230).",
+        "isCorrect": false,
+        "refutation": "Evaluating taxes and disposable income at autonomous spending (230) instead of equilibrium income (Y0 = 270.59) omits the multiplier expansion."
+      },
+      {
+        "text": "Taxes T = 67.65, the government budget has a deficit of -2.35, disposable income Yd = 202.94, and household saving S = 186.47.",
+        "isCorrect": false,
+        "refutation": "186.47 is household consumption expenditure C = 85 + 0.5(202.94); household saving is S = Yd - C = -85 + 0.5(202.94) = 16.47."
+      }
+    ],
+    "chapter": "ch18"
+  },
+  {
+    "id": "q_ch20_08",
+    "chapterId": "ch20",
+    "source": "Chapter 20 — Inflation — Follow-Up Calculation of GDP Deflator Inflation Using Prerequisite Nominal and Real GDP",
+    "topic": "Follow-Up Calculation of GDP Deflator Inflation Using Prerequisite Nominal and Real GDP",
+    "difficulty": "Medium",
+    "stem": "Perform two follow-up inflation calculations using prerequisite National Accounts outputs: (Part A — Three-Good Economy Follow-Up) In the Pizza, Soda, and Ice Cream economy where Period 1 is the base period, the first part of the analysis established that Period 1 Nominal GDP = Period 1 Real GDP = R860, Period 2 Nominal GDP = R1 419, and Period 2 Real GDP (at Period 1 prices) = R1 290. Calculate the Period 1 and Period 2 GDP Deflators and the Period 2 inflation rate. (Part B — Multi-Year Comparison) A national economy records: Period 1 (Nominal GDP = R5.80T, Real GDP = R5.42T, CPI = 131.5), Period 2 (Nominal GDP = R6.32T, Real GDP = R5.68T, CPI = 139.8), and Period 3 (Nominal GDP = R6.91T, Real GDP = R5.97T, CPI = 147.6). Compare the GDP Deflator inflation rate with the CPI inflation rate in Period 2 and Period 3.",
+    "derivation": [
+      "\\text{Part A (Pizza/Soda/Ice Cream Follow-Up): }\\text{Defl}_1 = \\frac{860}{860}\\times 100 = 100.0;\\quad \\text{Defl}_2 = \\frac{1\\,419}{1\\,290}\\times 100 = 110.0 \\implies \\pi_2 = \\frac{110 - 100}{100}\\times 100 = 10.00\\%",
+      "\\text{Part B GDP Deflators: }\\text{Defl}_1 = \\frac{5.80}{5.42}\\times 100 = 107.01;\\quad \\text{Defl}_2 = \\frac{6.32}{5.68}\\times 100 = 111.27;\\quad \\text{Defl}_3 = \\frac{6.91}{5.97}\\times 100 = 115.75",
+      "\\text{Part B Deflator Inflation: }\\pi_2^{\\text{Defl}} = \\frac{111.27 - 107.01}{107.01} = 3.98\\%;\\quad \\pi_3^{\\text{Defl}} = \\frac{115.75 - 111.27}{111.27} = 4.03\\%",
+      "\\text{Part B CPI Inflation: }\\pi_2^{\\text{CPI}} = \\frac{139.8 - 131.5}{131.5} = 6.31\\%;\\quad \\pi_3^{\\text{CPI}} = \\frac{147.6 - 139.8}{139.8} = 5.58\\%"
+    ],
+    "options": [
+      {
+        "text": "Part A: Deflator rises from 100.0 to 110.0 (inflation = 10.00%); Part B: Deflator inflation is 3.98% and 4.03% (Deflators 107.01, 111.27, 115.75), while CPI inflation is 6.31% and 5.58%.",
+        "isCorrect": true,
+        "refutation": "Correct! In Part A, (1 419 / 1 290) × 100 = 110.0 gives 10.00% inflation; in Part B, GDP deflator inflation is 3.98% and 4.03%, whereas CPI inflation is 6.31% and 5.58%."
+      },
+      {
+        "text": "Part A: Deflator rises from 100.0 to 150.0 (inflation = 50.00%); Part B: Deflator inflation is 8.97% and 9.34% (using Nominal GDP growth), while CPI inflation is 8.30% and 7.80%.",
+        "isCorrect": false,
+        "refutation": "In Part A, 50.00% is the real output growth rate (1 290 vs 860), and in Part B, 8.30 and 7.80 are raw CPI index point differences rather than percentage changes."
+      },
+      {
+        "text": "Part A: Deflator falls from 100.0 to 90.91 (deflation = -9.09%); Part B: Deflator inflation is 4.80% and 5.11% (using Real GDP growth), while CPI inflation is 6.31% and 5.58%.",
+        "isCorrect": false,
+        "refutation": "90.91 inverts the GDP deflator ratio (1 290 / 1 419), and 4.80% and 5.11% in Part B measure real output growth rather than price deflator inflation."
+      },
+      {
+        "text": "Part A: Deflator rises from 100.0 to 165.0 (inflation = 65.00%); Part B: Deflator inflation and CPI inflation are identical at 6.31% in Period 2 and 5.58% in Period 3.",
+        "isCorrect": false,
+        "refutation": "65.00% in Part A is the nominal GDP increase [(1 419 - 860)/860], which combines +50% real output growth and +10% price inflation."
+      }
+    ],
+    "chapter": "ch20"
+  },
+  {
+    "id": "q_ch21_07",
+    "chapterId": "ch21",
+    "source": "Chapter 21 — Unemployment, Poverty and Inequality — Follow-Up Calculation of Tigeria's Broad Unemployment Rate and Multi-Country Labour Ratios",
+    "topic": "Follow-Up Calculation of Tigeria's Broad Unemployment Rate and Multi-Country Labour Ratios",
+    "difficulty": "Medium",
+    "stem": "Solve three quantitative labour market problems: (Case 1 — Tigeria Follow-Up) Given Tigeria's adult population = 34.0m, employed = 18.6m, active unemployed = 8.9m, and discouraged work-seekers = 2.5m, the first part of the analysis established that the strict labour force is 27.5m and the broad (expanded) labour force is 30.0m. Using these prerequisite labour force totals, calculate Tigeria's broad unemployment rate and compare it with the strict unemployment rate. (Case 2 — Neverland) Neverland has a working-age population of 20 million, 8 million employed, and 3 million actively unemployed. Calculate its strict labour force and unemployment rate. (Case 3 — Brazil) Brazil has a working-age population of 3.2 million, a labour force of 2.4565 million, and 235 300 unemployed people. Calculate Brazil's unemployment rate and number of employed people.",
+    "derivation": [
+      "\\text{Case 1 (Tigeria Follow-Up): }u_{\\text{broad}} = \\frac{8.9\\text{m} + 2.5\\text{m}}{\\text{LF}_{\\text{broad}}} = \\frac{11.4\\text{m}}{30.0\\text{m}} \\times 100 = 38.00\\%\\quad (\\text{vs } u_{\\text{strict}} = \\frac{8.9\\text{m}}{27.5\\text{m}} \\times 100 = 32.36\\%)",
+      "\\text{Case 2 (Neverland): }\\text{LF} = 8\\text{m} + 3\\text{m} = 11\\text{ million};\\quad u = \\frac{3\\text{m}}{11\\text{m}} \\times 100 = 27.27\\%",
+      "\\text{Case 3 (Brazil): }u = \\frac{235\\,300}{2\\,456\\,500} \\times 100 = 9.58\\%;\\quad \\text{Employed } (E) = \\text{LF} - U = 2\\,456\\,500 - 235\\,300 = 2\\,221\\,200"
+    ],
+    "options": [
+      {
+        "text": "Tigeria: broad unemployment is 38.00% (11.4m/30.0m) vs 32.36% strict; Neverland: LF = 11m and u = 27.27%; Brazil: u = 9.58% and Employed = 2 221 200.",
+        "isCorrect": true,
+        "refutation": "Correct! Using Tigeria's broad LF of 30.0m gives 11.4m/30.0m = 38.00%; Neverland's LF is 8m + 3m = 11m (u = 3/11 = 27.27%); Brazil's u = 235 300 / 2 456 500 = 9.58% with 2 221 200 employed."
+      },
+      {
+        "text": "Tigeria: broad unemployment is 41.45% (11.4m/27.5m) vs 32.36% strict; Neverland: LF = 20m and u = 15.00%; Brazil: u = 7.35% and Employed = 2 964 700.",
+        "isCorrect": false,
+        "refutation": "41.45% divides Tigeria's broad unemployed (11.4m) by the strict LF (27.5m instead of 30.0m), while Neverland and Brazil wrongly use total working-age population as the labour force."
+      },
+      {
+        "text": "Tigeria: broad unemployment is 29.67% (8.9m/30.0m) vs 32.36% strict; Neverland: LF = 11m and u = 37.50%; Brazil: u = 10.59% and Employed = 2 221 200.",
+        "isCorrect": false,
+        "refutation": "29.67% omits Tigeria's 2.5m discouraged work-seekers from the numerator, while 37.50% (3/8) and 10.59% divide unemployed workers by employed workers instead of the labour force."
+      },
+      {
+        "text": "Tigeria: broad unemployment is 33.53% (11.4m/34.0m) vs 26.18% strict; Neverland: LF = 11m and u = 27.27%; Brazil: u = 9.58% and Employed = 2 691 800.",
+        "isCorrect": false,
+        "refutation": "33.53% divides Tigeria's unemployed by total adult population (34.0m), and 2 691 800 in Brazil adds unemployed workers to the labour force instead of subtracting them."
+      }
+    ],
+    "chapter": "ch21"
   }
 ],
   pastPapers: [
@@ -3323,6 +4202,7 @@ const ECON122_DATA = {
       "Chapter 14",
       "Chapter 15",
       "Chapter 16",
+      "Chapter 17",
       "Chapter 18",
       "Chapter 20",
       "Chapter 21"
@@ -3333,18 +4213,25 @@ const ECON122_DATA = {
     "totalMarks": 100,
     "questionIds": [
       "q_ch13_06",
+      "q_ch13_21",
       "q_ch13_07",
       "q_ch13_13",
       "q_ch20_02",
+      "q_ch20_08",
       "q_ch20_03",
       "q_ch21_01",
       "q_ch14_05",
       "q_ch14_06",
+      "q_ch14_12",
+      "q_ch14_04",
       "q_ch15_03",
+      "q_ch15_16",
       "q_ch16_04",
+      "q_ch16_10",
+      "q_ch17_06",
       "q_ch18_01",
-      "q_ch18_06",
-      "q_ch14_04"
+      "q_ch18_07",
+      "q_ch18_06"
     ],
     "writtenSections": [
       {
@@ -3373,6 +4260,7 @@ const ECON122_DATA = {
       "Chapter 14",
       "Chapter 15",
       "Chapter 16",
+      "Chapter 17",
       "Chapter 18",
       "Chapter 20",
       "Chapter 21",
@@ -3384,15 +4272,25 @@ const ECON122_DATA = {
     "totalMarks": 100,
     "questionIds": [
       "q_ch13_03",
+      "q_ch13_22",
       "q_ch13_12",
+      "q_ch13_26",
+      "q_ch13_28",
       "q_ch21_02",
+      "q_ch21_07",
       "q_ch20_01",
       "q_ch15_05",
       "q_ch16_02",
+      "q_ch16_09",
+      "q_ch16_03",
+      "q_ch18_09",
       "q_ch18_03",
       "q_ch18_05",
-      "q_ch16_03",
+      "q_ch14_01",
+      "q_ch14_02",
       "q_ch14_03",
+      "q_ch17_02",
+      "q_ch17_03",
       "q_ch22_03"
     ],
     "writtenSections": [
@@ -3426,17 +4324,24 @@ const ECON122_DATA = {
     "totalMarks": 100,
     "questionIds": [
       "q_ch13_04",
+      "q_ch13_23",
       "q_ch13_05",
+      "q_ch13_25",
       "q_ch13_09",
       "q_ch13_10",
-      "q_ch20_01",
+      "q_ch13_27",
+      "q_ch20_04",
       "q_ch15_02",
+      "q_ch15_04",
+      "q_ch15_17",
       "q_ch18_02",
+      "q_ch18_08",
       "q_ch21_03",
       "q_ch21_05",
-      "q_ch15_04",
       "q_ch19_01",
-      "q_ch19_03"
+      "q_ch19_02",
+      "q_ch19_03",
+      "q_ch19_04"
     ],
     "writtenSections": [
       {
@@ -3471,17 +4376,25 @@ const ECON122_DATA = {
     "durationMinutes": 180,
     "totalMarks": 100,
     "questionIds": [
+      "q_ch13_01",
       "q_ch13_11",
       "q_ch14_09",
       "q_ch14_10",
+      "q_ch15_01",
+      "q_ch15_06",
       "q_ch15_07",
       "q_ch15_08",
+      "q_ch15_13",
+      "q_ch15_14",
+      "q_ch15_15",
       "q_ch16_01",
+      "q_ch16_08",
       "q_ch16_06",
       "q_ch17_05",
       "q_ch20_07",
       "q_ch21_04",
-      "q_ch22_02"
+      "q_ch22_02",
+      "q_ch22_04"
     ],
     "writtenSections": [
       {
@@ -3511,6 +4424,8 @@ const ECON122_DATA = {
     "durationMinutes": 180,
     "totalMarks": 100,
     "questionIds": [
+      "q_ch13_02",
+      "q_ch13_24",
       "q_ch13_08",
       "q_ch13_14",
       "q_ch13_15",
@@ -3531,6 +4446,7 @@ const ECON122_DATA = {
       "q_ch17_01",
       "q_ch17_04",
       "q_ch18_04",
+      "q_ch18_10",
       "q_ch20_05",
       "q_ch20_06",
       "q_ch21_06",

@@ -61,8 +61,17 @@ const ENGINE = sandbox.ECON122_ENGINE;
 
 assert(DATA && Array.isArray(DATA.chapters), 'ECON122_DATA.chapters must exist');
 assert.strictEqual(DATA.chapters.length, 10, 'Must have all 10 prescribed chapters (Ch 13-22)');
-assert.strictEqual(DATA.questions.length, 82, 'Must have all 82 verified standalone questions');
+assert.strictEqual(DATA.questions.length, 106, 'Must have all 106 verified standalone questions');
 assert.strictEqual(DATA.pastPapers.length, 5, 'Must have 5 synthesis suites');
+
+const suiteQIds = new Set();
+for (const pp of DATA.pastPapers) {
+  for (const qid of pp.questionIds) {
+    assert(DATA.questions.some(q => q.id === qid), `Suite ${pp.id} references unknown question ID ${qid}`);
+    suiteQIds.add(qid);
+  }
+}
+assert.strictEqual(suiteQIds.size, 106, 'All 106 standalone questions must be linked across the 5 synthesis suites');
 
 // 1. 50 Rounds of Fisher-Yates Shuffling & Psychometric Invariants
 for (let round = 0; round < 50; round++) {
@@ -154,7 +163,7 @@ assert(adminCode.includes(expectedHash1), 'admin.html must contain SHA-256 diges
 assert(adminCode.includes(expectedHash2), 'admin.html must contain SHA-256 digest 2');
 assert(adminCode.includes('VALID_PASSCODE_HASHES.includes(digest)'), 'admin.html must verify SHA-256 digest');
 
-console.log('NODE_VM_SANDBOX_PASS: All 82 questions (x50 shuffle rounds = 4,100 checks), zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
+console.log('NODE_VM_SANDBOX_PASS: All 106 questions (x50 shuffle rounds = 5,300 checks), zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
 """
     with open(NODE_TEST_JS, "w", encoding="utf-8") as f:
         f.write(node_script)
@@ -233,7 +242,9 @@ def audit_headless_browser_dom():
     dom = res.stdout
     assert "Chapter 13: Measuring the Performance of the Economy" in dom, "Vault DOM did not render Chapter 13"
     assert "svg" in dom and "E0 (Y* =" in dom, "2D Vector SVG Lab did not render equilibrium E0"
-    assert "Problem Deck (82 Standalone Problems)" in dom, "Quiz engine did not render 82 Standalone Problems deck"
+    assert "Problem 1 of 106 (106 Standalone Problems)" in dom, "Quiz engine did not render 106 Standalone Problems deck"
+    assert 'id="btn-quiz-next"' in dom and 'id="btn-quiz-next-bottom"' in dom and "Next Question →" in dom, "Quiz engine missing Next Question navigation buttons"
+    assert 'id="btn-quiz-prev"' in dom and 'id="btn-quiz-prev-bottom"' in dom and "← Previous Question" in dom, "Quiz engine missing Previous Question navigation buttons"
     assert ">undefined<" not in dom, "Rendered DOM contains literal undefined badge"
 
     adm_url = f"file:///{ADMIN_HTML.replace(os.sep, '/')}"
@@ -243,8 +254,8 @@ def audit_headless_browser_dom():
     )
     dom_adm = res_adm.stdout
     assert "SHA-256 Cryptographic Gate" in dom_adm, "admin.html DOM did not render SHA-256 gate"
-    assert "82 / 82 PASS" in dom_adm, "admin.html DOM did not render 82 / 82 PASS"
-    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Vault, 2D SVG Lab, Solvers, 82-problem Quiz, and Admin Console with 0 runtime errors!")
+    assert "106 / 106 PASS" in dom_adm, "admin.html DOM did not render 106 / 106 PASS"
+    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Vault, 2D SVG Lab, Solvers, 106-problem Quiz with Next/Previous Question buttons, and Admin Console with 0 runtime errors!")
 
 
 if __name__ == "__main__":

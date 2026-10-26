@@ -1752,6 +1752,16 @@
     const q = filteredQuizDeck[currentQuizIndex];
     currentQuestionAnswered = false;
     const keys = ['A', 'B', 'C', 'D'];
+    const totalCount = filteredQuizDeck.length;
+    const isFirst = currentQuizIndex === 0;
+    const isLast = currentQuizIndex === totalCount - 1;
+    const nextLabel = isLast ? 'Next Question (Restart Deck ↻)' : 'Next Question →';
+
+    const jumpOptionsHtml = filteredQuizDeck.map((item, idx) => `
+      <option value="${idx}" ${idx === currentQuizIndex ? 'selected' : ''}>
+        Problem ${idx + 1} of ${totalCount} (${(item.chapter || 'ch13').toUpperCase()})
+      </option>
+    `).join('');
 
     const optionsHtml = q.shuffledOptions.map((opt, idx) => `
       <button type="button" class="option-btn" data-opt-idx="${idx}">
@@ -1761,44 +1771,69 @@
     `).join('');
 
     stage.innerHTML = `
-      <div class="glass-card">
-        <div class="quiz-toolbar" style="margin-bottom: 0.75rem;">
+      <div class="glass-card" id="active-quiz-card">
+        <div class="quiz-toolbar" style="margin-bottom: 0.85rem;">
           <div class="meta-pill-row" style="margin-bottom: 0;">
-            <span class="badge badge-sky">Problem Deck (${filteredQuizDeck.length} Standalone Problems)</span>
+            <span class="badge badge-sky">Problem ${currentQuizIndex + 1} of ${totalCount} (${totalCount} Standalone Problems)</span>
             <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
             <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
             <span class="badge badge-amber">${q.difficulty}</span>
           </div>
-          <div style="display: flex; gap: 0.5rem;">
-            <button type="button" class="btn-ghost" id="btn-quiz-prev" ${currentQuizIndex === 0 ? 'disabled' : ''}>← Prev</button>
-            <button type="button" class="btn-secondary" id="btn-quiz-next">${currentQuizIndex === filteredQuizDeck.length - 1 ? 'Restart Deck ↻' : 'Next Problem →'}</button>
+          <div class="quiz-nav-btn-group">
+            <select id="quiz-jump-select" class="select-input" aria-label="Jump to problem" style="min-height: 40px; padding: 0.35rem 0.65rem; font-size: 0.8rem; width: auto;">
+              ${jumpOptionsHtml}
+            </select>
+            <button type="button" class="btn-secondary" id="btn-quiz-prev" ${isFirst ? 'disabled' : ''}>← Previous Question</button>
+            <button type="button" class="btn-primary" id="btn-quiz-next">${nextLabel}</button>
           </div>
         </div>
 
         <h3 style="font-size: 1.12rem; line-height: 1.55; margin-top: 0.5rem;">${renderInlineLatexText(q.stem)}</h3>
         <div class="option-list" id="quiz-option-list">${optionsHtml}</div>
         <div id="quiz-feedback-mount"></div>
+
+        <div class="quiz-nav-footer">
+          <button type="button" class="btn-secondary" id="btn-quiz-prev-bottom" ${isFirst ? 'disabled' : ''}>← Previous Question</button>
+          <span class="quiz-nav-status">Problem ${currentQuizIndex + 1} of ${totalCount} &bull; Keyboard: A–D / ← / →</span>
+          <button type="button" class="btn-primary" id="btn-quiz-next-bottom">${nextLabel}</button>
+        </div>
       </div>
     `;
 
-    const prevBtn = document.getElementById('btn-quiz-prev');
-    const nextBtn = document.getElementById('btn-quiz-next');
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        if (currentQuizIndex > 0) {
-          currentQuizIndex -= 1;
+    function goPrevQuestion() {
+      if (currentQuizIndex > 0) {
+        currentQuizIndex -= 1;
+        renderCurrentQuizCard();
+        AudioEngine.playClick();
+      }
+    }
+
+    function goNextQuestion() {
+      currentQuizIndex = (currentQuizIndex + 1) % filteredQuizDeck.length;
+      renderCurrentQuizCard();
+      AudioEngine.playClick();
+    }
+
+    const jumpSel = document.getElementById('quiz-jump-select');
+    if (jumpSel) {
+      jumpSel.addEventListener('change', () => {
+        const targetIdx = parseInt(jumpSel.value, 10);
+        if (!Number.isNaN(targetIdx) && targetIdx >= 0 && targetIdx < filteredQuizDeck.length) {
+          currentQuizIndex = targetIdx;
           renderCurrentQuizCard();
           AudioEngine.playClick();
         }
       });
     }
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        currentQuizIndex = (currentQuizIndex + 1) % filteredQuizDeck.length;
-        renderCurrentQuizCard();
-        AudioEngine.playClick();
-      });
-    }
+
+    ['btn-quiz-prev', 'btn-quiz-prev-bottom'].forEach((id) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener('click', goPrevQuestion);
+    });
+    ['btn-quiz-next', 'btn-quiz-next-bottom'].forEach((id) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener('click', goNextQuestion);
+    });
 
     stage.querySelectorAll('.option-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1838,17 +1873,24 @@
         if (fbMount) {
           fbMount.innerHTML = `
             <div class="feedback-panel">
-              <div class="meta-pill-row">
-                <span class="badge ${isCorrect ? 'badge-emerald' : 'badge-rose'}">
-                  ${isCorrect ? '✅ First-Principles Mastery Verified' : '❌ Diagnostic Refutation & Step-by-Step Derivation'}
-                </span>
-                <span class="badge badge-sky">Prescribed Reference: ${q.citation || q.topic || 'Core Principle'}</span>
+              <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                  <span class="badge ${isCorrect ? 'badge-emerald' : 'badge-rose'}">
+                    ${isCorrect ? '✅ First-Principles Mastery Verified' : '❌ Diagnostic Refutation & Step-by-Step Derivation'}
+                  </span>
+                  <span class="badge badge-sky">Prescribed Reference: ${q.citation || q.topic || 'Core Principle'}</span>
+                </div>
+                <button type="button" class="btn-primary" id="btn-quiz-next-fb">${nextLabel}</button>
               </div>
               <div class="katex-box" id="quiz-derivation-katex" style="margin: 0.75rem 0;"></div>
               <div>${refutationsHtml}</div>
             </div>
           `;
           renderMathInElement(document.getElementById('quiz-derivation-katex'), q.derivation, true);
+          const nextFbBtn = document.getElementById('btn-quiz-next-fb');
+          if (nextFbBtn) {
+            nextFbBtn.addEventListener('click', goNextQuestion);
+          }
         }
       });
     });
@@ -1925,6 +1967,7 @@
       </div>
     `).join('');
 
+    const totalSuiteQ = linkedQuestions.length;
     const mcqsHtml = linkedQuestions.map((q, qIdx) => {
       const opts = q.options.map((o, oIdx) => `
         <button type="button" class="option-btn pp-opt-btn" data-q-idx="${qIdx}" data-o-idx="${oIdx}">
@@ -1932,12 +1975,20 @@
           <span>${renderInlineLatexText(o.text)}</span>
         </button>
       `).join('');
+      const hasPrev = qIdx > 0;
+      const hasNext = qIdx < totalSuiteQ - 1;
       return `
-        <div class="glass-card" style="margin-bottom: 1rem;">
-          <div class="meta-pill-row">
-            <span class="badge badge-sky">Standalone Synthesis Problem</span>
-            <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
-            <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
+        <div class="glass-card" id="pp-card-${qIdx}" style="margin-bottom: 1rem;">
+          <div class="quiz-toolbar" style="margin-bottom: 0.65rem;">
+            <div class="meta-pill-row" style="margin-bottom: 0;">
+              <span class="badge badge-sky">Suite Problem ${qIdx + 1} of ${totalSuiteQ}</span>
+              <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
+              <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
+            </div>
+            <div class="quiz-nav-btn-group">
+              <button type="button" class="btn-ghost pp-nav-jump" data-target-idx="${qIdx - 1}" ${!hasPrev ? 'disabled' : ''}>← Previous Question</button>
+              <button type="button" class="btn-secondary pp-nav-jump" data-target-idx="${hasNext ? qIdx + 1 : 0}">${hasNext ? 'Next Question →' : 'Back to First ↻'}</button>
+            </div>
           </div>
           <h4 style="font-size: 1rem; margin-bottom: 0.65rem;">${renderInlineLatexText(q.stem)}</h4>
           <div class="option-list">${opts}</div>
@@ -1950,7 +2001,7 @@
       <div class="glass-card" style="margin-bottom: 1.25rem; border-left: 4px solid var(--accent-indigo);">
         <div class="meta-pill-row">
           <span class="badge badge-indigo">${pp.session}</span>
-          <span class="badge badge-sky">Duration: ${pp.durationMinutes} Mins • ${pp.totalMarks} Points</span>
+          <span class="badge badge-sky">Duration: ${pp.durationMinutes} Mins • ${pp.totalMarks} Points • ${totalSuiteQ} Interactive Problems</span>
         </div>
         <h3>${pp.session} — ${pp.campuses.join(' • ')}</h3>
         <p style="font-size: 0.88rem; margin-top: 0.35rem;">
@@ -1964,6 +2015,21 @@
       <h3 style="margin: 1.5rem 0 0.75rem;">Structured Theoretical Derivations &amp; Analytical Solutions</h3>
       <div>${writtenHtml}</div>
     `;
+
+    function jumpToSuiteCard(targetIdx) {
+      const targetEl = document.getElementById(`pp-card-${targetIdx}`);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        AudioEngine.playClick();
+      }
+    }
+
+    stage.querySelectorAll('.pp-nav-jump').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetIdx = parseInt(btn.getAttribute('data-target-idx'), 10);
+        if (!Number.isNaN(targetIdx)) jumpToSuiteCard(targetIdx);
+      });
+    });
 
     stage.querySelectorAll('.pitfall-trigger').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1991,6 +2057,7 @@
           else if (i === oIdx) b.classList.add('wrong');
         });
 
+        const hasNext = qIdx < totalSuiteQ - 1;
         const fb = document.getElementById(`pp-fb-${qIdx}`);
         if (fb) {
           fb.innerHTML = `
@@ -1999,9 +2066,17 @@
               <div class="refutation-item ${chosen.isCorrect ? 'is-correct' : 'is-wrong'}">
                 <strong>Analytical Explanation:</strong> ${renderInlineLatexText(chosen.refutation)}
               </div>
+              <div class="quiz-nav-footer" style="margin-top: 0.9rem; padding-top: 0.75rem;">
+                <span class="quiz-nav-status">Suite Problem ${qIdx + 1} of ${totalSuiteQ}</span>
+                <button type="button" class="btn-primary" id="pp-fb-next-${qIdx}">${hasNext ? 'Next Question →' : 'Back to First Question ↻'}</button>
+              </div>
             </div>
           `;
           renderMathInElement(document.getElementById(`pp-katex-${qIdx}`), q.derivation, true);
+          const nextFbBtn = document.getElementById(`pp-fb-next-${qIdx}`);
+          if (nextFbBtn) {
+            nextFbBtn.addEventListener('click', () => jumpToSuiteCard(hasNext ? qIdx + 1 : 0));
+          }
         }
       });
     });
