@@ -1,0 +1,8 @@
+# Exclude raw source PDFs & intermediate extraction caches from GitHub Pages bundle
+sources/
+scripts/*.json
+scripts/__pycache__/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

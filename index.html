@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>NWU ECON122 — Interactive Macroeconomics Workbench &amp; Assessment Engine</title>
+  <meta name="description" content="Comprehensive interactive academic platform for NWU ECON122 (Introduction to Macroeconomics): Mohr 6e Chapters 13–22, 2D Vector SVG Labs, Bidirectional Solvers, and 2018–2024 Past Exam Simulators." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Sticky Frosted Glass Header -->
+  <header class="top-header" role="banner">
+    <div class="header-inner">
+      <div class="brand-cluster">
+        <div class="brand-mark" aria-hidden="true">E122</div>
+        <div class="brand-titles">
+          <span class="brand-eyebrow">North-West University • MC • PC • VC</span>
+          <span class="brand-name">ECON122 Macroeconomics Workbench</span>
+        </div>
+      </div>
+
+      <nav class="primary-nav" aria-label="Primary Module Navigation">
+        <button type="button" class="nav-pill active" data-view="vault" id="nav-vault">
+          <span>1. Concept &amp; Formula Vault</span>
+        </button>
+        <button type="button" class="nav-pill" data-view="lab" id="nav-lab">
+          <span>2. 2D Vector SVG Lab</span>
+        </button>
+        <button type="button" class="nav-pill" data-view="solvers" id="nav-solvers">
+          <span>3. Bidirectional Solvers</span>
+        </button>
+        <button type="button" class="nav-pill" data-view="quiz" id="nav-quiz">
+          <span>4. Mastery Quiz (54 Qs)</span>
+        </button>
+        <button type="button" class="nav-pill" data-view="papers" id="nav-papers">
+          <span>5. Past Papers (2018–2024)</span>
+        </button>
+        <button type="button" class="nav-pill" data-view="cheatsheet" id="nav-cheatsheet">
+          <span>6. Cheat Sheet &amp; PDF</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="icon-btn" id="btn-audio-toggle" title="Toggle Web Audio Synthesizer">
+          <span id="audio-icon" aria-hidden="true">🔊</span>
+          <span id="audio-label">Audio On</span>
+        </button>
+        <button type="button" class="icon-btn" id="btn-theme-toggle" title="Switch Dark / Light Surface Theme">
+          <span id="theme-icon" aria-hidden="true">☀️</span>
+          <span id="theme-label">Light</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <!-- Hero Overview Banner -->
+    <section class="hero-banner no-print" aria-label="Course Overview">
+      <div>
+        <div class="hero-eyebrow">
+          <span>Philip Mohr 6e (Chapters 13–22) • 100% Syllabus &amp; Past-Paper Verified</span>
+        </div>
+        <h1>Introduction to Macroeconomics: First-Principles Studio</h1>
+        <p class="hero-subtitle">
+          Engineered from 100% of your prescribed textbook (<em>Economics for South African Students, 6th Ed.</em>) and official NWU exam papers &amp; memoranda (2018–2024 across Mahikeng, Potchefstroom, and Vanderbijlpark). Explore live 2D vector diagrams, bidirectional equilibrium solvers, and step-by-step KaTeX derivations.
+        </p>
+        <div class="hero-cta-row">
+          <button type="button" class="btn-primary" data-jump-view="lab">
+            <span>Launch 2D Vector Lab</span>
+          </button>
+          <button type="button" class="btn-secondary" data-jump-view="quiz">
+            <span>Start Interactive Mastery Quiz</span>
+          </button>
+          <a href="ECON122_Master_Study_Guide.pdf" download class="btn-secondary">
+            <span>📄 Download Print-Ready Study Guide (PDF)</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="kpi-bento-grid">
+        <div class="kpi-tile">
+          <div class="kpi-label">Prescribed Syllabus</div>
+          <div class="kpi-value tabular-nums">Ch 13–22</div>
+          <div class="kpi-sub">10 Chapters • 38 Core Identities</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Verified Question Bank</div>
+          <div class="kpi-value tabular-nums" id="kpi-total-questions">54 MCQs</div>
+          <div class="kpi-sub">100% Decoupled Refutations</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Your Mastery Accuracy</div>
+          <div class="kpi-value tabular-nums" id="kpi-user-accuracy">0%</div>
+          <div class="kpi-sub" id="kpi-user-answered">0 Answered • 0 Weak Areas</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Official Exam Archive</div>
+          <div class="kpi-value tabular-nums">2018–2024</div>
+          <div class="kpi-sub">MC • PC • VC Multi-Campus Memos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 1: INTERACTIVE CONCEPT & FORMULA BENTO VAULT (Ch 13–22)
+         ====================================================================== -->
+    <section id="view-vault" class="view-section active" aria-label="Concept and Formula Vault">
+      <div class="workbench-layout">
+        <aside class="chapter-sidebar" aria-label="Chapter Selector">
+          <div class="sidebar-heading">Prescribed Chapters (Mohr 6e)</div>
+          <div style="margin-bottom: 0.75rem;">
+            <input type="search" id="vault-search-input" class="num-input" placeholder="Search concept, formula, SARB..." aria-label="Search concepts and formulas" style="font-family: var(--font-sans); font-size: 0.84rem;" />
+          </div>
+          <div class="chapter-nav-list" id="chapter-nav-list"></div>
+        </aside>
+
+        <div id="chapter-stage-container"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 2: INTERACTIVE 2D VECTOR SVG LABORATORY
+         ====================================================================== -->
+    <section id="view-lab" class="view-section" aria-label="Interactive 2D Vector SVG Laboratory">
+      <div class="glass-card" style="margin-bottom: 1.25rem;">
+        <div class="meta-pill-row">
+          <span class="badge badge-sky">Real-Time Parametric SVG Engine</span>
+          <span class="badge badge-emerald">Dynamic Label Collision Avoidance</span>
+        </div>
+        <h2>Interactive 2D Vector Macroeconomic Laboratory</h2>
+        <p style="margin-top: 0.35rem; font-size: 0.92rem;">
+          Manipulate structural parameters ($\bar{C}, c, I, G, t, X, m$, SARB repo rate $i_0$, Pigouvian tax, or exchange rate shocks) and observe real-time shifts, slope rotations, shaded welfare/gap triangles, and exact equilibrium coordinates.
+        </p>
+        <div class="lab-selector-bar" id="lab-selector-bar" style="margin-top: 1rem; margin-bottom: 0;"></div>
+      </div>
+
+      <div class="lab-stage-grid">
+        <div class="glass-card" id="lab-controls-panel"></div>
+        <div class="glass-card" id="lab-canvas-panel"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 3: BIDIRECTIONAL QUANTITATIVE SOLVERS
+         ====================================================================== -->
+    <section id="view-solvers" class="view-section" aria-label="Bidirectional Quantitative Solvers">
+      <div class="glass-card" style="margin-bottom: 1.25rem;">
+        <div class="meta-pill-row">
+          <span class="badge badge-indigo">Forward &amp; Target-Inversion Modes</span>
+          <span class="badge badge-emerald">Zero-Safe Numeric Parsing (0% / R0 Valid)</span>
+        </div>
+        <h2>Bidirectional Quantitative Macroeconomic Solvers</h2>
+        <p style="margin-top: 0.35rem; font-size: 0.92rem;">
+          Compute forward equilibrium values or invert any model to solve for the exact policy intervention ($\Delta G$, $\Delta I$, missing Value Added, net tax after SARS rebates, GDP Deflator inflation, or Broad Unemployment) required to hit a target.
+        </p>
+        <div class="solver-selector-bar" id="solver-selector-bar" style="margin-top: 1rem; margin-bottom: 0;"></div>
+      </div>
+
+      <div id="solver-stage-container"></div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 4: INTERACTIVE MASTERY QUIZ ENGINE
+         ====================================================================== -->
+    <section id="view-quiz" class="view-section" aria-label="Interactive Mastery Quiz">
+      <div class="glass-card" style="margin-bottom: 1.25rem;">
+        <div class="quiz-toolbar">
+          <div>
+            <div class="meta-pill-row">
+              <span class="badge badge-sky">Psychometric Symmetry Verified (≤ 1.25)</span>
+              <span class="badge badge-amber">Keyboard: 1–4 / A–D, ← →, Space</span>
+            </div>
+            <h2>Interactive Mastery Assessment Engine</h2>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;">
+            <select id="quiz-chapter-filter" class="select-input" style="width: auto; min-width: 210px;" aria-label="Filter by Chapter">
+              <option value="all">All Prescribed Chapters (Ch 13–22)</option>
+            </select>
+            <select id="quiz-mode-filter" class="select-input" style="width: auto; min-width: 175px;" aria-label="Filter by Difficulty or Mistakes">
+              <option value="all">All Difficulties</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+              <option value="mistakes">Weak-Area Mistakes Only</option>
+            </select>
+            <button type="button" class="btn-secondary" id="btn-reshuffle-quiz">
+              <span>🔀 Shuffle Questions &amp; Options</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="quiz-stage-container"></div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 5: OFFICIAL PAST-PAPER EXAM SIMULATOR (2018–2024)
+         ====================================================================== -->
+    <section id="view-papers" class="view-section" aria-label="Official Past-Paper Exam Simulator">
+      <div class="glass-card" style="margin-bottom: 1.25rem;">
+        <div class="quiz-toolbar">
+          <div>
+            <div class="meta-pill-row">
+              <span class="badge badge-indigo">Official NWU Past Papers (2018–2024)</span>
+              <span class="badge badge-emerald">Mahikeng (MC) • Potchefstroom (PC) • Vanderbijlpark (VC)</span>
+            </div>
+            <h2>Official Past-Paper Exam Simulator &amp; Memoranda</h2>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center;">
+            <select id="paper-selector" class="select-input" style="width: auto; min-width: 290px;" aria-label="Select Past Exam Paper"></select>
+            <button type="button" class="btn-primary" id="btn-paper-timer">
+              <span id="paper-timer-display" class="timer-display">⏱️ 180:00 (Start Timer)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="paper-stage-container"></div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 6: HIGH-DENSITY PRINTABLE CHEAT SHEET & PDF STUDY GUIDE
+         ====================================================================== -->
+    <section id="view-cheatsheet" class="view-section" aria-label="Printable Cheat Sheet and Study Guide">
+      <div class="glass-card no-print" style="margin-bottom: 1.25rem;">
+        <div class="quiz-toolbar">
+          <div>
+            <div class="meta-pill-row">
+              <span class="badge badge-emerald">Print-Ready A4 Layout (@media print)</span>
+              <span class="badge badge-sky">Chapters 13–22 Complete Reference</span>
+            </div>
+            <h2>High-Density Printable Cheat Sheet &amp; Master Study Guide</h2>
+            <p style="margin-top: 0.3rem; font-size: 0.9rem;">
+              Print directly from your browser using the dedicated <code>@media print</code> engine or download the pre-compiled standalone PDF study guide.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <button type="button" class="btn-primary" id="btn-print-cheatsheet">
+              <span>🖨️ Print Cheat Sheet (A4)</span>
+            </button>
+            <a href="ECON122_Master_Study_Guide.pdf" download class="btn-secondary">
+              <span>📥 Download Master PDF Guide</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="cheatsheet-stage-container"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
