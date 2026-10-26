@@ -61,7 +61,12 @@ const ENGINE = sandbox.ECON122_ENGINE;
 
 assert(DATA && Array.isArray(DATA.chapters), 'ECON122_DATA.chapters must exist');
 assert.strictEqual(DATA.chapters.length, 10, 'Must have all 10 prescribed chapters (Ch 13-22)');
-assert.strictEqual(DATA.questions.length, 106, 'Must have all 106 verified standalone questions');
+for (const ch of DATA.chapters) {
+  assert(typeof ch.studyUnit === 'string' && ch.studyUnit.startsWith('Study Unit'), `Chapter ${ch.id} must have a Study Unit mapping`);
+  assert(typeof ch.studyHours === 'string' && ch.studyHours.includes('Hours'), `Chapter ${ch.id} must have studyHours string`);
+  assert(Array.isArray(ch.learningOutcomes) && ch.learningOutcomes.length >= 2, `Chapter ${ch.id} must have learningOutcomes`);
+}
+assert.strictEqual(DATA.questions.length, 150, 'Must have all 150 verified standalone questions');
 assert.strictEqual(DATA.pastPapers.length, 5, 'Must have 5 synthesis suites');
 
 const suiteQIds = new Set();
@@ -71,13 +76,16 @@ for (const pp of DATA.pastPapers) {
     suiteQIds.add(qid);
   }
 }
-assert.strictEqual(suiteQIds.size, 106, 'All 106 standalone questions must be linked across the 5 synthesis suites');
+assert.strictEqual(suiteQIds.size, 150, 'All 150 standalone questions must be linked across the 5 synthesis suites');
 
 // 1. 50 Rounds of Fisher-Yates Shuffling & Psychometric Invariants
+const seenTopics = new Set();
 for (let round = 0; round < 50; round++) {
   for (const q of DATA.questions) {
     assert(q.stem && q.stem.length >= 30, `Question ${q.id} must have a self-contained stem`);
     assert(q.chapter && q.chapterId, `Question ${q.id} must have normalized chapter & chapterId`);
+    assert(q.topic && q.topic.length >= 10, `Question ${q.id} must have an explicit descriptive topic`);
+    if (round === 0) seenTopics.add(q.topic);
     assert.strictEqual(q.options.length, 4, `Question ${q.id} must have 4 options`);
     const lengths = q.options.map(o => o.text.length);
     const ratio = Math.max(...lengths) / Math.min(...lengths);
@@ -92,6 +100,7 @@ for (let round = 0; round < 50; round++) {
     }
   }
 }
+assert.strictEqual(seenTopics.size, 150, 'Every question must have a distinct, non-duplicated topic title');
 
 // 2. Zero-Input Parsing Edge-Case Verification (Never use || fallback coercion)
 assert.strictEqual(ENGINE.parseNumSafe(0, 100), 0, 'Numeric 0 must not fall back to 100');
@@ -117,6 +126,13 @@ const kItaly = ENGINE.solveKeynesianModel({ C0: 85, c: 0.5, I0: 75, G0: 70, t: 0
 assert(Math.abs(kItaly.Y0_exact - 270.588) < 0.01, 'Y0 must be 270.59');
 assert(Math.abs(kItaly.budgetBalance - (-2.353)) < 0.01, 'Budget balance must be -2.35');
 
+// 3c-ii. Study Unit 3.2 Open Economy of Islamabad (T = 20 + 0.2Y, Z = 50 + 0.2Y)
+const kIslamabad = ENGINE.solveKeynesianModel({ C0: 150, c: 0.8, I0: 250, G0: 450, t: 0.2, T0: 20, X0: 325, Z0: 50, m: 0.2, Yf: 2087.5 });
+assert(Math.abs(kIslamabad.A_bar - 1109.0) < 1e-6, 'Islamabad A_bar must be 1109.0');
+assert(Math.abs(kIslamabad.inducedSlope - 0.44) < 1e-6, 'Islamabad induced slope must be 0.44');
+assert.strictEqual(kIslamabad.alphaRounded2, 1.79, 'Islamabad rounded multiplier must be 1.79');
+assert(Math.abs(kIslamabad.Y0_exact - 1980.357) < 0.01, 'Islamabad exact Y0 must be 1980.36');
+
 // 3d. National Accounts Solver
 const naModel = ENGINE.solveNationalAccounts({
   GDPmp: 1530580, taxesOnProducts: 205562, subsidiesOnProducts: 11433,
@@ -126,7 +142,7 @@ const naModel = ENGINE.solveNationalAccounts({
 assert.strictEqual(naModel.GDPfc, 1336451, 'GDPfc must be 1,336,451');
 assert.strictEqual(naModel.GNImp, 1530280, 'GNImp must be 1,530,280');
 
-// 3e. SARS Tax Solver (Zero income edge case + R825k + R315,850)
+// 3e. SARS Tax Solver (Zero income edge case + R825k + R315,850 + Study Unit 2.2 Jerome Muller & Sally Moloi)
 const taxZero = ENGINE.solveSarsTax({ tableKey: 'schedule_a', income: 0, age: 30 });
 assert.strictEqual(taxZero.netTax, 0, 'Zero income must yield R0 net tax');
 const taxHigh = ENGINE.solveSarsTax({ tableKey: 'schedule_a', income: 825000, age: 35 });
@@ -134,6 +150,12 @@ assert(Math.abs(taxHigh.grossTax - 238427) < 0.01, 'Gross tax must be R238,427')
 assert(Math.abs(taxHigh.netTax - 221192) < 0.01, 'Net tax must be R221,192');
 const taxMid = ENGINE.solveSarsTax({ tableKey: 'schedule_b', income: 315850, age: 23 });
 assert(Math.abs(taxMid.netTax - 47751.50) < 0.01, 'Net tax must be R47,751.50');
+const taxJerome = ENGINE.solveSarsTax({ tableKey: 'schedule_d', income: 288000, age: 37 });
+assert(Math.abs(taxJerome.grossTax - 59689.20) < 0.01, 'Jerome gross tax must be R59,689.20');
+assert(Math.abs(taxJerome.netTax - 46189.20) < 0.01, 'Jerome net tax must be R46,189.20');
+const taxSally = ENGINE.solveSarsTax({ tableKey: 'schedule_d', income: 4500000, age: 55 });
+assert(Math.abs(taxSally.grossTax - 1883625) < 0.01, 'Sally gross tax must be R1,883,625');
+assert(Math.abs(taxSally.netTax - 1870125) < 0.01, 'Sally net tax must be R1,870,125');
 
 // 4. 2D Vector SVG Coordinate Bounds & Collision Avoidance Audit
 const labTypes = ['keynesian', 'adas', 'money', 'externality', 'forex', 'lorenz'];
@@ -163,7 +185,7 @@ assert(adminCode.includes(expectedHash1), 'admin.html must contain SHA-256 diges
 assert(adminCode.includes(expectedHash2), 'admin.html must contain SHA-256 digest 2');
 assert(adminCode.includes('VALID_PASSCODE_HASHES.includes(digest)'), 'admin.html must verify SHA-256 digest');
 
-console.log('NODE_VM_SANDBOX_PASS: All 106 questions (x50 shuffle rounds = 5,300 checks), zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
+console.log('NODE_VM_SANDBOX_PASS: All 150 questions (x50 shuffle rounds = 7,500 checks), 150 unique topics, Study Units 1-6 learning outcomes, zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
 """
     with open(NODE_TEST_JS, "w", encoding="utf-8") as f:
         f.write(node_script)
@@ -214,15 +236,40 @@ def audit_compiled_pdf():
     page_count = len(doc)
     assert page_count >= 12, f"Expected >= 12 pages in master study guide, got {page_count}"
     char_counts = []
+    global_max_x1 = 0.0
+    problem_headers_count = 0
+
     for i, page in enumerate(doc):
         txt = page.get_text("text").strip()
         char_counts.append(len(txt))
         assert len(txt) >= 1000, f"Page {i+1} has low density or is blank/spillover ({len(txt)} chars)"
-        assert "\\frac" not in txt and "\\implies" not in txt, f"Page {i+1} contains unrendered raw LaTeX"
+        assert "\\" not in txt, f"Page {i+1} contains unrendered raw LaTeX backslash"
         matches = FORBIDDEN_REGEX.findall(txt)
         assert not matches, f"Page {i+1} of PDF has forbidden exam/date/campus reference: {matches[:5]}"
+
+        # Horizontal bounding-box & margin clipping check
+        max_allowed_x1 = page.rect.width - 28.0  # A4 594.96pt - 28.35pt (10mm right margin)
+        for b in page.get_text("blocks"):
+            x0, y0, x1, y1, b_txt = b[0], b[1], b[2], b[3], b[4]
+            if x1 > global_max_x1:
+                global_max_x1 = x1
+            assert x1 <= max_allowed_x1, (
+                f"Page {i+1} horizontal overflow/clipping detected: block x1={x1:.2f} > {max_allowed_x1:.2f} "
+                f"near {b_txt[:40]!r}"
+            )
+            if "PROBLEM " in b_txt:
+                problem_headers_count += 1
+                assert x0 < 45.0, (
+                    f"Page {i+1} problem card is not full-width single-column (x0={x0:.2f}): {b_txt[:40]!r}"
+                )
+
     doc.close()
-    print(f"PDF_FITZ_AUDIT_PASS: {page_count} pages verified, min page density = {min(char_counts)} chars, max = {max(char_counts)} chars, 0 raw LaTeX leaks, 0 exam references.")
+    assert problem_headers_count >= 150, f"Expected all 150 problem headers in PDF, found {problem_headers_count}"
+    print(
+        f"PDF_FITZ_AUDIT_PASS: {page_count} pages verified, min density = {min(char_counts)} chars, "
+        f"max x1 = {global_max_x1:.2f}pt (<= 566.96pt printable margin), {problem_headers_count} full-width problem cards, "
+        f"0 raw LaTeX leaks, 0 margin clippings."
+    )
 
 
 def audit_headless_browser_dom():
@@ -241,8 +288,10 @@ def audit_headless_browser_dom():
     )
     dom = res.stdout
     assert "Chapter 13: Measuring the Performance of the Economy" in dom, "Vault DOM did not render Chapter 13"
+    assert "Official Study Guide Learning Outcomes" in dom, "Vault DOM did not render Study Guide Learning Outcomes card"
+    assert "chapter-schematic-frame" in dom and "Lorenz Curve" in dom, "Vault DOM did not render Chapter 13 SVG schematic"
     assert "svg" in dom and "E0 (Y* =" in dom, "2D Vector SVG Lab did not render equilibrium E0"
-    assert "Problem 1 of 106 (106 Standalone Problems)" in dom, "Quiz engine did not render 106 Standalone Problems deck"
+    assert "Problem 1 of 150 (150 Standalone Problems)" in dom, "Quiz engine did not render 150 Standalone Problems deck"
     assert 'id="btn-quiz-next"' in dom and 'id="btn-quiz-next-bottom"' in dom and "Next Question →" in dom, "Quiz engine missing Next Question navigation buttons"
     assert 'id="btn-quiz-prev"' in dom and 'id="btn-quiz-prev-bottom"' in dom and "← Previous Question" in dom, "Quiz engine missing Previous Question navigation buttons"
     assert ">undefined<" not in dom, "Rendered DOM contains literal undefined badge"
@@ -254,8 +303,8 @@ def audit_headless_browser_dom():
     )
     dom_adm = res_adm.stdout
     assert "SHA-256 Cryptographic Gate" in dom_adm, "admin.html DOM did not render SHA-256 gate"
-    assert "106 / 106 PASS" in dom_adm, "admin.html DOM did not render 106 / 106 PASS"
-    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Vault, 2D SVG Lab, Solvers, 106-problem Quiz with Next/Previous Question buttons, and Admin Console with 0 runtime errors!")
+    assert "150 / 150 PASS" in dom_adm, "admin.html DOM did not render 150 / 150 PASS"
+    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Cupertino Vault with Study Guide Learning Outcomes & SVG Schematics, 2D SVG Lab, Solvers, 150-problem Quiz with Next/Previous Question buttons, and Admin Console with 0 runtime errors!")
 
 
 if __name__ == "__main__":

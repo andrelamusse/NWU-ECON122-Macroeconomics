@@ -88,7 +88,26 @@ def inspect_textbook():
                 json.dump({"toc": toc, "front_matter": "\n".join(front_matter)}, f, indent=2, ensure_ascii=False)
             doc.close()
 
+def extract_study_guide():
+    sg_path = os.path.join(SOURCES_DIR, "ECON 122  Study guide.pdf")
+    if not os.path.exists(sg_path):
+        for fname in os.listdir(SOURCES_DIR):
+            if "study guide" in fname.lower() and fname.lower().endswith(".pdf"):
+                sg_path = os.path.join(SOURCES_DIR, fname)
+                break
+    if os.path.exists(sg_path):
+        doc = fitz.open(sg_path)
+        pages = []
+        for i, page in enumerate(doc):
+            pages.append({"page": i + 1, "text": page.get_text("text")})
+        out_sg = os.path.join(ROOT, "scripts", "extracted_study_guide.json")
+        with open(out_sg, "w", encoding="utf-8") as f:
+            json.dump({"page_count": len(doc), "toc": doc.get_toc(), "pages": pages}, f, indent=2, ensure_ascii=False)
+        print(f"[study_guide] {os.path.basename(sg_path)}: {len(doc)} pages -> {out_sg}")
+        doc.close()
+
 if __name__ == "__main__":
     organize_sources()
     extract_all_non_textbook()
     inspect_textbook()
+    extract_study_guide()

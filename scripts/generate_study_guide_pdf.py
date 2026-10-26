@@ -29,11 +29,11 @@ def html_escape(s):
 chapters_html = []
 for ch in data["chapters"]:
     formulas_rows = []
-    for f_item in ch["formulas"]:
+    for f_idx, f_item in enumerate(ch["formulas"], start=1):
         encoded_tex = urllib.parse.quote(f_item["latex"])
         formulas_rows.append(f"""
         <div class="formula-item">
-          <div class="f-title">{html_escape(f_item['name'])}</div>
+          <div class="f-title"><span class="item-idx">EQ {ch['number']}.{f_idx}</span> {html_escape(f_item['name'])}</div>
           <div class="f-code katex-display-target" data-tex="{encoded_tex}"></div>
           <div class="f-body math-inline-target"><strong>Meaning:</strong> {html_escape(f_item.get('meaning', ''))}</div>
         </div>
@@ -41,10 +41,10 @@ for ch in data["chapters"]:
 
     concepts_rows = []
     pitfalls_rows = []
-    for c_item in ch["concepts"]:
+    for c_idx, c_item in enumerate(ch["concepts"], start=1):
         concepts_rows.append(f"""
         <div class="concept-item">
-          <div class="c-title">{html_escape(c_item['title'])} ({html_escape(c_item.get('tag', ''))})</div>
+          <div class="c-title"><span class="item-idx">CONCEPT {ch['number']}.{c_idx}</span> {html_escape(c_item['title'])} <span class="c-tag-inline">({html_escape(c_item.get('tag', ''))})</span></div>
           <div class="c-body math-inline-target">{html_escape(c_item.get('intuition', ''))}</div>
           <div class="c-tip math-inline-target"><strong>Worked Proof:</strong> {html_escape(c_item.get('example', ''))}</div>
         </div>
@@ -56,10 +56,11 @@ for ch in data["chapters"]:
         </div>
         """)
 
-    # Also include chapter standalone problems
+    # Chapter standalone problems rendered in a clean full-width single-column stack
+    # so wide multi-step KaTeX derivations never stretch columns or clip at the A4 margin.
     ch_questions = [q for q in data["questions"] if (q.get("chapter") or q.get("chapterId")) == ch["id"]]
     q_rows = []
-    for q in ch_questions:
+    for q_idx, q in enumerate(ch_questions, start=1):
         correct_opt = next((o for o in q["options"] if o.get("isCorrect")), q["options"][0])
         deriv = q.get("derivation", "")
         if isinstance(deriv, list):
@@ -70,9 +71,16 @@ for ch in data["chapters"]:
         else:
             deriv_html = f'<div class="katex-display-target" data-tex="{urllib.parse.quote(str(deriv))}"></div>'
 
+        topic_label = q.get("topic") or "Quantitative & Conceptual Application"
+        cite_label = q.get("citation") or ch["pages"].split(" (")[0]
+        diff_label = q.get("difficulty", "Medium")
+
         q_rows.append(f"""
         <div class="problem-card">
-          <div class="p-topic">{html_escape(q.get('topic') or q.get('source') or 'Macroeconomic Analysis')} • {html_escape(q.get('difficulty', 'Synthesis'))}</div>
+          <div class="p-header-row">
+            <span class="p-topic">PROBLEM {ch['number']}.{q_idx} — {html_escape(topic_label)}</span>
+            <span class="p-meta-pill">{html_escape(cite_label)} • {html_escape(diff_label)}</span>
+          </div>
           <div class="p-stem math-inline-target">{html_escape(q['stem'])}</div>
           <div class="p-correct math-inline-target"><strong>Verified Solution:</strong> {html_escape(correct_opt['text'])}</div>
           <div class="f-code">{deriv_html}</div>
@@ -80,24 +88,37 @@ for ch in data["chapters"]:
         </div>
         """)
 
+    lo_items = "".join(
+        f'<li class="math-inline-target" style="margin-bottom: 1.5pt;">{html_escape(lo)}</li>'
+        for lo in ch.get("learningOutcomes", [])
+    )
+    lo_block = (
+        f'<div class="f-code" style="background: #f0fdf4; border-color: #bbf7d0; margin-bottom: 5pt;">'
+        f'<div style="font-weight: 800; font-size: 7.6pt; color: #065f46; margin-bottom: 2pt;">'
+        f'OFFICIAL STUDY GUIDE LEARNING OUTCOMES ({html_escape(ch.get("studyUnit", ""))} • {html_escape(ch.get("studyHours", "10 Hours"))}):</div>'
+        f'<ul style="margin-left: 12pt; font-size: 7.4pt; color: #1e293b;">{lo_items}</ul></div>'
+        if lo_items else ""
+    )
+
     chapters_html.append(f"""
     <section class="chapter-block">
       <div class="ch-banner">
         <div>
           <span class="ch-tag">CHAPTER {ch['number']}</span>
-          <span class="ch-meta">{html_escape(ch['pages'])} • {html_escape(ch.get('shortTitle', ''))}</span>
+          <span class="ch-meta">{html_escape(ch.get('studyUnit', ''))} • {html_escape(ch['pages'])} • {html_escape(ch.get('studyHours', '10 Hours'))}</span>
         </div>
         <h2>Chapter {ch['number']}: {html_escape(ch['title'])}</h2>
         <p class="ch-summary math-inline-target">{html_escape(ch['summary'])}</p>
       </div>
-      <h3>Core Mathematical Identities &amp; Canonical Equations</h3>
+      {lo_block}
+      <h3>Core Mathematical Identities &amp; Canonical Equations ({len(ch['formulas'])} Identities)</h3>
       <div class="grid-2">{''.join(formulas_rows)}</div>
       <h3>Key Theoretical Frameworks, Worked Proofs &amp; SARB / Stats SA Context</h3>
       <div class="grid-2">{''.join(concepts_rows)}</div>
       <h3>Student Fallacies vs. First-Principles Laws</h3>
-      <div>{''.join(pitfalls_rows)}</div>
-      <h3>Standalone Analytical Problems &amp; Derivations ({len(ch_questions)} Problems)</h3>
-      <div class="grid-2">{''.join(q_rows)}</div>
+      <div class="pitfalls-wrap">{''.join(pitfalls_rows)}</div>
+      <h3>Standalone Analytical Problems &amp; Step-by-Step Derivations ({len(ch_questions)} Problems)</h3>
+      <div class="problems-stack">{''.join(q_rows)}</div>
     </section>
     """)
 
@@ -114,7 +135,7 @@ for pp in data["pastPapers"]:
     papers_html.append(f"""
     <div class="paper-block">
       <h3>{html_escape(pp['session'])} — {html_escape(', '.join(pp['campuses']))}</h3>
-      <div class="p-meta">Scope: {html_escape(pp['examiners'])} | Verification: {html_escape(pp['moderator'])} | {pp['durationMinutes']} Mins • {pp['totalMarks']} Points</div>
+      <div class="p-meta">Scope: {html_escape(pp['examiners'])} | Verification: {html_escape(pp['moderator'])} | {pp['durationMinutes']} Mins • {pp['totalMarks']} Points • {len(pp['questionIds'])} Linked Problems</div>
       {''.join(sec_rows)}
     </div>
     """)
@@ -131,46 +152,51 @@ html_doc = f"""<!DOCTYPE html>
       size: A4 portrait;
       margin: 10mm 10mm 10mm 10mm;
     }}
-    * {{
+    *, *::before, *::after {{
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }}
-    body {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      font-size: 8.5pt;
-      line-height: 1.36;
+    html, body {{
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 8.4pt;
+      line-height: 1.38;
       color: #0f172a;
       background: #ffffff;
     }}
     .cover-header {{
-      border: 2px solid #0f172a;
-      border-radius: 8px;
-      padding: 10pt;
-      margin-bottom: 10pt;
-      background: #f8fafc;
+      border: 1.5px solid #0f172a;
+      border-radius: 7px;
+      padding: 9pt 11pt;
+      margin-bottom: 9pt;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
     }}
     .cover-eyebrow {{
-      font-size: 7.8pt;
+      font-size: 7.4pt;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       color: #0284c7;
     }}
     h1 {{
-      font-size: 15pt;
+      font-size: 14.5pt;
       font-weight: 800;
-      margin: 3pt 0;
+      margin: 2.5pt 0;
       color: #0f172a;
+      letter-spacing: -0.02em;
     }}
     h2 {{
-      font-size: 11.5pt;
+      font-size: 11.2pt;
       font-weight: 800;
       color: #0f172a;
       margin: 2pt 0;
+      letter-spacing: -0.015em;
     }}
     h3 {{
-      font-size: 9pt;
+      font-size: 8.8pt;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -183,6 +209,8 @@ html_doc = f"""<!DOCTYPE html>
       margin-bottom: 10pt;
       padding-bottom: 8pt;
       border-bottom: 1.5px solid #94a3b8;
+      width: 100%;
+      max-width: 100%;
     }}
     .ch-banner {{
       background: #f1f5f9;
@@ -207,81 +235,143 @@ html_doc = f"""<!DOCTYPE html>
       color: #475569;
     }}
     .ch-summary {{
-      font-size: 8.2pt;
+      font-size: 8.1pt;
       color: #334155;
       margin-top: 3pt;
     }}
     .grid-2 {{
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 5pt;
+      width: 100%;
+      max-width: 100%;
+    }}
+    .problems-stack {{
+      display: flex;
+      flex-direction: column;
+      gap: 4.5pt;
+      width: 100%;
+      max-width: 100%;
     }}
     .formula-item, .concept-item, .problem-card {{
       border: 1px solid #cbd5e1;
       border-radius: 5px;
-      padding: 5pt;
+      padding: 5pt 6.5pt;
       background: #ffffff;
       break-inside: avoid;
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }}
-    .f-title, .c-title, .p-topic {{
+    .item-idx {{
+      display: inline-block;
+      font-size: 6.8pt;
       font-weight: 800;
-      font-size: 8.2pt;
+      color: #0284c7;
+      background: #e0f2fe;
+      padding: 0.8pt 3.5pt;
+      border-radius: 2.5px;
+      margin-right: 3pt;
+      vertical-align: middle;
+    }}
+    .c-tag-inline {{
+      font-weight: 600;
+      font-size: 7.4pt;
+      color: #475569;
+    }}
+    .f-title, .c-title {{
+      font-weight: 800;
+      font-size: 8.1pt;
       color: #0f172a;
       margin-bottom: 2.5pt;
     }}
+    .p-header-row {{
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6pt;
+      margin-bottom: 2.5pt;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 2pt;
+    }}
     .p-topic {{
+      font-weight: 800;
       color: #0284c7;
       text-transform: uppercase;
-      font-size: 7.2pt;
-      letter-spacing: 0.03em;
+      font-size: 7.4pt;
+      letter-spacing: 0.02em;
+    }}
+    .p-meta-pill {{
+      font-size: 6.9pt;
+      font-weight: 700;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 1pt 4.5pt;
+      border-radius: 3px;
+      white-space: nowrap;
+      flex-shrink: 0;
     }}
     .f-code {{
-      font-size: 8pt;
+      font-size: 7.7pt;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
-      padding: 3pt 5pt;
+      padding: 3.5pt 6pt;
       border-radius: 3px;
       margin: 2.5pt 0;
-      overflow-x: hidden;
+      max-width: 100%;
+      overflow: hidden;
     }}
     .f-body, .c-body, .p-stem, .p-correct, .p-refutation {{
       font-size: 7.6pt;
       color: #334155;
-      margin-bottom: 2.5pt;
+      margin-bottom: 2pt;
+      overflow-wrap: anywhere;
     }}
     .p-correct {{
       color: #065f46;
       background: #ecfdf5;
-      padding: 2pt 4pt;
-      border-radius: 3px;
+      border-left: 2.5px solid #10b981;
+      padding: 2pt 5pt;
+      border-radius: 2.5px;
     }}
     .f-example, .c-tip {{
-      font-size: 7.5pt;
+      font-size: 7.4pt;
       background: #fffbeb;
       border-left: 2.5px solid #d97706;
       padding: 2.5pt 4.5pt;
       color: #1e293b;
     }}
+    .pitfalls-wrap {{
+      width: 100%;
+      max-width: 100%;
+    }}
     .pitfall-row {{
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 5pt;
       margin-bottom: 3.5pt;
       break-inside: avoid;
+      width: 100%;
+      max-width: 100%;
     }}
     .p-fallacy {{
-      font-size: 7.6pt;
+      font-size: 7.5pt;
       background: #fff1f2;
       border: 1px solid #fecdd3;
       padding: 4pt 5.5pt;
       border-radius: 4px;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }}
     .p-law {{
-      font-size: 7.6pt;
+      font-size: 7.5pt;
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
       padding: 4pt 5.5pt;
       border-radius: 4px;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }}
     .paper-block {{
       border: 1px solid #94a3b8;
@@ -289,6 +379,8 @@ html_doc = f"""<!DOCTYPE html>
       padding: 7pt;
       margin-bottom: 7pt;
       break-inside: avoid;
+      width: 100%;
+      max-width: 100%;
     }}
     .p-meta {{
       font-size: 7.5pt;
@@ -312,6 +404,12 @@ html_doc = f"""<!DOCTYPE html>
     }}
     .katex-display {{
       margin: 0.2em 0 !important;
+      text-align: left !important;
+      overflow: hidden !important;
+      max-width: 100%;
+    }}
+    .katex {{
+      font-size: 1.0em;
     }}
   </style>
 </head>
@@ -319,8 +417,8 @@ html_doc = f"""<!DOCTYPE html>
   <div class="cover-header">
     <div class="cover-eyebrow">North-West University • ECON122 Introduction to Macroeconomics</div>
     <h1>Master Print Study Guide, Formula Vault &amp; Problem Compendium ({len(data['questions'])} Standalone Problems)</h1>
-    <p style="font-size: 8.2pt; color: #334155;">
-      100% Aligned with Philip Mohr — <em>Economics for South African Students</em> (Chapters 13 to 22), SARB Monetary Policy Frameworks, and Stats SA National Accounts.
+    <p style="font-size: 8.1pt; color: #334155;">
+      100% Aligned with Philip Mohr — <em>Economics for South African Students</em> (Chapters 13 to 22), SARB Monetary Policy Frameworks, and Stats SA National Accounts. Every analytical problem is presented in full-width single-column clarity with step-by-step KaTeX derivations.
     </p>
   </div>
 
@@ -334,16 +432,19 @@ html_doc = f"""<!DOCTYPE html>
   <script>
     (function() {{
       function renderMathSafe(tex, displayMode) {{
+        var cleaned = String(tex || '').replace(/\\\\text\\{{([^}}]*)\\}}/g, function(_, inner) {{
+          return '\\\\text{{' + inner.replace(/\\s*&\\s*/g, ' and ') + '}}';
+        }});
         if (window.katex) {{
           try {{
-            return window.katex.renderToString(tex, {{
+            return window.katex.renderToString(cleaned, {{
               displayMode: Boolean(displayMode),
               throwOnError: false,
               output: 'html'
             }});
           }} catch (e) {{}}
         }}
-        return tex;
+        return cleaned;
       }}
 
       document.querySelectorAll('.katex-display-target').forEach(function(el) {{
@@ -356,6 +457,19 @@ html_doc = f"""<!DOCTYPE html>
         el.innerHTML = html.replace(/\\$([^$]+)\\$/g, function(_, tex) {{
           var decoded = tex.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
           return renderMathSafe(decoded, false);
+        }});
+      }});
+
+      // Proportional auto-fit pass so wide KaTeX equations inside 2-column or full-width boxes never clip
+      document.querySelectorAll('.f-code').forEach(function(box) {{
+        var availW = box.clientWidth - 14;
+        if (availW <= 0) return;
+        box.querySelectorAll('.katex-display > .katex').forEach(function(kEl) {{
+          var kw = kEl.getBoundingClientRect().width;
+          if (kw > availW && kw > 0) {{
+            var ratio = Math.max(0.55, (availW - 4) / kw);
+            kEl.style.fontSize = (ratio * 100).toFixed(1) + '%';
+          }}
         }});
       }});
     }})();
@@ -392,7 +506,7 @@ print(f"Compiled {OUT_PDF} ({len(doc)} pages)")
 raw_latex_leaks = 0
 for i, page in enumerate(doc):
     txt = page.get_text("text").strip()
-    if "\\frac" in txt or "\\implies" in txt or "\\Delta" in txt:
+    if "\\frac" in txt or "\\implies" in txt or "\\Delta" in txt or "\\text" in txt or "\\quad" in txt:
         raw_latex_leaks += 1
 doc.close()
 print(f"Raw LaTeX leak pages: {raw_latex_leaks}")

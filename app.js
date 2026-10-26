@@ -159,6 +159,19 @@
         { min: 744800, max: 1577300, base: 218139, rate: 0.41 },
         { min: 1577300, max: Infinity, base: 559464, rate: 0.45 }
       ]
+    },
+    'schedule_d': {
+      label: 'Study Unit 2.2 Schedule (Jerome R288k & Sally R4.5m)',
+      rebates: { primary: 13500, secondary: 7407, tertiary: 2466 },
+      brackets: [
+        { min: 0, max: 189880, base: 0, rate: 0.18 },
+        { min: 189880, max: 296540, base: 34178, rate: 0.26 },
+        { min: 296540, max: 410460, base: 61910, rate: 0.31 },
+        { min: 410460, max: 555600, base: 97225, rate: 0.36 },
+        { min: 555600, max: 708310, base: 149475, rate: 0.39 },
+        { min: 708310, max: 1500000, base: 209032, rate: 0.41 },
+        { min: 1500000, max: Infinity, base: 533625, rate: 0.45 }
+      ]
     }
   };
 
@@ -773,6 +786,28 @@
       });
     });
 
+    document.querySelectorAll('[data-quick-lab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetLab = btn.getAttribute('data-quick-lab');
+        if (targetLab) {
+          activeLabId = targetLab;
+          initSvgLabModule();
+          switchView('lab');
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-quick-solver]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetSolver = btn.getAttribute('data-quick-solver');
+        if (targetSolver) {
+          activeSolverId = targetSolver;
+          initSolversModule();
+          switchView('solvers');
+        }
+      });
+    });
+
     // 3. Initialize all 6 Modules
     updateKpiBanner();
     initVaultModule();
@@ -811,6 +846,7 @@
     const totalEl = document.getElementById('kpi-total-questions');
     const accEl = document.getElementById('kpi-user-accuracy');
     const ansEl = document.getElementById('kpi-user-answered');
+    const ringEl = document.getElementById('kpi-accuracy-ring');
 
     if (totalEl && typeof ECON122_DATA !== 'undefined') {
       totalEl.textContent = ECON122_DATA.questions.length + ' Problems';
@@ -822,6 +858,11 @@
       accEl.textContent = pct + '%';
       const mistakes = (tState.mistakeIds || []).length;
       ansEl.textContent = `${tState.questionsAnswered} Answered • ${mistakes} Weak Area${mistakes === 1 ? '' : 's'}`;
+      if (ringEl) {
+        const circumference = 94.25;
+        const offset = circumference * (1 - Math.max(0, Math.min(100, pct)) / 100);
+        ringEl.setAttribute('stroke-dashoffset', offset.toFixed(2));
+      }
     }
   }
 
@@ -829,6 +870,173 @@
      MODULE 1: Concept & Formula Bento Vault (Chapters 13–22)
      -------------------------------------------------------------------------- */
   let activeChapterId = 'ch13';
+
+  function getChapterSchematicConfig(chId) {
+    const map = {
+      ch13: {
+        labId: 'lorenz',
+        solverId: 'nat_accounts_solver',
+        caption: 'Lorenz Inequality Curve & National Accounts Valuation',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 13 Lorenz and GDP Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <path d="M 36 126 Q 210 120 284 22 L 36 126 Z" fill="rgba(94, 92, 230, 0.24)"/>
+          <line x1="36" y1="126" x2="284" y2="22" stroke="#30d158" stroke-width="2" stroke-dasharray="5 3"/>
+          <path d="M 36 126 Q 210 120 284 22" fill="none" stroke="#2997ff" stroke-width="2.6"/>
+          <text x="155" y="64" fill="#30d158" font-size="10" font-weight="700">Perfect Equality (45°)</text>
+          <text x="172" y="102" fill="#2997ff" font-size="10" font-weight="700">Lorenz Curve (Gini ≈ 0.65)</text>
+          <text x="44" y="32" fill="var(--svg-text)" font-size="9.5" font-weight="600">GDPmp → GDPbp → GDPfc</text>
+        </svg>`
+      },
+      ch14: {
+        labId: 'money',
+        solverId: 'money_solver',
+        caption: 'SARB Endogenous Money Market (Horizontal Repo i0)',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 14 Endogenous Money Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="74" x2="286" y2="74" stroke="#30d158" stroke-width="2.6"/>
+          <line x1="68" y1="26" x2="248" y2="118" stroke="#2997ff" stroke-width="2.6"/>
+          <line x1="162" y1="74" x2="162" y2="126" stroke="#2997ff" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <circle cx="162" cy="74" r="5" fill="#30d158" stroke="#fff" stroke-width="1.5"/>
+          <text x="284" y="67" fill="#30d158" font-size="9.5" font-weight="700" text-anchor="end">SARB Repo Rate i0 = 8.25%</text>
+          <text x="256" y="114" fill="#2997ff" font-size="9.5" font-weight="700">L = L1(Y) + L2(i)</text>
+          <text x="166" y="92" fill="var(--svg-text)" font-size="9.5" font-weight="700">E (Demand-Determined M*)</text>
+        </svg>`
+      },
+      ch15: {
+        labId: 'externality',
+        solverId: 'sars_tax_solver',
+        caption: 'Negative Externality (MSC > MPC) & Pigouvian Tax',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 15 Externality and Tax Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <polygon points="145,68 188,88 188,48" fill="rgba(255, 69, 58, 0.28)" stroke="#ff453a" stroke-width="1.2"/>
+          <line x1="54" y1="28" x2="262" y2="118" stroke="#2997ff" stroke-width="2.4"/>
+          <line x1="54" y1="118" x2="262" y2="42" stroke="#8e95a8" stroke-width="2" stroke-dasharray="4 3"/>
+          <line x1="54" y1="94" x2="262" y2="18" stroke="#ff453a" stroke-width="2.5"/>
+          <circle cx="145" cy="68" r="4.5" fill="#30d158" stroke="#fff" stroke-width="1.4"/>
+          <circle cx="188" cy="88" r="4.5" fill="#ff9f0a" stroke="#fff" stroke-width="1.4"/>
+          <text x="266" y="26" fill="#ff453a" font-size="9.5" font-weight="700" text-anchor="end">MSC = MPC + MEC</text>
+          <text x="138" y="61" fill="#30d158" font-size="9.5" font-weight="700" text-anchor="end">Optimum Q2</text>
+          <text x="195" y="102" fill="#ff9f0a" font-size="9.5" font-weight="700">Market Q1</text>
+        </svg>`
+      },
+      ch16: {
+        labId: 'forex',
+        solverId: 'nat_accounts_solver',
+        caption: 'Foreign Exchange Market (ZAR/USD Equilibrium)',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 16 Forex Market Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="58" y1="26" x2="258" y2="116" stroke="#2997ff" stroke-width="2.5"/>
+          <line x1="58" y1="116" x2="258" y2="26" stroke="#30d158" stroke-width="2.5"/>
+          <line x1="36" y1="71" x2="158" y2="71" stroke="#ff9f0a" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <line x1="158" y1="71" x2="158" y2="126" stroke="#ff9f0a" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <circle cx="158" cy="71" r="5" fill="#ff9f0a" stroke="#fff" stroke-width="1.5"/>
+          <text x="168" y="66" fill="#ff9f0a" font-size="10" font-weight="700">E0 (R18.50 / US$1)</text>
+          <text x="262" y="32" fill="#30d158" font-size="9.5" font-weight="700" text-anchor="end">Supply S$</text>
+          <text x="262" y="114" fill="#2997ff" font-size="9.5" font-weight="700" text-anchor="end">Demand D$</text>
+        </svg>`
+      },
+      ch17: {
+        labId: 'keynesian',
+        solverId: 'keynesian_solver',
+        caption: 'Simple Closed Keynesian 45° Line (A = C̄ + Ī + cY)',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 17 Simple Keynesian Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="276" y2="20" stroke="#8e95a8" stroke-width="1.8" stroke-dasharray="5 3"/>
+          <line x1="36" y1="94" x2="282" y2="36" stroke="#2997ff" stroke-width="2.8"/>
+          <circle cx="176" cy="64" r="5" fill="#30d158" stroke="#fff" stroke-width="1.5"/>
+          <line x1="176" y1="64" x2="176" y2="126" stroke="#30d158" stroke-width="1.4" stroke-dasharray="4 3"/>
+          <text x="184" y="59" fill="#30d158" font-size="10" font-weight="700">E0 (Y* = αĀ)</text>
+          <text x="282" y="31" fill="#2997ff" font-size="9.5" font-weight="700" text-anchor="end">A = Ā + cY</text>
+          <text x="44" y="89" fill="#2997ff" font-size="9.5" font-weight="700">Ā</text>
+        </svg>`
+      },
+      ch18: {
+        labId: 'keynesian',
+        solverId: 'keynesian_solver',
+        caption: 'Open-Economy Multiplier with Taxes & Induced Imports',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 18 Open Economy Keynesian Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <polygon points="164,69 224,69 224,43" fill="rgba(255, 159, 10, 0.22)" stroke="#ff9f0a" stroke-dasharray="3 2"/>
+          <line x1="36" y1="126" x2="276" y2="20" stroke="#8e95a8" stroke-width="1.8" stroke-dasharray="5 3"/>
+          <line x1="224" y1="20" x2="224" y2="126" stroke="#ff9f0a" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <line x1="36" y1="92" x2="282" y2="48" stroke="#2997ff" stroke-width="2.8"/>
+          <circle cx="164" cy="69" r="5" fill="#30d158" stroke="#fff" stroke-width="1.5"/>
+          <text x="156" y="61" fill="#30d158" font-size="9.5" font-weight="700" text-anchor="end">Y0 = 1584</text>
+          <text x="220" y="31" fill="#ff9f0a" font-size="9.5" font-weight="700" text-anchor="end">Yf Target</text>
+          <text x="282" y="43" fill="#2997ff" font-size="9" font-weight="700" text-anchor="end">Slope = c(1-t) - m</text>
+        </svg>`
+      },
+      ch19: {
+        labId: 'adas',
+        solverId: 'keynesian_solver',
+        caption: 'AD–AS Equilibrium & Monetary Transmission Channels',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 19 AD-AS Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="176" y1="20" x2="176" y2="126" stroke="#ff9f0a" stroke-width="1.6" stroke-dasharray="4 3"/>
+          <line x1="56" y1="30" x2="256" y2="116" stroke="#2997ff" stroke-width="2.6"/>
+          <line x1="56" y1="116" x2="256" y2="30" stroke="#ff453a" stroke-width="2.6"/>
+          <circle cx="156" cy="73" r="5" fill="#30d158" stroke="#fff" stroke-width="1.5"/>
+          <text x="172" y="29" fill="#ff9f0a" font-size="9.5" font-weight="700" text-anchor="end">LRAS (Yf)</text>
+          <text x="260" y="34" fill="#ff453a" font-size="9.5" font-weight="700" text-anchor="end">AS</text>
+          <text x="260" y="112" fill="#2997ff" font-size="9.5" font-weight="700" text-anchor="end">AD</text>
+        </svg>`
+      },
+      ch20: {
+        labId: 'adas',
+        solverId: 'deflator_solver',
+        caption: 'Cost-Push Stagflation (AS Left) & SARB 3%–6% Target',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 20 Stagflation Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="58" y1="32" x2="262" y2="116" stroke="#2997ff" stroke-width="2.5"/>
+          <line x1="78" y1="116" x2="266" y2="38" stroke="#8e95a8" stroke-width="1.8" stroke-dasharray="4 3"/>
+          <line x1="48" y1="98" x2="236" y2="20" stroke="#ff453a" stroke-width="2.6"/>
+          <circle cx="168" cy="77" r="4.5" fill="#8e95a8"/>
+          <circle cx="138" cy="65" r="5" fill="#ff453a" stroke="#fff" stroke-width="1.5"/>
+          <text x="132" y="56" fill="#ff453a" font-size="9.5" font-weight="700" text-anchor="end">E1 (P↑, Y↓ Stagflation)</text>
+          <text x="234" y="28" fill="#ff453a" font-size="9.5" font-weight="700" text-anchor="end">AS1 ← AS0</text>
+        </svg>`
+      },
+      ch21: {
+        labId: 'lorenz',
+        solverId: 'labour_solver',
+        caption: 'Strict vs Expanded Unemployment & Phillips Trade-Off',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 21 Phillips Curve Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <path d="M 62 24 Q 105 98 264 114" fill="none" stroke="#2997ff" stroke-width="2.8"/>
+          <path d="M 96 22 Q 140 92 282 104" fill="none" stroke="#ff9f0a" stroke-width="2" stroke-dasharray="5 3"/>
+          <circle cx="128" cy="79" r="5" fill="#30d158" stroke="#fff" stroke-width="1.5"/>
+          <text x="262" y="110" fill="#2997ff" font-size="9.5" font-weight="700" text-anchor="end">SRPC0 (π vs u)</text>
+          <text x="280" y="96" fill="#ff9f0a" font-size="9.5" font-weight="700" text-anchor="end">SRPC1 (Supply Shock)</text>
+        </svg>`
+      },
+      ch22: {
+        labId: 'adas',
+        solverId: 'deflator_solver',
+        caption: 'Business Cycle Phases (Trough → Upswing → Peak → Downswing)',
+        svg: `<svg viewBox="0 0 320 150" role="img" aria-label="Chapter 22 Business Cycle Schematic">
+          <line x1="36" y1="18" x2="36" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="36" y1="126" x2="292" y2="126" stroke="var(--svg-axis)" stroke-width="1.6"/>
+          <line x1="42" y1="106" x2="282" y2="34" stroke="#30d158" stroke-width="1.8" stroke-dasharray="5 3"/>
+          <path d="M 42 104 C 78 124, 112 36, 152 46 C 192 56, 218 102, 248 74 C 266 56, 276 28, 286 26" fill="none" stroke="#2997ff" stroke-width="2.8"/>
+          <circle cx="136" cy="48" r="4.5" fill="#ff9f0a" stroke="#fff" stroke-width="1.4"/>
+          <circle cx="222" cy="84" r="4.5" fill="#ff453a" stroke="#fff" stroke-width="1.4"/>
+          <text x="136" y="38" fill="#ff9f0a" font-size="9.5" font-weight="700" text-anchor="middle">Peak</text>
+          <text x="222" y="100" fill="#ff453a" font-size="9.5" font-weight="700" text-anchor="middle">Trough</text>
+          <text x="280" y="48" fill="#30d158" font-size="9" font-weight="700" text-anchor="end">Long-Run Trend (70/g)</text>
+        </svg>`
+      }
+    };
+    return map[chId] || map.ch13;
+  }
 
   function initVaultModule() {
     const navList = document.getElementById('chapter-nav-list');
@@ -838,12 +1046,20 @@
     function renderSidebar() {
       navList.innerHTML = '';
       ECON122_DATA.chapters.forEach((ch) => {
+        const chQCount = ECON122_DATA.questions.filter((q) => (q.chapter || q.chapterId) === ch.id).length;
+        const pageShort = (ch.pages || '').split(' (')[0].replace('Mohr 6e, ', '');
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'chapter-nav-btn' + (ch.id === activeChapterId ? ' active' : '');
         btn.innerHTML = `
-          <span class="ch-num-badge">Ch ${ch.number}</span>
-          <span style="overflow: hidden; text-overflow: ellipsis;">${ch.title}</span>
+          <div class="chapter-nav-left">
+            <span class="ch-num-badge">Ch ${ch.number}</span>
+            <div class="chapter-nav-titles">
+              <span class="chapter-nav-main">${ch.title}</span>
+              <span class="chapter-nav-sub">${(ch.studyUnit || pageShort).split(' — ')[0]} • ${pageShort} • ${(ch.formulas || []).length} Eqs</span>
+            </div>
+          </div>
+          <span class="chapter-nav-count">${chQCount} Qs</span>
         `;
         btn.addEventListener('click', () => {
           activeChapterId = ch.id;
@@ -876,11 +1092,27 @@
     const stage = document.getElementById('chapter-stage-container');
     if (!stage || !ch) return;
 
-    const formulasHtml = (ch.formulas || []).map((f) => `
+    const chQuestions = ECON122_DATA.questions.filter((q) => (q.chapter || q.chapterId) === ch.id);
+    const schem = getChapterSchematicConfig(ch.id);
+
+    const outcomesHtml = (ch.learningOutcomes || []).length > 0 ? `
+      <div class="glass-card" style="margin-bottom: 1.35rem; border-left: 4px solid var(--accent-emerald);">
+        <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
+          <span class="badge badge-emerald">🎯 ${ch.studyUnit || ('Chapter ' + ch.number)} — Official Study Guide Learning Outcomes</span>
+          <span class="badge badge-sky">⏱ Recommended Study Time: ${ch.studyHours || '10 Hours'}</span>
+        </div>
+        <ul style="margin: 0.55rem 0 0 1.15rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.45rem 1.25rem; font-size: 0.88rem; color: var(--text-secondary);">
+          ${(ch.learningOutcomes || []).map((lo) => `<li style="line-height: 1.45;">${renderInlineLatexText(lo)}</li>`).join('')}
+        </ul>
+      </div>
+    ` : '';
+
+    const formulasHtml = (ch.formulas || []).map((f, idx) => `
       <div class="glass-card interactive-card formula-card">
         <div>
-          <div class="meta-pill-row">
-            <span class="badge badge-sky">Chapter ${ch.number} Identity</span>
+          <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
+            <span class="badge badge-sky">Identity ${ch.number}.${idx + 1}</span>
+            <button type="button" class="copy-tex-btn" data-copy-tex="${encodeURIComponent(f.latex)}" title="Copy LaTeX Identity">Copy LaTeX</button>
           </div>
           <div class="concept-card-title">${f.name}</div>
           <div class="katex-box" data-katex-display="${encodeURIComponent(f.latex)}"></div>
@@ -891,15 +1123,15 @@
       </div>
     `).join('');
 
-    const conceptsHtml = (ch.concepts || []).map((c) => `
+    const conceptsHtml = (ch.concepts || []).map((c, idx) => `
       <div class="glass-card interactive-card">
         <div class="meta-pill-row">
-          <span class="badge badge-indigo">${c.tag || ch.pages}</span>
+          <span class="badge badge-indigo">Concept ${ch.number}.${idx + 1} • ${c.tag || ch.pages}</span>
         </div>
         <div class="concept-card-title">${c.title}</div>
         <p class="concept-body">${renderInlineLatexText(c.intuition || c.body || '')}</p>
         <div class="concept-tip-callout">
-          <strong>🎯 Worked Quantitative Proof &amp; Application:</strong> ${renderInlineLatexText(c.example || c.examTip || '')}
+          <strong>🎯 Worked Quantitative Proof &amp; Application:</strong> ${renderInlineLatexText(c.example || '')}
         </div>
       </div>
     `).join('');
@@ -925,28 +1157,107 @@
 
     stage.innerHTML = `
       <div class="glass-card chapter-header-card">
-        <div class="meta-pill-row">
-          <span class="badge badge-sky">Chapter ${ch.number}</span>
-          <span class="badge badge-indigo">${ch.pages}</span>
-          <span class="badge badge-emerald">${ch.shortTitle || 'Prescribed Core'}</span>
+        <div>
+          <div class="meta-pill-row">
+            <span class="badge badge-sky">Chapter ${ch.number}</span>
+            <span class="badge badge-emerald">${ch.studyUnit || ch.shortTitle || 'Prescribed Core'}</span>
+            <span class="badge badge-indigo">${ch.pages} • ${ch.studyHours || '10 Hours'}</span>
+            <span class="badge badge-amber">${chQuestions.length} Standalone Problems</span>
+          </div>
+          <h2>Chapter ${ch.number}: ${ch.title}</h2>
+          <p style="margin-top: 0.5rem; font-size: 0.95rem;">${renderInlineLatexText(ch.summary)}</p>
+          <div class="chapter-action-strip">
+            <button type="button" class="btn-primary" id="btn-ch-launch-quiz">
+              <span>Practice ${chQuestions.length} Chapter ${ch.number} Problems →</span>
+            </button>
+            <button type="button" class="btn-secondary" id="btn-ch-launch-lab">
+              <span>Interactive 2D Diagram →</span>
+            </button>
+            <button type="button" class="btn-ghost" id="btn-ch-launch-solver">
+              <span>Quantitative Solver →</span>
+            </button>
+          </div>
         </div>
-        <h2>Chapter ${ch.number}: ${ch.title}</h2>
-        <p style="margin-top: 0.5rem; font-size: 0.95rem;">${renderInlineLatexText(ch.summary)}</p>
+        <div class="chapter-schematic-frame">
+          ${schem.svg}
+          <div class="schematic-caption">
+            <span>${schem.caption}</span>
+            <span style="color: var(--accent-sky);">Mohr Ch ${ch.number}</span>
+          </div>
+        </div>
       </div>
 
-      <h3 style="margin: 1.25rem 0 0.75rem;">Mathematical Identities &amp; Canonical Equations</h3>
+      ${outcomesHtml}
+
+      <div class="section-header-bar">
+        <h3>Mathematical Identities &amp; Canonical Equations (${(ch.formulas || []).length} Identities)</h3>
+        <span class="badge badge-sky">KaTeX Precision</span>
+      </div>
       <div class="bento-grid-2">${formulasHtml}</div>
 
-      <h3 style="margin: 1.5rem 0 0.75rem;">Core Theoretical Frameworks &amp; Worked Quantitative Proofs</h3>
+      <div class="section-header-bar">
+        <h3>Core Theoretical Frameworks &amp; Worked Quantitative Proofs</h3>
+        <span class="badge badge-indigo">SARB &amp; Stats SA Aligned</span>
+      </div>
       <div class="bento-grid-2">${conceptsHtml}</div>
 
-      <h3 style="margin: 1.5rem 0 0.75rem;">Student Fallacy vs. First-Principles Law Accordions</h3>
+      <div class="section-header-bar">
+        <h3>Student Fallacy vs. First-Principles Law Accordions</h3>
+        <span class="badge badge-emerald">Click to Expand / Collapse</span>
+      </div>
       <div>${pitfallsHtml}</div>
     `;
 
     stage.querySelectorAll('[data-katex-display]').forEach((el) => {
       renderMathInElement(el, decodeURIComponent(el.getAttribute('data-katex-display')), true);
     });
+
+    stage.querySelectorAll('.copy-tex-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const rawTex = decodeURIComponent(btn.getAttribute('data-copy-tex') || '');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(rawTex).catch(() => {});
+        }
+        btn.textContent = '✓ Copied';
+        AudioEngine.playClick();
+        setTimeout(() => {
+          btn.textContent = 'Copy LaTeX';
+        }, 1400);
+      });
+    });
+
+    const btnQuiz = document.getElementById('btn-ch-launch-quiz');
+    if (btnQuiz) {
+      btnQuiz.addEventListener('click', () => {
+        const chSel = document.getElementById('quiz-chapter-filter');
+        if (chSel) {
+          chSel.value = ch.id;
+          chSel.dispatchEvent(new Event('change'));
+        }
+        const navQuiz = document.getElementById('nav-quiz');
+        if (navQuiz) navQuiz.click();
+      });
+    }
+
+    const btnLab = document.getElementById('btn-ch-launch-lab');
+    if (btnLab) {
+      btnLab.addEventListener('click', () => {
+        activeLabId = schem.labId;
+        initSvgLabModule();
+        const navLab = document.getElementById('nav-lab');
+        if (navLab) navLab.click();
+      });
+    }
+
+    const btnSolver = document.getElementById('btn-ch-launch-solver');
+    if (btnSolver) {
+      btnSolver.addEventListener('click', () => {
+        activeSolverId = schem.solverId;
+        initSolversModule();
+        const navSolvers = document.getElementById('nav-solvers');
+        if (navSolvers) navSolvers.click();
+      });
+    }
 
     stage.querySelectorAll('.pitfall-trigger').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -1517,6 +1828,7 @@
                 <option value="schedule_a">Statutory Schedule A (R825,000 Benchmark)</option>
                 <option value="schedule_b">Statutory Schedule B (R315,850 Benchmark)</option>
                 <option value="schedule_c">Statutory Schedule C (R384,000 Benchmark)</option>
+                <option value="schedule_d">Study Unit 2.2 Schedule (Jerome R288k &amp; Sally R4.5m)</option>
               </select>
             </div>
             <div class="input-field-wrap"><label>Annual Taxable Income (R)</label><input type="number" id="tax-income" class="num-input" value="825000" step="5000" /></div>
@@ -2111,14 +2423,25 @@
         </div>
       `).join('');
 
+      const loRows = (ch.learningOutcomes || []).length > 0 ? `
+        <div style="margin-bottom: 0.7rem; padding: 0.55rem 0.7rem; border-radius: 10px; background: rgba(48, 209, 88, 0.06); border: 1px solid rgba(48, 209, 88, 0.22); font-size: 0.78rem;">
+          <strong style="color: var(--accent-emerald);">🎯 ${ch.studyUnit || ''} Learning Outcomes:</strong>
+          <ul style="margin: 0.3rem 0 0 1rem; color: var(--text-secondary);">
+            ${(ch.learningOutcomes || []).map((lo) => `<li>${renderInlineLatexText(lo)}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
+
       return `
         <div class="glass-card cheat-block" style="margin-bottom: 1rem;">
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapter ${ch.number}</span>
-            <span class="badge badge-indigo">${ch.pages}</span>
+            <span class="badge badge-emerald">${ch.studyUnit || 'Prescribed Core'}</span>
+            <span class="badge badge-indigo">${ch.pages} • ${ch.studyHours || '10 Hours'}</span>
           </div>
           <h3 style="margin-bottom: 0.5rem;">Ch ${ch.number}: ${ch.title}</h3>
           <p style="font-size: 0.84rem; margin-bottom: 0.75rem;">${renderInlineLatexText(ch.summary)}</p>
+          ${loRows}
           <div>${fRows}</div>
           <div style="margin-top: 0.5rem;">${cRows}</div>
         </div>
