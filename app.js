@@ -121,10 +121,10 @@
     };
   }
 
-  // Solver 3: SARS Personal Income Tax & Rebate Engine (Chapter 15)
+  // Solver 3: Statutory Personal Income Tax & Rebate Engine (Chapter 15)
   const SARS_TABLES = {
-    '2024_25': {
-      label: '2024/2025 Tax Year (Dec 2024 Exam)',
+    'schedule_a': {
+      label: 'Statutory Schedule A (High-Bracket Tier)',
       rebates: { primary: 17235, secondary: 9444, tertiary: 3145 },
       brackets: [
         { min: 0, max: 237100, base: 0, rate: 0.18 },
@@ -136,8 +136,8 @@
         { min: 1817000, max: Infinity, base: 644489, rate: 0.45 }
       ]
     },
-    '2023_exam': {
-      label: '2023 Exam Table (Bella Mbonambi R315 850)',
+    'schedule_b': {
+      label: 'Statutory Schedule B (Mid-Bracket Tier)',
       rebates: { primary: 10900, secondary: 5700, tertiary: 2000 },
       brackets: [
         { min: 0, max: 195850, base: 0, rate: 0.18 },
@@ -147,8 +147,8 @@
         { min: 555600, max: Infinity, base: 147211, rate: 0.41 }
       ]
     },
-    '2022_exam': {
-      label: '2022 Exam Table (Thabiso Lebotse R384 000)',
+    'schedule_c': {
+      label: 'Statutory Schedule C (Standard Tier)',
       rebates: { primary: 14958, secondary: 8199, tertiary: 2736 },
       brackets: [
         { min: 0, max: 205900, base: 0, rate: 0.18 },
@@ -165,7 +165,7 @@
   function solveSarsTax(params) {
     const income = Math.max(0, parseNumSafe(params.income, 825000));
     const age = Math.max(18, parseNumSafe(params.age, 35));
-    const tableKey = SARS_TABLES[params.tableKey] ? params.tableKey : '2024_25';
+    const tableKey = SARS_TABLES[params.tableKey] ? params.tableKey : 'schedule_a';
     const table = SARS_TABLES[tableKey];
 
     let activeBracket = table.brackets[0];
@@ -693,13 +693,16 @@
 
   function renderMathInElement(el, tex, displayMode = false) {
     if (!el) return;
+    const lines = Array.isArray(tex) ? tex : [String(tex || '')];
     if (typeof window !== 'undefined' && window.katex) {
       try {
-        window.katex.render(tex, el, { throwOnError: false, displayMode });
+        el.innerHTML = lines
+          .map((line) => window.katex.renderToString(String(line), { throwOnError: false, displayMode }))
+          .join('<div style="height:0.35rem;"></div>');
         return;
       } catch (_) {}
     }
-    el.textContent = tex;
+    el.textContent = lines.join(' | ');
   }
 
   function renderInlineLatexText(str) {
@@ -810,7 +813,7 @@
     const ansEl = document.getElementById('kpi-user-answered');
 
     if (totalEl && typeof ECON122_DATA !== 'undefined') {
-      totalEl.textContent = ECON122_DATA.questions.length + ' MCQs';
+      totalEl.textContent = ECON122_DATA.questions.length + ' Problems';
     }
     if (accEl && ansEl && tState) {
       const pct = tState.questionsAnswered > 0
@@ -873,11 +876,11 @@
     const stage = document.getElementById('chapter-stage-container');
     if (!stage || !ch) return;
 
-    const formulasHtml = (ch.formulas || []).map((f, idx) => `
+    const formulasHtml = (ch.formulas || []).map((f) => `
       <div class="glass-card interactive-card formula-card">
         <div>
           <div class="meta-pill-row">
-            <span class="badge badge-sky">Core Identity ${ch.number}.${idx + 1}</span>
+            <span class="badge badge-sky">Chapter ${ch.number} Identity</span>
           </div>
           <div class="concept-card-title">${f.name}</div>
           <div class="katex-box" data-katex-display="${encodeURIComponent(f.latex)}"></div>
@@ -895,8 +898,8 @@
         </div>
         <div class="concept-card-title">${c.title}</div>
         <p class="concept-body">${renderInlineLatexText(c.intuition || c.body || '')}</p>
-        <div class="exam-tip-callout">
-          <strong>🎯 Worked Exam Proof &amp; Application:</strong> ${renderInlineLatexText(c.example || c.examTip || '')}
+        <div class="concept-tip-callout">
+          <strong>🎯 Worked Quantitative Proof &amp; Application:</strong> ${renderInlineLatexText(c.example || c.examTip || '')}
         </div>
       </div>
     `).join('');
@@ -904,8 +907,8 @@
     const pitfallsHtml = (ch.concepts || []).map((c, idx) => `
       <div class="pitfall-accordion ${idx === 0 ? 'open' : ''}">
         <button type="button" class="pitfall-trigger">
-          <span>⚠️ Misconception Trap #${idx + 1} (${c.title}): Student Fallacy vs. First-Principles Law</span>
-          <span class="badge badge-rose">${c.tag || 'Exam Trap'}</span>
+          <span>⚠️ Misconception Analysis (${c.title}): Student Fallacy vs. First-Principles Law</span>
+          <span class="badge badge-rose">${c.tag || 'Analytical Pitfall'}</span>
         </button>
         <div class="pitfall-content">
           <div class="fallacy-pane">
@@ -931,13 +934,13 @@
         <p style="margin-top: 0.5rem; font-size: 0.95rem;">${renderInlineLatexText(ch.summary)}</p>
       </div>
 
-      <h3 style="margin: 1.25rem 0 0.75rem;">1. Mathematical Identities &amp; Canonical Equations</h3>
+      <h3 style="margin: 1.25rem 0 0.75rem;">Mathematical Identities &amp; Canonical Equations</h3>
       <div class="bento-grid-2">${formulasHtml}</div>
 
-      <h3 style="margin: 1.5rem 0 0.75rem;">2. Core Theoretical Frameworks, Worked Exam Proofs &amp; SARB Context</h3>
+      <h3 style="margin: 1.5rem 0 0.75rem;">Core Theoretical Frameworks &amp; Worked Quantitative Proofs</h3>
       <div class="bento-grid-2">${conceptsHtml}</div>
 
-      <h3 style="margin: 1.5rem 0 0.75rem;">3. Student Fallacy vs. First-Principles Law Accordions</h3>
+      <h3 style="margin: 1.5rem 0 0.75rem;">Student Fallacy vs. First-Principles Law Accordions</h3>
       <div>${pitfallsHtml}</div>
     `;
 
@@ -983,7 +986,7 @@
               <div class="meta-pill-row"><span class="badge badge-indigo">Ch ${ch.number} • ${c.tag || ''}</span></div>
               <div class="concept-card-title">${c.title}</div>
               <p class="concept-body">${renderInlineLatexText(c.intuition || '')}</p>
-              <div class="exam-tip-callout"><strong>Worked Example:</strong> ${renderInlineLatexText(c.example || '')}</div>
+              <div class="concept-tip-callout"><strong>Worked Example:</strong> ${renderInlineLatexText(c.example || '')}</div>
             </div>
           `);
         }
@@ -1008,12 +1011,12 @@
   const LAB_CONFIGS = [
     {
       id: 'keynesian',
-      title: '1. Keynesian 45° Line & Multiplier (Ch 17–18)',
+      title: 'Keynesian 45° Line & Multiplier (Ch 17–18)',
       state: { C0: 100, c: 0.8, I0: 100, G0: 250, t: 0.2, X0: 300, Z0: 20, m: 0.1, Yf: 1900 },
       presets: [
-        { label: 'Portofino Exam (2024/2019)', values: { C0: 100, c: 0.8, I0: 100, G0: 250, t: 0.2, X0: 300, Z0: 20, m: 0.1, Yf: 1910 } },
-        { label: '2022 Open Economy (Q7)', values: { C0: 150, c: 0.75, I0: 300, G0: 400, t: 0.25, X0: 250, Z0: 50, m: 0.15, Yf: 2000 } },
-        { label: '2023 Bella BIG Grant (t=0.25)', values: { C0: 35, c: 0.7, I0: 19, G0: 20, t: 0.25, X0: 8, Z0: 13, m: 0.2, Yf: 130 } },
+        { label: 'Open Economy Baseline (Portofino)', values: { C0: 100, c: 0.8, I0: 100, G0: 250, t: 0.2, X0: 300, Z0: 20, m: 0.1, Yf: 1910 } },
+        { label: 'High-Leakage Open Economy', values: { C0: 150, c: 0.75, I0: 300, G0: 400, t: 0.25, X0: 250, Z0: 50, m: 0.15, Yf: 2000 } },
+        { label: 'Fiscal Transfer & Tax Shift (t=0.25)', values: { C0: 35, c: 0.7, I0: 19, G0: 20, t: 0.25, X0: 8, Z0: 13, m: 0.2, Yf: 130 } },
         { label: 'Simple Closed Economy (t=0, m=0)', values: { C0: 120, c: 0.75, I0: 80, G0: 0, t: 0, X0: 0, Z0: 0, m: 0, Yf: 1000 } }
       ],
       sliders: [
@@ -1029,40 +1032,40 @@
     },
     {
       id: 'adas',
-      title: '2. AD–AS Policy & Stagflation (Ch 19–20)',
+      title: 'AD–AS Policy & Stagflation (Ch 19–20)',
       state: { adShift: 0, asShift: 0 },
       presets: [
         { label: 'Baseline Equilibrium (E0)', values: { adShift: 0, asShift: 0 } },
         { label: 'Demand-Pull Inflation (AD Right)', values: { adShift: 35, asShift: 0 } },
         { label: 'Cost-Push Stagflation (AS Left)', values: { adShift: 0, asShift: 38 } },
-        { label: 'SARB Repo Hike Contraction', values: { adShift: -30, asShift: 0 } }
+        { label: 'Monetary Repo Hike Contraction', values: { adShift: -30, asShift: 0 } }
       ],
       sliders: [
         { key: 'adShift', label: 'Aggregate Demand Shock (ΔAD: Fiscal/Monetary)', min: -50, max: 50, step: 2 },
-        { key: 'asShift', label: 'Aggregate Supply Cost Shock (ΔAS: Oil/Eskom/Wages)', min: -45, max: 50, step: 2 }
+        { key: 'asShift', label: 'Aggregate Supply Cost Shock (ΔAS: Oil/Electricity/Wages)', min: -45, max: 50, step: 2 }
       ]
     },
     {
       id: 'money',
-      title: '3. Endogenous Money & SARB Repo (Ch 14)',
+      title: 'Endogenous Money & Repo Rate (Ch 14)',
       state: { repoRate: 8.25, incomeShift: 0 },
       presets: [
-        { label: 'SARB Baseline (Repo = 8.25%)', values: { repoRate: 8.25, incomeShift: 0 } },
-        { label: '2019 Exam: 50 bps Repo Cut (7.75%)', values: { repoRate: 7.75, incomeShift: 0 } },
-        { label: '2018 Exam: Repo Hike (7% → 8%)', values: { repoRate: 8.0, incomeShift: 0 } },
-        { label: '2023 Exam: Decline in Money Demand (L Left)', values: { repoRate: 8.25, incomeShift: -45 } }
+        { label: 'Central Bank Baseline (Repo = 8.25%)', values: { repoRate: 8.25, incomeShift: 0 } },
+        { label: '50 bps Repo Cut (7.75%)', values: { repoRate: 7.75, incomeShift: 0 } },
+        { label: '100 bps Repo Hike (7% → 8%)', values: { repoRate: 8.0, incomeShift: 0 } },
+        { label: 'Contraction in Money Demand (L Left)', values: { repoRate: 8.25, incomeShift: -45 } }
       ],
       sliders: [
-        { key: 'repoRate', label: 'SARB Repo / Market Interest Rate i0 (%)', min: 3.5, max: 13.5, step: 0.25 },
+        { key: 'repoRate', label: 'Central Bank Repo / Market Interest Rate i0 (%)', min: 3.5, max: 13.5, step: 0.25 },
         { key: 'incomeShift', label: 'Real GDP / Transactions Demand Shift (ΔL)', min: -60, max: 60, step: 5 }
       ]
     },
     {
       id: 'externality',
-      title: '4. Negative Externality & Pigouvian Tax (Ch 15)',
+      title: 'Negative Externality & Pigouvian Tax (Ch 15)',
       state: { mec: 36, pigouvianTax: 0 },
       presets: [
-        { label: 'Unregulated Highveld Pollution (Q1 > Q2)', values: { mec: 36, pigouvianTax: 0 } },
+        { label: 'Unregulated Industrial Pollution (Q1 > Q2)', values: { mec: 36, pigouvianTax: 0 } },
         { label: 'Optimal Pigouvian Tax (τ = MEC)', values: { mec: 36, pigouvianTax: 36 } },
         { label: 'Partial Carbon Tax (50% Internalised)', values: { mec: 36, pigouvianTax: 18 } }
       ],
@@ -1073,24 +1076,24 @@
     },
     {
       id: 'forex',
-      title: '5. Foreign Exchange Market ZAR/USD (Ch 16)',
+      title: 'Foreign Exchange Market ZAR/USD (Ch 16)',
       state: { demandShift: 0, supplyShift: 0 },
       presets: [
         { label: 'Baseline R18.50 / US$1.00', values: { demandShift: 0, supplyShift: 0 } },
-        { label: 'Rand Appreciation (US Tourist / Gold Boom)', values: { demandShift: -35, supplyShift: 35 } },
-        { label: 'Rand Depreciation (Import Spike / Outflows)', values: { demandShift: 40, supplyShift: -25 } }
+        { label: 'Currency Appreciation (Export / Inflow Boom)', values: { demandShift: -35, supplyShift: 35 } },
+        { label: 'Currency Depreciation (Import Spike / Outflows)', values: { demandShift: 40, supplyShift: -25 } }
       ],
       sliders: [
-        { key: 'demandShift', label: 'SA Demand for US Dollars Shift (ΔD$)', min: -50, max: 50, step: 5 },
+        { key: 'demandShift', label: 'Domestic Demand for US Dollars Shift (ΔD$)', min: -50, max: 50, step: 5 },
         { key: 'supplyShift', label: 'Foreign Supply of US Dollars Shift (ΔS$)', min: -50, max: 50, step: 5 }
       ]
     },
     {
       id: 'lorenz',
-      title: '6. Lorenz Curve & Gini Coefficient (Ch 13 & 21)',
+      title: 'Lorenz Curve & Gini Coefficient (Ch 13 & 21)',
       state: { giniTarget: 0.65, redistribution: 0 },
       presets: [
-        { label: 'South Africa Pre-Transfer Gini (~0.67)', values: { giniTarget: 0.67, redistribution: 0 } },
+        { label: 'High Pre-Transfer Inequality (~0.67)', values: { giniTarget: 0.67, redistribution: 0 } },
         { label: 'Post-Progressive Tax & Social Grants', values: { giniTarget: 0.67, redistribution: 14 } },
         { label: 'Moderate Inequality Benchmark (0.40)', values: { giniTarget: 0.40, redistribution: 0 } }
       ],
@@ -1375,12 +1378,12 @@
      MODULE 3: Bidirectional Quantitative Solvers (6 Solvers)
      -------------------------------------------------------------------------- */
   const SOLVER_TABS = [
-    { id: 'keynesian_solver', label: '1. Keynesian Multiplier & Target Gap Solver' },
-    { id: 'nat_accounts_solver', label: '2. National Accounts & Value-Added Solver' },
-    { id: 'sars_tax_solver', label: '3. SARS Personal Income Tax & Rebate Solver' },
-    { id: 'deflator_solver', label: '4. GDP Deflator, Inflation & Rule of 70 Solver' },
-    { id: 'labour_solver', label: '5. Labour Market (Strict vs Broad Unemployment)' },
-    { id: 'money_solver', label: '6. SARB M1 / M2 / M3 & Credit Multiplier' }
+    { id: 'keynesian_solver', label: 'Keynesian Multiplier & Target Gap Solver' },
+    { id: 'nat_accounts_solver', label: 'National Accounts & Value-Added Solver' },
+    { id: 'sars_tax_solver', label: 'Personal Income Tax & Rebate Solver' },
+    { id: 'deflator_solver', label: 'GDP Deflator, Inflation & Rule of 70 Solver' },
+    { id: 'labour_solver', label: 'Labour Market (Strict vs Broad Unemployment)' },
+    { id: 'money_solver', label: 'Monetary Aggregates (M1 / M2 / M3) & Multiplier' }
   ];
 
   let activeSolverId = 'keynesian_solver';
@@ -1418,7 +1421,7 @@
       stage.innerHTML = `
         <div class="glass-card">
           <h3>Open-Economy Keynesian Equilibrium &amp; Inverse Fiscal Target Solver (Ch 17–18)</h3>
-          <p style="font-size: 0.88rem; margin-bottom: 1rem;">Supports both standard $Z = \\bar{Z} + mY$ and the 2018 Italian Exam variant $Z = \\bar{Z} + mY_d$. Zero values ($0$) are preserved accurately.</p>
+          <p style="font-size: 0.88rem; margin-bottom: 1rem;">Supports both standard $Z = \\bar{Z} + mY$ and disposable-income import functions $Z = \\bar{Z} + mY_d$. Zero values ($0$) are preserved accurately.</p>
           <div class="solver-input-grid">
             <div class="input-field-wrap"><label>Autonomous C̄</label><input type="number" id="ks-c0" class="num-input" value="100" step="5" /></div>
             <div class="input-field-wrap"><label>MPC (c)</label><input type="number" id="ks-c" class="num-input" value="0.8" step="0.05" /></div>
@@ -1461,7 +1464,7 @@
     } else if (activeSolverId === 'nat_accounts_solver') {
       stage.innerHTML = `
         <div class="glass-card">
-          <h3>South African National Accounts Valuation &amp; GDE / GNI / NI Solver (Ch 13)</h3>
+          <h3>National Accounts Valuation &amp; GDE / GNI / NI Solver (Ch 13)</h3>
           <div class="solver-input-grid" style="margin-top: 1rem;">
             <div class="input-field-wrap"><label>GDP at Market Prices (GDPmp)</label><input type="number" id="na-gdpmp" class="num-input" value="1530580" /></div>
             <div class="input-field-wrap"><label>Taxes on Products</label><input type="number" id="na-tprod" class="num-input" value="205562" /></div>
@@ -1493,10 +1496,10 @@
         document.getElementById('na-output').innerHTML = `
           <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="kpi-tile"><div class="kpi-label">GDP at Basic Prices (GDPbp)</div><div class="kpi-value">R${res.GDPbp.toLocaleString()}</div><div class="kpi-sub">GDPmp - T_products + S_products</div></div>
-            <div class="kpi-tile"><div class="kpi-label">GDP at Factor Cost (GDPfc)</div><div class="kpi-value">R${res.GDPfc.toLocaleString()}</div><div class="kpi-sub">2024 Exam Q1.1 Verified</div></div>
+            <div class="kpi-tile"><div class="kpi-label">GDP at Factor Cost (GDPfc)</div><div class="kpi-value">R${res.GDPfc.toLocaleString()}</div><div class="kpi-sub">Factor Cost Valuation Identity</div></div>
             <div class="kpi-tile"><div class="kpi-label">GNI / GNP at Market Prices</div><div class="kpi-value">R${res.GNImp.toLocaleString()}</div><div class="kpi-sub">Net Primary Income: ${res.netFactorIncome}</div></div>
             <div class="kpi-tile"><div class="kpi-label">Gross Domestic Expenditure (GDEmp)</div><div class="kpi-value">R${res.GDEmp.toLocaleString()}</div><div class="kpi-sub">GDPmp - X + Z</div></div>
-            <div class="kpi-tile"><div class="kpi-label">GDE at Factor Cost (GDEfc)</div><div class="kpi-value">R${res.GDEfc.toLocaleString()}</div><div class="kpi-sub">2018 Exam Q1.2 Identity</div></div>
+            <div class="kpi-tile"><div class="kpi-label">GDE at Factor Cost (GDEfc)</div><div class="kpi-value">R${res.GDEfc.toLocaleString()}</div><div class="kpi-sub">GDEmp - Taxes + Subsidies</div></div>
             <div class="kpi-tile"><div class="kpi-label">National Income (NI / NNIfc)</div><div class="kpi-value">R${res.NI_fc.toLocaleString()}</div><div class="kpi-sub">Net of Depreciation (${res.NDPmp.toLocaleString()} NDPmp)</div></div>
           </div>
         `;
@@ -1506,14 +1509,14 @@
     } else if (activeSolverId === 'sars_tax_solver') {
       stage.innerHTML = `
         <div class="glass-card">
-          <h3>SARS Progressive Personal Income Tax &amp; Rebate Calculator (Ch 15)</h3>
+          <h3>Progressive Personal Income Tax &amp; Rebate Calculator (Ch 15)</h3>
           <div class="solver-input-grid" style="margin-top: 1rem;">
             <div class="input-field-wrap">
-              <label>Exam Tax Table</label>
+              <label>Statutory Tax Schedule</label>
               <select id="tax-table-key" class="select-input">
-                <option value="2024_25">2024/2025 Exam (R825 000 Q6)</option>
-                <option value="2023_exam">2023 Exam (Bella Mbonambi R315 850)</option>
-                <option value="2022_exam">2022 Exam (Thabiso Lebotse R384 000)</option>
+                <option value="schedule_a">Statutory Schedule A (R825,000 Benchmark)</option>
+                <option value="schedule_b">Statutory Schedule B (R315,850 Benchmark)</option>
+                <option value="schedule_c">Statutory Schedule C (R384,000 Benchmark)</option>
               </select>
             </div>
             <div class="input-field-wrap"><label>Annual Taxable Income (R)</label><input type="number" id="tax-income" class="num-input" value="825000" step="5000" /></div>
@@ -1531,7 +1534,7 @@
         document.getElementById('tax-output').innerHTML = `
           <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="kpi-tile"><div class="kpi-label">Gross Tax (Pre-Rebate)</div><div class="kpi-value">R${res.grossTax.toFixed(2)}</div><div class="kpi-sub">Base R${res.bracketBase} + ${res.mtr.toFixed(0)}% above R${res.bracketMin}</div></div>
-            <div class="kpi-tile"><div class="kpi-label">Applicable SARS Rebate</div><div class="kpi-value">-R${res.rebateTotal.toFixed(2)}</div><div class="kpi-sub">Age ${res.age} Qualification</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Applicable Statutory Rebate</div><div class="kpi-value">-R${res.rebateTotal.toFixed(2)}</div><div class="kpi-sub">Age ${res.age} Qualification</div></div>
             <div class="kpi-tile"><div class="kpi-label">Net Tax Payable</div><div class="kpi-value">R${res.netTax.toFixed(2)}</div><div class="kpi-sub">Disposable Yd = R${res.disposableIncome.toFixed(2)}</div></div>
             <div class="kpi-tile"><div class="kpi-label">Marginal Tax Rate (MTR)</div><div class="kpi-value">${res.mtr.toFixed(2)}%</div><div class="kpi-sub">Rate on next R1 earned</div></div>
             <div class="kpi-tile"><div class="kpi-label">Effective Rate (Post-Rebate)</div><div class="kpi-value">${res.atrNet.toFixed(2)}%</div><div class="kpi-sub">Pre-rebate ATR: ${res.atrGross.toFixed(2)}%</div></div>
@@ -1546,10 +1549,10 @@
         <div class="glass-card">
           <h3>GDP Deflator, Inflation Rate &amp; Rule of 70 Doubling Solver (Ch 13, 20, 22)</h3>
           <div class="solver-input-grid" style="margin-top: 1rem;">
-            <div class="input-field-wrap"><label>Year 1 Nominal GDP</label><input type="number" id="df-nom0" class="num-input" value="860" /></div>
-            <div class="input-field-wrap"><label>Year 1 Real GDP</label><input type="number" id="df-real0" class="num-input" value="860" /></div>
-            <div class="input-field-wrap"><label>Year 2 Nominal GDP</label><input type="number" id="df-nom1" class="num-input" value="1419" /></div>
-            <div class="input-field-wrap"><label>Year 2 Real GDP</label><input type="number" id="df-real1" class="num-input" value="1290" /></div>
+            <div class="input-field-wrap"><label>Period 1 Nominal GDP</label><input type="number" id="df-nom0" class="num-input" value="860" /></div>
+            <div class="input-field-wrap"><label>Period 1 Real GDP</label><input type="number" id="df-real0" class="num-input" value="860" /></div>
+            <div class="input-field-wrap"><label>Period 2 Nominal GDP</label><input type="number" id="df-nom1" class="num-input" value="1419" /></div>
+            <div class="input-field-wrap"><label>Period 2 Real GDP</label><input type="number" id="df-real1" class="num-input" value="1290" /></div>
             <div class="input-field-wrap"><label>Annual Growth Rate g (%) for Rule of 70</label><input type="number" id="df-g" class="num-input" value="3.5" step="0.5" /></div>
           </div>
           <div id="df-output"></div>
@@ -1565,8 +1568,8 @@
         });
         document.getElementById('df-output').innerHTML = `
           <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr);">
-            <div class="kpi-tile"><div class="kpi-label">Year 1 GDP Deflator</div><div class="kpi-value">${res.defl_t0.toFixed(2)}</div><div class="kpi-sub">(Nom / Real) × 100</div></div>
-            <div class="kpi-tile"><div class="kpi-label">Year 2 GDP Deflator</div><div class="kpi-value">${res.defl_t1.toFixed(2)}</div><div class="kpi-sub">(Nom / Real) × 100</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Period 1 GDP Deflator</div><div class="kpi-value">${res.defl_t0.toFixed(2)}</div><div class="kpi-sub">(Nom / Real) × 100</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Period 2 GDP Deflator</div><div class="kpi-value">${res.defl_t1.toFixed(2)}</div><div class="kpi-sub">(Nom / Real) × 100</div></div>
             <div class="kpi-tile"><div class="kpi-label">Deflator Inflation Rate</div><div class="kpi-value">${res.inflationRate.toFixed(2)}%</div><div class="kpi-sub">Real GDP Growth: ${res.realGrowthRate.toFixed(2)}%</div></div>
             <div class="kpi-tile"><div class="kpi-label">Nominal GDP Growth</div><div class="kpi-value">${res.nomGrowthRate.toFixed(2)}%</div><div class="kpi-sub">Includes Price + Volume</div></div>
             <div class="kpi-tile"><div class="kpi-label">Rule of 70 Doubling Time</div><div class="kpi-value">${Number.isFinite(res.doublingYears) ? res.doublingYears.toFixed(1) + ' yrs' : '∞'}</div><div class="kpi-sub">70 / g</div></div>
@@ -1579,7 +1582,7 @@
     } else if (activeSolverId === 'labour_solver') {
       stage.innerHTML = `
         <div class="glass-card">
-          <h3>Stats SA Labour Market Solver: Strict vs. Expanded Unemployment &amp; LFPR (Ch 21)</h3>
+          <h3>Labour Market Solver: Strict vs. Expanded Unemployment &amp; LFPR (Ch 21)</h3>
           <div class="solver-input-grid" style="margin-top: 1rem;">
             <div class="input-field-wrap"><label>Employed Persons (E)</label><input type="number" id="lb-emp" class="num-input" value="6750000" /></div>
             <div class="input-field-wrap"><label>Strictly Unemployed (Searching)</label><input type="number" id="lb-ustr" class="num-input" value="2250000" /></div>
@@ -1612,7 +1615,7 @@
     } else {
       stage.innerHTML = `
         <div class="glass-card">
-          <h3>SARB Monetary Aggregates ($M_1, M_2, M_3$) &amp; Simple Credit Multiplier Solver (Ch 14)</h3>
+          <h3>Monetary Aggregates ($M_1, M_2, M_3$) &amp; Simple Credit Multiplier Solver (Ch 14)</h3>
           <div class="solver-input-grid" style="margin-top: 1rem;">
             <div class="input-field-wrap"><label>Coins &amp; Banknotes (Outside Banks, Rm)</label><input type="number" id="mo-c" class="num-input" value="10" /></div>
             <div class="input-field-wrap"><label>Immediate Demand Deposits (D, Rm)</label><input type="number" id="mo-d" class="num-input" value="25" /></div>
@@ -1635,7 +1638,7 @@
           <div class="kpi-bento-grid" style="grid-template-columns: repeat(4, 1fr);">
             <div class="kpi-tile"><div class="kpi-label">Narrow Money M1</div><div class="kpi-value">R${res.M1.toLocaleString()}m</div><div class="kpi-sub">C + D (Medium of Exchange)</div></div>
             <div class="kpi-tile"><div class="kpi-label">Broad Money M2</div><div class="kpi-value">R${res.M2.toLocaleString()}m</div><div class="kpi-sub">M1 + Short/Medium Deposits</div></div>
-            <div class="kpi-tile"><div class="kpi-label">Comprehensive M3</div><div class="kpi-value">R${res.M3.toLocaleString()}m</div><div class="kpi-sub">M2 + Long-Term (2024 Q5 = R450m)</div></div>
+            <div class="kpi-tile"><div class="kpi-label">Comprehensive M3</div><div class="kpi-value">R${res.M3.toLocaleString()}m</div><div class="kpi-sub">M2 + Long-Term Deposits</div></div>
             <div class="kpi-tile"><div class="kpi-label">Simple Credit Multiplier</div><div class="kpi-value">${res.creditMultiplier.toFixed(1)}x</div><div class="kpi-sub">1 / b</div></div>
           </div>
         `;
@@ -1761,14 +1764,14 @@
       <div class="glass-card">
         <div class="quiz-toolbar" style="margin-bottom: 0.75rem;">
           <div class="meta-pill-row" style="margin-bottom: 0;">
-            <span class="badge badge-sky">Question ${currentQuizIndex + 1} of ${filteredQuizDeck.length}</span>
-            <span class="badge badge-indigo">${q.source}</span>
-            <span class="badge badge-emerald">${q.citation}</span>
+            <span class="badge badge-sky">Problem Deck (${filteredQuizDeck.length} Standalone Problems)</span>
+            <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
+            <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
             <span class="badge badge-amber">${q.difficulty}</span>
           </div>
           <div style="display: flex; gap: 0.5rem;">
             <button type="button" class="btn-ghost" id="btn-quiz-prev" ${currentQuizIndex === 0 ? 'disabled' : ''}>← Prev</button>
-            <button type="button" class="btn-secondary" id="btn-quiz-next">${currentQuizIndex === filteredQuizDeck.length - 1 ? 'Restart Deck ↻' : 'Next Question →'}</button>
+            <button type="button" class="btn-secondary" id="btn-quiz-next">${currentQuizIndex === filteredQuizDeck.length - 1 ? 'Restart Deck ↻' : 'Next Problem →'}</button>
           </div>
         </div>
 
@@ -1839,7 +1842,7 @@
                 <span class="badge ${isCorrect ? 'badge-emerald' : 'badge-rose'}">
                   ${isCorrect ? '✅ First-Principles Mastery Verified' : '❌ Diagnostic Refutation & Step-by-Step Derivation'}
                 </span>
-                <span class="badge badge-sky">Prescribed Reference: ${q.citation}</span>
+                <span class="badge badge-sky">Prescribed Reference: ${q.citation || q.topic || 'Core Principle'}</span>
               </div>
               <div class="katex-box" id="quiz-derivation-katex" style="margin: 0.75rem 0;"></div>
               <div>${refutationsHtml}</div>
@@ -1852,9 +1855,9 @@
   }
 
   /* --------------------------------------------------------------------------
-     MODULE 5: Official Past-Paper Simulator (2018–2024 Multi-Campus Archive)
+     MODULE 5: Comprehensive Macroeconomic Synthesis Suites
      -------------------------------------------------------------------------- */
-  let activePaperId = 'pp_2024_pc_vc';
+  let activePaperId = 'suite_01';
   let paperTimerInterval = null;
   let paperRemainingSec = 180 * 60;
 
@@ -1911,11 +1914,11 @@
       <div class="pitfall-accordion ${idx === 0 ? 'open' : ''}">
         <button type="button" class="pitfall-trigger">
           <span>📝 ${w.number}: ${w.prompt}</span>
-          <span class="badge badge-emerald">Official Memorandum</span>
+          <span class="badge badge-emerald">Analytical Solution</span>
         </button>
         <div class="pitfall-content" style="grid-template-columns: 1fr;">
           <div class="law-pane">
-            <div style="font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.35rem;">✅ Official NWU Marking Memorandum &amp; Step-by-Step Solution</div>
+            <div style="font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.35rem;">✅ Complete Analytical Derivation &amp; Step-by-Step Solution</div>
             <div>${renderInlineLatexText(w.memo)}</div>
           </div>
         </div>
@@ -1932,9 +1935,9 @@
       return `
         <div class="glass-card" style="margin-bottom: 1rem;">
           <div class="meta-pill-row">
-            <span class="badge badge-sky">Interactive Exam Item #${qIdx + 1}</span>
-            <span class="badge badge-indigo">${q.source}</span>
-            <span class="badge badge-emerald">${q.citation}</span>
+            <span class="badge badge-sky">Standalone Synthesis Problem</span>
+            <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
+            <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
           </div>
           <h4 style="font-size: 1rem; margin-bottom: 0.65rem;">${renderInlineLatexText(q.stem)}</h4>
           <div class="option-list">${opts}</div>
@@ -1947,18 +1950,18 @@
       <div class="glass-card" style="margin-bottom: 1.25rem; border-left: 4px solid var(--accent-indigo);">
         <div class="meta-pill-row">
           <span class="badge badge-indigo">${pp.session}</span>
-          <span class="badge badge-sky">Duration: ${pp.durationMinutes} Mins • ${pp.totalMarks} Marks</span>
+          <span class="badge badge-sky">Duration: ${pp.durationMinutes} Mins • ${pp.totalMarks} Points</span>
         </div>
         <h3>${pp.session} — ${pp.campuses.join(' • ')}</h3>
         <p style="font-size: 0.88rem; margin-top: 0.35rem;">
-          <strong>Examiners:</strong> ${pp.examiners} &nbsp;|&nbsp; <strong>Moderator:</strong> ${pp.moderator}
+          <strong>Scope:</strong> ${pp.examiners} &nbsp;|&nbsp; <strong>Verification:</strong> ${pp.moderator}
         </p>
       </div>
 
-      <h3 style="margin: 1.25rem 0 0.75rem;">Part 1: Interactive Multiple-Choice &amp; Quantitative Calculation Items</h3>
+      <h3 style="margin: 1.25rem 0 0.75rem;">Interactive Multiple-Choice &amp; Quantitative Calculation Problems</h3>
       <div>${mcqsHtml}</div>
 
-      <h3 style="margin: 1.5rem 0 0.75rem;">Part 2: Section B &amp; Section C Structured Written Questions &amp; Memoranda</h3>
+      <h3 style="margin: 1.5rem 0 0.75rem;">Structured Theoretical Derivations &amp; Analytical Solutions</h3>
       <div>${writtenHtml}</div>
     `;
 
@@ -1994,7 +1997,7 @@
             <div class="feedback-panel">
               <div class="katex-box" id="pp-katex-${qIdx}" style="margin-bottom: 0.65rem;"></div>
               <div class="refutation-item ${chosen.isCorrect ? 'is-correct' : 'is-wrong'}">
-                <strong>Memorandum Explanation:</strong> ${renderInlineLatexText(chosen.refutation)}
+                <strong>Analytical Explanation:</strong> ${renderInlineLatexText(chosen.refutation)}
               </div>
             </div>
           `;

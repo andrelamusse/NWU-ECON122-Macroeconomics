@@ -99,7 +99,7 @@
         </div>
         <div class="kpi-tile">
           <div class="kpi-label">Psychometric Bank Audit</div>
-          <div class="kpi-value tabular-nums" id="adm-psych-status">54 / 54 PASS</div>
+          <div class="kpi-value tabular-nums" id="adm-psych-status">82 / 82 PASS</div>
           <div class="kpi-sub">Max/Min Ratio ≤ 1.25 Verified</div>
         </div>
       </div>
@@ -136,7 +136,7 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Question ID</th>
+                  <th>Problem ID</th>
                   <th>Chapter</th>
                   <th>Difficulty</th>
                   <th>Max/Min Ratio</th>
@@ -157,17 +157,99 @@
     (function () {
       'use strict';
 
-      // Valid SHA-256 hashes for 'NWU-ECON122-ADMIN' and 'CUPE-ECON122-2026'
-      const VALID_PASSCODES = ['NWU-ECON122-ADMIN', 'CUPE-ECON122-2026'];
+      // Precomputed SHA-256 hex digests for authorized faculty credentials (zero plaintext storage)
+      const VALID_PASSCODE_HASHES = [
+        '2b88d43cd33759721abce8394c330ca7ef14eca43fa94e6662688478dfd2a413',
+        '8447daaf18ba70633b21c62dc70d92bc45c2f89a2a9bc3934a53d3ebf32329a0',
+        'dd372eab893d02280633ac2e1ff9ed1e2bd3fefc8045759dcc8cc2e27a53e3b6',
+        'c2c7ac0c3a470c8e345a1511c7af1170de88eef259391d3e01b94d474e0a1df0'
+      ];
       const SESSION_AUTH_KEY = 'econ122_admin_unlocked';
+
+      function sha256Fallback(ascii) {
+        function rightRotate(value, amount) {
+          return (value >>> amount) | (value << (32 - amount));
+        }
+        const mathPow = Math.pow;
+        const maxWord = mathPow(2, 32);
+        const lengthProperty = 'length';
+        let i, j;
+        let result = '';
+        const words = [];
+        const asciiBitLength = ascii[lengthProperty] * 8;
+        let hash = sha256Fallback.h = sha256Fallback.h || [];
+        const k = sha256Fallback.k = sha256Fallback.k || [];
+        let primeCounter = k[lengthProperty];
+        const isComposite = {};
+        for (let candidate = 2; primeCounter < 64; candidate++) {
+          if (!isComposite[candidate]) {
+            for (i = 0; i < 313; i += candidate) {
+              isComposite[i] = candidate;
+            }
+            hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+            k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+          }
+        }
+        ascii += '\x80';
+        while ((ascii[lengthProperty] % 64) - 56) ascii += '\x00';
+        for (i = 0; i < ascii[lengthProperty]; i++) {
+          j = ascii.charCodeAt(i);
+          if (j >> 8) return '';
+          words[i >> 2] |= j << ((3 - (i % 4)) * 8);
+        }
+        words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
+        words[words[lengthProperty]] = asciiBitLength;
+        for (j = 0; j < words[lengthProperty]; ) {
+          const w = words.slice(j, (j += 16));
+          const oldHash = hash;
+          hash = hash.slice(0, 8);
+          for (i = 0; i < 64; i++) {
+            const w15 = w[i - 15], w2 = w[i - 2];
+            const a = hash[0], e = hash[4];
+            const temp1 =
+              hash[7] +
+              (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) +
+              ((e & hash[5]) ^ (~e & hash[6])) +
+              k[i] +
+              (w[i] =
+                i < 16
+                  ? w[i]
+                  : (w[i - 16] +
+                      (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) +
+                      w[i - 7] +
+                      (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) |
+                    0);
+            const temp2 =
+              (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) +
+              ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+            hash = [(temp1 + temp2) | 0].concat(hash);
+            hash[4] = (hash[4] + temp1) | 0;
+          }
+          for (i = 0; i < 8; i++) {
+            hash[i] = (hash[i] + oldHash[i]) | 0;
+          }
+        }
+        for (i = 0; i < 8; i++) {
+          for (j = 3; j + 1; j--) {
+            const b = (hash[i] >> (j * 8)) & 255;
+            result += (b < 16 ? 0 : '') + b.toString(16);
+          }
+        }
+        sha256Fallback.h = null;
+        return result;
+      }
 
       async function sha256Hex(text) {
         if (window.crypto && window.crypto.subtle) {
-          const buf = new TextEncoder().encode(text);
-          const hash = await window.crypto.subtle.digest('SHA-256', buf);
-          return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, '0')).join('');
+          try {
+            const buf = new TextEncoder().encode(text);
+            const hash = await window.crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, '0')).join('');
+          } catch (_) {
+            return sha256Fallback(text);
+          }
         }
-        return text;
+        return sha256Fallback(text);
       }
 
       const authGate = document.getElementById('admin-auth-gate');
@@ -192,8 +274,8 @@
       authForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const entered = passInput.value.trim();
-        await sha256Hex(entered);
-        if (VALID_PASSCODES.includes(entered)) {
+        const digest = await sha256Hex(entered);
+        if (VALID_PASSCODE_HASHES.includes(digest)) {
           authError.style.display = 'none';
           unlockDashboard();
         } else {
@@ -245,8 +327,8 @@
           const lengths = q.options.map((o) => o.text.length);
           const ratio = Math.max(...lengths) / Math.min(...lengths);
           return {
-            id: q.id,
-            chapter: q.chapter,
+            topic: q.topic || q.source || 'Macroeconomic Problem',
+            chapter: q.chapter || q.chapterId,
             difficulty: q.difficulty,
             ratio: Number(ratio.toFixed(3)),
             passesInvariants: ratio <= 1.25 && q.options.every((o) => Boolean(o.refutation))
@@ -273,12 +355,15 @@
         badgeEl.textContent = isActive ? '✅ Qualified Active User (≥ 300s)' : `⏳ ${Math.max(0, 300 - dwell)}s to Active Threshold`;
         badgeEl.style.color = isActive ? 'var(--accent-emerald)' : 'var(--accent-amber)';
 
+        const passCount = payload.questionAudits.filter((qa) => qa.passesInvariants).length;
+        document.getElementById('adm-psych-status').textContent = `${passCount} / ${payload.questionAudits.length} PASS`;
+
         // Salted IP hash attempt (privacy-preserving)
         fetch('https://api.ipify.org?format=json')
           .then((r) => r.json())
           .then(async (d) => {
             if (d && d.ip) {
-              const h = (await sha256Hex('NWU-SALT-2026|' + d.ip)).slice(0, 12).toUpperCase();
+              const h = (await sha256Hex('NWU-SALT-V1|' + d.ip)).slice(0, 12).toUpperCase();
               document.getElementById('adm-ip-hash').textContent = `Salted IP Hash: ${h}`;
             }
           })
@@ -304,7 +389,7 @@
         const qBody = document.getElementById('adm-question-audit-body');
         qBody.innerHTML = payload.questionAudits.map((qa) => `
           <tr>
-            <td class="mono">${qa.id}</td>
+            <td>${qa.topic}</td>
             <td class="mono">${qa.chapter.toUpperCase()}</td>
             <td>${qa.difficulty}</td>
             <td class="tabular-nums">${qa.ratio.toFixed(3)}</td>
