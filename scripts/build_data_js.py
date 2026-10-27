@@ -6253,6 +6253,17 @@ CHAPTERS = sanitize_obj(CHAPTERS)
 QUESTIONS = sanitize_obj(QUESTIONS)
 PAST_PAPERS = sanitize_obj(PAST_PAPERS)
 
+# Balance correct answer positions across A (0), B (1), C (2), D (3)
+# Ensures exactly 25% A, 25% B, 25% C, 25% D across the question bank
+for idx, q in enumerate(QUESTIONS):
+    curr_correct = next(i for i, o in enumerate(q["options"]) if o.get("isCorrect"))
+    target_pos = idx % 4
+    if curr_correct != target_pos:
+        opts = list(q["options"])
+        correct_opt = opts.pop(curr_correct)
+        opts.insert(target_pos, correct_opt)
+        q["options"] = opts
+
 # Re-verify option length ratios after sanitization
 for q in QUESTIONS:
     lengths = [len(opt["text"]) for opt in q["options"]]

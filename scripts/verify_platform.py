@@ -79,6 +79,14 @@ for (const pp of DATA.pastPapers) {
 }
 assert.strictEqual(suiteQIds.size, 150, 'All 150 standalone questions must be linked across the 5 synthesis suites');
 
+// 0. Verify Balanced Answer Key Distribution (Never always A)
+const rawPositions = DATA.questions.map(q => q.options.findIndex(o => o.isCorrect));
+const posA = rawPositions.filter(p => p === 0).length;
+const posB = rawPositions.filter(p => p === 1).length;
+const posC = rawPositions.filter(p => p === 2).length;
+const posD = rawPositions.filter(p => p === 3).length;
+assert(posA >= 25 && posB >= 25 && posC >= 25 && posD >= 25, `Options must be balanced across A, B, C, D (got A:${posA}, B:${posB}, C:${posC}, D:${posD})`);
+
 // 1. 50 Rounds of Fisher-Yates Shuffling & Psychometric Invariants
 const seenTopics = new Set();
 for (let round = 0; round < 50; round++) {

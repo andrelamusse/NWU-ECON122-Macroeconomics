@@ -2417,8 +2417,13 @@
     `).join('');
 
     const totalSuiteQ = linkedQuestions.length;
+    // Ensure options are dynamically shuffled for every suite question
+    linkedQuestions.forEach((q) => {
+      q.suiteShuffledOptions = fisherYatesShuffle(q.options);
+    });
+
     const mcqsHtml = linkedQuestions.map((q, qIdx) => {
-      const opts = q.options.map((o, oIdx) => `
+      const opts = q.suiteShuffledOptions.map((o, oIdx) => `
         <button type="button" class="option-btn pp-opt-btn" data-q-idx="${qIdx}" data-o-idx="${oIdx}">
           <span class="option-key">${['A', 'B', 'C', 'D'][oIdx]}</span>
           <span>${renderInlineLatexText(o.text)}</span>
@@ -2495,14 +2500,14 @@
         const qIdx = parseInt(btn.getAttribute('data-q-idx'), 10);
         const oIdx = parseInt(btn.getAttribute('data-o-idx'), 10);
         const q = linkedQuestions[qIdx];
-        if (!q) return;
-        const chosen = q.options[oIdx];
+        if (!q || !q.suiteShuffledOptions) return;
+        const chosen = q.suiteShuffledOptions[oIdx];
         if (chosen.isCorrect) AudioEngine.playSuccess();
         else AudioEngine.playError();
 
         stage.querySelectorAll(`.pp-opt-btn[data-q-idx="${qIdx}"]`).forEach((b, i) => {
           b.disabled = true;
-          if (q.options[i].isCorrect) b.classList.add('correct');
+          if (q.suiteShuffledOptions[i].isCorrect) b.classList.add('correct');
           else if (i === oIdx) b.classList.add('wrong');
         });
 
