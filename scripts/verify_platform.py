@@ -307,7 +307,8 @@ def audit_headless_browser_dom():
     )
     dom_adm = res_adm.stdout
     assert "SHA-256 Cryptographic Gate" in dom_adm, "admin.html DOM did not render SHA-256 gate"
-    assert "150 / 150 PASS" in dom_adm, "admin.html DOM did not render 150 / 150 PASS"
+    assert "Active Device IP Counter" in dom_adm, "admin.html DOM did not render Active Device IP Counter"
+    assert "Total Active Time" in dom_adm, "admin.html DOM did not render Total Active Time"
     print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Cupertino Vault with Study Guide Learning Outcomes & SVG Schematics, 2D SVG Lab, Solvers, 150-problem Quiz with Next/Previous Question buttons, and Admin Console with 0 runtime errors!")
 
 

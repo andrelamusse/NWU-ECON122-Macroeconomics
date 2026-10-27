@@ -553,9 +553,9 @@
     const DEVICE_REGISTRY_KEY = 'econ122_device_log_v2';
     let state = null;
     let isWindowActive = true;
-    let lastActivityTime = Date.now();
-    let isAFK = false;
-    let deviceIp = null;
+    let lastClickTime = Date.now();
+    let isTimerPaused = false;
+    let detectedIp = null;
 
     function simpleHash(str) {
       let h = 2166136261 >>> 0;
@@ -592,36 +592,33 @@
           (navigator.userAgent || ''),
           (navigator.language || ''),
           (window.screen ? window.screen.width + 'x' + window.screen.height : '800x600'),
-          (window.screen ? window.screen.colorDepth : 24),
-          (navigator.hardwareConcurrency || 4),
-          (Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Africa/Johannesburg')
+          (navigator.hardwareConcurrency || 4)
         ].join('|')
       );
       return 'DEV-' + canvasSig.slice(0, 4).toUpperCase() + '-' + hwSig.slice(0, 4).toUpperCase();
     }
 
-    async function detectDeviceIp() {
+    async function fetchPublicIp() {
       if (typeof fetch === 'undefined') return;
-      try {
-        const r = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
-        const d = await r.json();
-        if (d && d.ip) {
-          deviceIp = d.ip;
-          if (state) {
-            state.deviceIp = d.ip;
-            saveState();
-          }
-        }
-      } catch (_) {
+      const endpoints = [
+        'https://api.ipify.org?format=json',
+        'https://api64.ipify.org?format=json',
+        'https://ipapi.co/json/',
+        'https://api.db-ip.com/v2/free/myip'
+      ];
+      for (const url of endpoints) {
         try {
-          const r2 = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-          const d2 = await r2.json();
-          if (d2 && d2.ip) {
-            deviceIp = d2.ip;
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) continue;
+          const data = await res.json();
+          const ip = data.ip || data.ipAddress;
+          if (ip && typeof ip === 'string') {
+            detectedIp = ip.trim();
             if (state) {
-              state.deviceIp = d2.ip;
+              state.deviceIp = detectedIp;
               saveState();
             }
+            break;
           }
         } catch (_) {}
       }
@@ -640,15 +637,14 @@
         const fp = generateDeviceFingerprint();
         state = {
           deviceId: fp,
-          deviceIp: deviceIp || '127.0.0.1 (Local)',
+          deviceIp: detectedIp || 'Detecting IP...',
           firstSeen: new Date().toISOString(),
           lastSeen: new Date().toISOString(),
+          lastClick: new Date().toISOString(),
+          activeSeconds: 0,
           activeDwellSeconds: 0,
-          activeHours: 0,
-          isActiveUserQualified: false, // >= 300s active dwell time
-          isCurrentlyActive: true,
-          isAFK: false,
-          status: '🟢 Active Now',
+          isTimerPaused: false,
+          status: 'Active',
           questionsAnswered: 0,
           questionsCorrect: 0,
           mistakeIds: [],
@@ -657,76 +653,78 @@
         };
         saveState();
       }
-      if (deviceIp && (!state.deviceIp || state.deviceIp.includes('Local'))) {
-        state.deviceIp = deviceIp;
+      if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local'))) {
+        state.deviceIp = detectedIp;
       }
       return state;
+    }
+
+    function formatTime(totalSec) {
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      if (h > 0) {
+        return `${h}h ${m}m ${s}s`;
+      }
+      return `${m}m ${s}s`;
     }
 
     function saveState() {
       if (typeof localStorage === 'undefined' || !state) return;
       try {
         state.lastSeen = new Date().toISOString();
-        state.isActiveUserQualified = state.activeDwellSeconds >= 300;
-        state.activeHours = Number((state.activeDwellSeconds / 3600).toFixed(2));
-        if (deviceIp && (!state.deviceIp || state.deviceIp.includes('Local'))) {
-          state.deviceIp = deviceIp;
+        state.activeDwellSeconds = state.activeSeconds;
+        state.activeTimeFormatted = formatTime(state.activeSeconds);
+        if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local'))) {
+          state.deviceIp = detectedIp;
         }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        syncDeviceRegistry();
+        syncRegistry();
       } catch (_) {}
     }
 
-    function syncDeviceRegistry() {
+    function syncRegistry() {
       if (typeof localStorage === 'undefined' || !state) return;
       try {
-        let registry = [];
+        let list = [];
         const raw = localStorage.getItem(DEVICE_REGISTRY_KEY);
         if (raw) {
-          registry = JSON.parse(raw);
+          list = JSON.parse(raw);
         }
-        if (!Array.isArray(registry)) registry = [];
+        if (!Array.isArray(list)) list = [];
 
-        const ip = state.deviceIp || deviceIp || '127.0.0.1 (Local)';
-        const devId = state.deviceId || 'DEV-MAIN';
-        const activeMins = Math.floor(state.activeDwellSeconds / 60);
-        const activeSecsRem = state.activeDwellSeconds % 60;
-        const activeHoursDec = (state.activeDwellSeconds / 3600).toFixed(2);
-        const formattedUsage = `${activeHoursDec} hrs (${activeMins}m ${activeSecsRem}s)`;
-
-        const devIndex = registry.findIndex((d) => d.deviceId === devId || d.deviceIp === ip);
-        const devEntry = {
+        const ip = state.deviceIp || detectedIp || '127.0.0.1';
+        const devId = state.deviceId || 'DEV-1';
+        const entry = {
           deviceIp: ip,
           deviceId: devId,
-          userAgent: (typeof navigator !== 'undefined' ? (navigator.platform || navigator.userAgent.slice(0, 32)) : 'Web Browser'),
-          firstSeen: state.firstSeen,
+          activeSeconds: state.activeSeconds,
+          activeTimeFormatted: formatTime(state.activeSeconds),
+          status: isTimerPaused ? 'Paused (Idle > 60s)' : 'Active',
+          isTimerPaused: isTimerPaused,
+          lastClick: state.lastClick || new Date().toISOString(),
           lastSeen: state.lastSeen,
-          activeDwellSeconds: state.activeDwellSeconds,
-          activeHoursFormatted: formattedUsage,
-          status: isAFK ? '🟡 AFK (Idle > 1m)' : (isWindowActive && !document.hidden ? '🟢 Active Now' : '⚪ Paused'),
-          isAFK: isAFK,
-          isActiveQualified: state.activeDwellSeconds >= 300,
-          questionsAnswered: state.questionsAnswered || 0,
-          questionsCorrect: state.questionsCorrect || 0,
-          accuracyPct: state.questionsAnswered > 0 ? Number(((state.questionsCorrect / state.questionsAnswered) * 100).toFixed(1)) : 0
+          firstSeen: state.firstSeen
         };
 
-        if (devIndex >= 0) {
-          registry[devIndex] = devEntry;
+        const existingIdx = list.findIndex((x) => x.deviceId === devId || x.deviceIp === ip);
+        if (existingIdx >= 0) {
+          list[existingIdx] = entry;
         } else {
-          registry.unshift(devEntry);
+          list.unshift(entry);
         }
-        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(registry));
+        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(list));
       } catch (_) {}
     }
 
-    function recordActivity() {
-      lastActivityTime = Date.now();
-      if (isAFK) {
-        isAFK = false;
-        if (state) {
-          state.isAFK = false;
-          state.status = '🟢 Active Now';
+    function recordClick() {
+      lastClickTime = Date.now();
+      if (state) {
+        state.lastClick = new Date().toISOString();
+        if (isTimerPaused) {
+          isTimerPaused = false;
+          state.isTimerPaused = false;
+          state.status = 'Active';
           saveState();
         }
       }
@@ -735,33 +733,15 @@
     function recordQuestionAttempt(question, isCorrect) {
       if (!state) loadState();
       if (!state) return;
-      recordActivity();
-      state.questionsAnswered += 1;
+      recordClick();
+      state.questionsAnswered = (state.questionsAnswered || 0) + 1;
       if (isCorrect) {
-        state.questionsCorrect += 1;
+        state.questionsCorrect = (state.questionsCorrect || 0) + 1;
         state.mistakeIds = (state.mistakeIds || []).filter((id) => id !== question.id);
       } else {
         if (!state.mistakeIds.includes(question.id)) {
           state.mistakeIds.push(question.id);
         }
-      }
-
-      const ch = question.chapter || 'ch13';
-      if (!state.chapterStats[ch]) {
-        state.chapterStats[ch] = { attempts: 0, correct: 0 };
-      }
-      state.chapterStats[ch].attempts += 1;
-      if (isCorrect) state.chapterStats[ch].correct += 1;
-
-      state.recentEvents.unshift({
-        ts: new Date().toISOString(),
-        type: 'quiz_attempt',
-        questionId: question.id,
-        chapter: ch,
-        isCorrect
-      });
-      if (state.recentEvents.length > 60) {
-        state.recentEvents.length = 60;
       }
       saveState();
     }
@@ -769,65 +749,67 @@
     function startHeartbeat() {
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       loadState();
-      detectDeviceIp();
+      fetchPublicIp();
 
-      // Listen for human interactions
-      const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'input'];
-      events.forEach((evt) => {
-        window.addEventListener(evt, recordActivity, { passive: true });
+      // Listen strictly for clicks and key interactions on the site
+      const clickEvents = ['click', 'mousedown', 'pointerdown', 'touchstart', 'keydown'];
+      clickEvents.forEach((evt) => {
+        window.addEventListener(evt, recordClick, { passive: true });
       });
 
       document.addEventListener('visibilitychange', () => {
         isWindowActive = !document.hidden;
         if (document.hidden) {
-          if (state) state.status = '⚪ Paused (Background)';
-          saveState();
+          isTimerPaused = true;
+          if (state) {
+            state.isTimerPaused = true;
+            state.status = 'Paused (Background)';
+            saveState();
+          }
         } else {
-          recordActivity();
+          recordClick();
         }
       });
       window.addEventListener('blur', () => {
         isWindowActive = false;
-        if (state) state.status = '⚪ Paused (Blurred)';
-        saveState();
+        isTimerPaused = true;
+        if (state) {
+          state.isTimerPaused = true;
+          state.status = 'Paused (Blurred)';
+          saveState();
+        }
       });
       window.addEventListener('focus', () => {
         isWindowActive = !document.hidden;
-        recordActivity();
+        recordClick();
       });
 
-      // 1-second interval checks AFK status (stopping counter when idle >= 60s)
+      // 1-second interval: checks if clicked within last 60 seconds
       setInterval(() => {
         if (!state) return;
-        const idleDurationMs = Date.now() - lastActivityTime;
-        if (idleDurationMs >= 60000) {
-          isAFK = true;
-          state.isAFK = true;
-          state.status = '🟡 AFK (Idle > 1m)';
-          state.isCurrentlyActive = false;
+        const idleSec = Math.floor((Date.now() - lastClickTime) / 1000);
+
+        if (idleSec >= 60 || !isWindowActive || document.hidden) {
+          // Inactive for 60 seconds -> Stop the timer!
+          isTimerPaused = true;
+          state.isTimerPaused = true;
+          state.status = 'Paused (Idle > 60s)';
         } else {
-          isAFK = false;
-          state.isAFK = false;
-          state.isCurrentlyActive = isWindowActive && !document.hidden;
-          if (state.isCurrentlyActive) {
-            state.status = '🟢 Active Now';
-          }
+          // Active (clicked within 60s) -> Run the timer!
+          isTimerPaused = false;
+          state.isTimerPaused = false;
+          state.status = 'Active';
+          state.activeSeconds = (state.activeSeconds || 0) + 1;
+          state.activeDwellSeconds = state.activeSeconds;
         }
 
-        // Increment active dwell time ONLY if user is actively engaged (NOT AFK)
-        if (!isAFK && isWindowActive && !document.hidden) {
-          state.activeDwellSeconds = (state.activeDwellSeconds || 0) + 1;
-        }
-
-        // Save state every 5 seconds
-        if (state.activeDwellSeconds % 5 === 0) {
-          saveState();
-        }
+        // Save state live
+        saveState();
       }, 1000);
 
       window.addEventListener('beforeunload', () => {
         if (state) {
-          state.status = '⚪ Offline (Closed)';
+          state.status = 'Offline';
           saveState();
         }
       });
@@ -838,8 +820,7 @@
       recordQuestionAttempt,
       startHeartbeat,
       getState: () => state || loadState(),
-      getDeviceIp: () => deviceIp || (state ? state.deviceIp : null),
-      isUserAFK: () => isAFK
+      getDeviceIp: () => detectedIp || (state ? state.deviceIp : null)
     };
   })();
 

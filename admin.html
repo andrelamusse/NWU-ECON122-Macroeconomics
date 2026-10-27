@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ECON122 — Passcode-Gated Admin Telemetry &amp; Device IP Console</title>
+  <title>ECON122 — Device IP &amp; Active Time Monitor</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
   <style>
     .auth-gate-overlay {
-      min-height: 82vh;
+      min-height: 80vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -19,35 +19,33 @@
     }
     .auth-card {
       width: 100%;
-      max-width: 480px;
-    }
-    .heatmap-bar-track {
-      width: 100%;
-      height: 10px;
-      background: var(--bg-canvas);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid var(--border-subtle);
-    }
-    .heatmap-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.5s var(--ease-out-expo);
-    }
-    .badge-afk {
-      background: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      max-width: 420px;
     }
     .badge-active {
       background: rgba(16, 185, 129, 0.15);
       color: #10b981;
       border: 1px solid rgba(16, 185, 129, 0.3);
+      font-weight: 600;
     }
-    .badge-offline {
-      background: rgba(148, 163, 184, 0.15);
-      color: #94a3b8;
-      border: 1px solid rgba(148, 163, 184, 0.3);
+    .badge-paused {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      font-weight: 600;
+    }
+    .live-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      margin-right: 6px;
+      animation: pulseAnim 1.5s infinite;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
   </style>
 </head>
@@ -55,150 +53,83 @@
   <header class="top-header">
     <div class="header-inner">
       <div class="brand-cluster">
-        <div class="brand-mark" style="background: linear-gradient(135deg, #6366f1, #a855f7);">ADM</div>
+        <div class="brand-mark" style="background: linear-gradient(135deg, #10b981, #06b6d4);">IP</div>
         <div class="brand-titles">
-          <span class="brand-eyebrow">Restricted Telemetry • ECON122 Macroeconomics</span>
-          <span class="brand-name">Device IP Logins &amp; Active Usage Telemetry Console</span>
+          <span class="brand-eyebrow">Faculty Console • ECON122</span>
+          <span class="brand-name">Device IP &amp; Active Time Monitor</span>
         </div>
       </div>
       <div class="header-actions" id="admin-header-actions" style="display: none;">
-        <button type="button" class="btn-secondary" id="btn-export-ip-csv">📊 Export IP &amp; Hours (CSV)</button>
-        <button type="button" class="btn-secondary" id="btn-export-json">📦 Export Full JSON</button>
-        <button type="button" class="btn-ghost" id="btn-lock-console">🔒 Lock Console</button>
+        <button type="button" class="btn-primary" id="btn-manual-refresh">🔄 Refresh Data</button>
+        <button type="button" class="btn-secondary" id="btn-export-csv">📊 Export CSV</button>
+        <button type="button" class="btn-ghost" id="btn-reset-timer" style="color: var(--accent-rose);">🗑 Reset Timer</button>
+        <button type="button" class="btn-ghost" id="btn-lock-console">🔒 Lock</button>
       </div>
     </div>
   </header>
 
-  <main class="app-shell">
+  <main class="app-shell" style="max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem;">
     <!-- Passcode Gate -->
     <section id="admin-auth-gate" class="auth-gate-overlay">
       <div class="glass-card auth-card">
         <div class="meta-pill-row">
           <span class="badge badge-indigo">SHA-256 Cryptographic Gate</span>
-          <span class="badge badge-emerald">Zero Student App Exposure</span>
         </div>
-        <h2>Faculty Telemetry Authorization</h2>
-        <p style="font-size: 0.88rem; margin-top: 0.4rem; margin-bottom: 1.25rem;">
-          Enter the faculty passcode to unlock device IP tracking, live non-AFK active usage hours (with 1-minute idle auto-pause), cohort analytics, and psychometric invariant audits.
+        <h2>Faculty Authorization</h2>
+        <p style="font-size: 0.88rem; margin-top: 0.35rem; margin-bottom: 1.25rem; color: var(--text-secondary);">
+          Enter faculty passcode to view live device IPs and active usage time.
         </p>
         <form id="admin-auth-form">
           <div class="input-field-wrap" style="margin-bottom: 1rem;">
-            <label for="admin-passcode-input">Faculty Passcode</label>
+            <label for="admin-passcode-input">Passcode</label>
             <input type="password" id="admin-passcode-input" class="num-input" placeholder="Enter faculty passcode..." autocomplete="off" required />
           </div>
           <div id="admin-auth-error" style="display: none; color: var(--accent-rose); font-size: 0.83rem; margin-bottom: 0.85rem; font-weight: 600;">
-            Invalid passcode hash. Authorized credentials required.
+            Invalid passcode.
           </div>
-          <button type="submit" class="btn-primary" style="width: 100%;">Unlock Telemetry Console</button>
+          <button type="submit" class="btn-primary" style="width: 100%;">Unlock Monitor</button>
         </form>
       </div>
     </section>
 
     <!-- Unlocked Telemetry Dashboard -->
     <section id="admin-dashboard-content" style="display: none;">
-      <!-- KPI Bento Grid -->
-      <div class="kpi-bento-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
+      <!-- Minimalist KPI Summary -->
+      <div class="kpi-bento-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 1.25rem;">
         <div class="kpi-tile">
-          <div class="kpi-label">Unique Device IPs</div>
+          <div class="kpi-label">Device IPs Detected</div>
           <div class="kpi-value tabular-nums" id="adm-ip-count">1</div>
-          <div class="kpi-sub" id="adm-current-ip">Current IP: Detecting...</div>
+          <div class="kpi-sub" id="adm-ip-sub">Current IP: Detecting...</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Total Active Non-AFK Hours</div>
-          <div class="kpi-value tabular-nums" id="adm-total-active-hours">0.0 hrs</div>
-          <div class="kpi-sub">Pauses When Idle ≥ 60s</div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Live Active Devices</div>
-          <div class="kpi-value tabular-nums" id="adm-live-active-count">1</div>
-          <div class="kpi-sub" id="adm-active-status-badge">🟢 Active Engagement</div>
-        </div>
-        <div class="kpi-tile">
-          <div class="kpi-label">Psychometric Bank Audit</div>
-          <div class="kpi-value tabular-nums" id="adm-psych-status">150 / 150 PASS</div>
-          <div class="kpi-sub">Max/Min Ratio ≤ 1.25 Verified</div>
+          <div class="kpi-label">Total Active Time (Clicked &lt; 60s)</div>
+          <div class="kpi-value tabular-nums" id="adm-total-active-time" style="color: var(--accent-emerald);">0m 0s</div>
+          <div class="kpi-sub" id="adm-live-badge"><span class="live-pulse"></span>Live Tracking Active (Auto-Stops if Idle &ge; 60s)</div>
         </div>
       </div>
 
-      <!-- Live Device IP & Active Usage Telemetry Table -->
-      <div class="glass-card" style="margin-bottom: 1.5rem;">
-        <div class="quiz-toolbar" style="margin-bottom: 1rem; flex-wrap: wrap;">
-          <div>
-            <div class="meta-pill-row" style="margin-bottom: 0.35rem;">
-              <span class="badge badge-emerald">🟢 Real-Time Telemetry Stream (1.5s Polling)</span>
-              <span class="badge badge-amber">Strict AFK Guardrail: 60s Idle Auto-Stop</span>
-            </div>
-            <h3>Device IP Logins &amp; Active Non-AFK Usage Hours</h3>
+      <!-- Live Device IP & Active Time Table -->
+      <div class="glass-card">
+        <div class="quiz-toolbar" style="margin-bottom: 1rem; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <h3 style="margin: 0; font-size: 1.15rem;">Active Device IP Counter</h3>
+            <span class="badge badge-emerald" id="adm-poll-indicator"><span class="live-pulse"></span>Live: 1s Polling</span>
           </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-            <input type="search" id="adm-filter-input" class="num-input" placeholder="Search by IP, Device, Status..." style="min-width: 220px; font-size: 0.82rem;" />
-            <button type="button" class="btn-secondary" id="btn-seed-sample-cohort">🧪 Sample Cohort (25 Devices)</button>
-            <button type="button" class="btn-ghost" id="btn-clear-device-log" style="color: var(--accent-rose);">🗑 Reset Logs</button>
-          </div>
+          <button type="button" class="btn-secondary" id="btn-refresh-inline" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">🔄 Refresh Table</button>
         </div>
 
-        <div class="table-scroll-wrap" style="max-height: 480px; overflow-y: auto;">
+        <div class="table-scroll-wrap">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Device IP Address</th>
-                <th>Device Hardware Signature</th>
-                <th>Active Usage Hours</th>
-                <th>Live Status</th>
-                <th>First Login</th>
-                <th>Last Active Interaction</th>
-                <th>Questions / Accuracy</th>
-                <th>Dwell Qualification</th>
+                <th style="min-width: 180px;">Device IP Address</th>
+                <th style="min-width: 180px;">Total Active Time</th>
+                <th style="min-width: 170px;">Status</th>
+                <th style="min-width: 140px;">Last Click Action</th>
               </tr>
             </thead>
             <tbody id="adm-device-table-body"></tbody>
           </table>
-        </div>
-      </div>
-
-      <!-- Bento Grid: Per-Chapter Heatmap & Question Bank Audit -->
-      <div class="bento-grid-2">
-        <div class="glass-card">
-          <div class="meta-pill-row">
-            <span class="badge badge-sky">Chapters 13–22</span>
-            <span class="badge badge-emerald">Live Accuracy Heatmap</span>
-          </div>
-          <h3 style="margin-bottom: 1rem;">Per-Chapter Mastery Accuracy Heatmap</h3>
-          <div class="table-scroll-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Chapter</th>
-                  <th>Attempts</th>
-                  <th>Accuracy</th>
-                  <th>Mastery Distribution</th>
-                </tr>
-              </thead>
-              <tbody id="adm-chapter-heatmap-body"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="glass-card">
-          <div class="meta-pill-row">
-            <span class="badge badge-indigo">Psychometric Invariant Audit</span>
-            <span class="badge badge-amber">Distractor Symmetry</span>
-          </div>
-          <h3 style="margin-bottom: 1rem;">Question Bank Length Ratio &amp; Refutation Audit</h3>
-          <div class="table-scroll-wrap" style="max-height: 440px; overflow-y: auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Problem ID</th>
-                  <th>Chapter</th>
-                  <th>Difficulty</th>
-                  <th>Max/Min Ratio</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="adm-question-audit-body"></tbody>
-            </table>
-          </div>
         </div>
       </div>
     </section>
@@ -210,8 +141,7 @@
     (function () {
       'use strict';
 
-      // Precomputed SHA-256 hex digests for authorized faculty credentials
-            const VALID_PASSCODE_HASHES = [
+      const VALID_PASSCODE_HASHES = [
         '98c3c74913f0fcf016b738db5457f82bb9588e5f2e6b5eabdc62736ed0b58a68',
         '8447daaf18ba70633b21c62dc70d92bc45c2f89a2a9bc3934a53d3ebf32329a0',
         '2b88d43cd33759721abce8394c330ca7ef14eca43fa94e6662688478dfd2a413',
@@ -315,16 +245,48 @@
       const authForm = document.getElementById('admin-auth-form');
       const passInput = document.getElementById('admin-passcode-input');
       const authError = document.getElementById('admin-auth-error');
-      let refreshInterval = null;
+      let livePollTimer = null;
+      let externalIp = null;
+
+      // Parallel IP resolver
+      async function resolvePublicIp() {
+        const apis = [
+          'https://api.ipify.org?format=json',
+          'https://api64.ipify.org?format=json',
+          'https://ipapi.co/json/',
+          'https://api.db-ip.com/v2/free/myip'
+        ];
+        for (const url of apis) {
+          try {
+            const r = await fetch(url, { cache: 'no-store' });
+            if (!r.ok) continue;
+            const d = await r.json();
+            const ip = d.ip || d.ipAddress;
+            if (ip) {
+              externalIp = ip.trim();
+              break;
+            }
+          } catch (_) {}
+        }
+      }
+      resolvePublicIp();
+
+      function formatDuration(sec) {
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        const s = sec % 60;
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        return `${m}m ${s}s`;
+      }
 
       function unlockDashboard() {
         sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
         authGate.style.display = 'none';
         dashContent.style.display = 'block';
         headerActions.style.display = 'flex';
-        populateAdminTelemetry();
-        if (!refreshInterval) {
-          refreshInterval = setInterval(populateAdminTelemetry, 1500);
+        renderMonitor();
+        if (!livePollTimer) {
+          livePollTimer = setInterval(renderMonitor, 1000);
         }
       }
 
@@ -346,301 +308,132 @@
 
       document.getElementById('btn-lock-console').addEventListener('click', () => {
         sessionStorage.removeItem(SESSION_AUTH_KEY);
-        if (refreshInterval) clearInterval(refreshInterval);
+        if (livePollTimer) clearInterval(livePollTimer);
         window.location.reload();
       });
 
-      // Sample cohort generator (25 student devices across Potchefstroom, Mahikeng, Vanderbijlpark)
-      document.getElementById('btn-seed-sample-cohort').addEventListener('click', () => {
-        const sampleDevices = [
-          { ip: '105.184.22.90', isp: 'Vodacom / Gauteng', dev: 'DEV-9F12-88C1 • Win11 Chrome', activeSec: 7420, qAtt: 48, qCor: 43 },
-          { ip: '197.185.12.44', isp: 'MTN / North West', dev: 'DEV-4A3C-1120 • macOS Safari', activeSec: 5120, qAtt: 36, qCor: 31 },
-          { ip: '41.13.120.65', isp: 'Telkom / Potchefstroom', dev: 'DEV-C19B-99A4 • iOS 18 Safari', activeSec: 3890, qAtt: 30, qCor: 27 },
-          { ip: '102.132.8.19', isp: 'Rain / Vanderbijlpark', dev: 'DEV-33EF-7201 • Win10 Edge', activeSec: 1840, qAtt: 22, qCor: 18 },
-          { ip: '154.120.44.81', isp: 'Liquid / Mahikeng', dev: 'DEV-B812-4402 • Android 14 Chrome', activeSec: 640, qAtt: 12, qCor: 9 },
-          { ip: '105.245.91.104', isp: 'Vodacom / Pretoria', dev: 'DEV-E331-5082 • Win11 Chrome', activeSec: 4210, qAtt: 40, qCor: 35 },
-          { ip: '196.25.1.18', isp: 'TENET / NWU Campus Wifi', dev: 'DEV-7A89-22B1 • macOS Chrome', activeSec: 8900, qAtt: 65, qCor: 59 },
-          { ip: '41.114.77.23', isp: 'Afrihost / Potchefstroom', dev: 'DEV-55C2-9011 • Win11 Firefox', activeSec: 2450, qAtt: 25, qCor: 21 },
-          { ip: '169.239.18.5', isp: 'Cool Ideas / JHB', dev: 'DEV-11B4-3388 • iPadOS Safari', activeSec: 980, qAtt: 15, qCor: 14 }
-        ];
-
-        let registry = [];
-        try {
-          registry = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
-        } catch (_) {}
-
-        sampleDevices.forEach((s, idx) => {
-          const hoursDec = (s.activeSec / 3600).toFixed(2);
-          const mins = Math.floor(s.activeSec / 60);
-          const secs = s.activeSec % 60;
-          const isAfkNow = idx % 3 === 1;
-          registry.push({
-            deviceIp: `${s.ip} (${s.isp})`,
-            deviceId: s.dev,
-            userAgent: s.dev,
-            firstSeen: new Date(Date.now() - (s.activeSec * 1500)).toISOString(),
-            lastSeen: new Date(Date.now() - (isAfkNow ? 120000 : 5000)).toISOString(),
-            activeDwellSeconds: s.activeSec,
-            activeHoursFormatted: `${hoursDec} hrs (${mins}m ${secs}s)`,
-            status: isAfkNow ? '🟡 AFK (Idle > 1m)' : '🟢 Active Now',
-            isAFK: isAfkNow,
-            isActiveQualified: s.activeSec >= 300,
-            questionsAnswered: s.qAtt,
-            questionsCorrect: s.qCor,
-            accuracyPct: Number(((s.qCor / s.qAtt) * 100).toFixed(1))
-          });
-        });
-
-        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(registry));
-        populateAdminTelemetry();
+      document.getElementById('btn-manual-refresh').addEventListener('click', () => {
+        resolvePublicIp();
+        renderMonitor();
       });
 
-      document.getElementById('btn-clear-device-log').addEventListener('click', () => {
-        if (confirm('Reset device telemetry registry? This will clear stored session logs.')) {
+      document.getElementById('btn-refresh-inline').addEventListener('click', () => {
+        resolvePublicIp();
+        renderMonitor();
+      });
+
+      document.getElementById('btn-reset-timer').addEventListener('click', () => {
+        if (confirm('Reset total active time counter and clear session records?')) {
+          localStorage.removeItem(STORAGE_KEY);
           localStorage.removeItem(DEVICE_REGISTRY_KEY);
-          populateAdminTelemetry();
+          renderMonitor();
         }
       });
 
-      function buildTelemetryPayload() {
-        let localTelemetry = {};
+      function renderMonitor() {
+        let localState = {};
         try {
-          localTelemetry = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          localState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         } catch (_) {}
 
-        let deviceRegistry = [];
+        let list = [];
         try {
-          deviceRegistry = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
+          list = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
         } catch (_) {}
+        if (!Array.isArray(list)) list = [];
 
-        // Ensure current active session is in the registry
-        if (localTelemetry && localTelemetry.deviceId) {
-          const currentIp = localTelemetry.deviceIp || '127.0.0.1 (Local Host)';
-          const activeSec = localTelemetry.activeDwellSeconds || 0;
-          const mins = Math.floor(activeSec / 60);
-          const secs = activeSec % 60;
-          const hoursDec = (activeSec / 3600).toFixed(2);
-          const isAfk = localTelemetry.isAFK || false;
-
-          const existsIdx = deviceRegistry.findIndex((d) => d.deviceId === localTelemetry.deviceId);
-          const curEntry = {
-            deviceIp: currentIp,
-            deviceId: localTelemetry.deviceId,
-            userAgent: (typeof navigator !== 'undefined' ? (navigator.platform || navigator.userAgent.slice(0, 32)) : 'Current Session'),
-            firstSeen: localTelemetry.firstSeen || new Date().toISOString(),
-            lastSeen: localTelemetry.lastSeen || new Date().toISOString(),
-            activeDwellSeconds: activeSec,
-            activeHoursFormatted: `${hoursDec} hrs (${mins}m ${secs}s)`,
-            status: isAfk ? '🟡 AFK (Idle > 1m)' : '🟢 Active Now',
-            isAFK: isAfk,
-            isActiveQualified: activeSec >= 300,
-            questionsAnswered: localTelemetry.questionsAnswered || 0,
-            questionsCorrect: localTelemetry.questionsCorrect || 0,
-            accuracyPct: localTelemetry.questionsAnswered > 0 ? Number(((localTelemetry.questionsCorrect / localTelemetry.questionsAnswered) * 100).toFixed(1)) : 0
-          };
-
-          if (existsIdx >= 0) {
-            deviceRegistry[existsIdx] = curEntry;
-          } else {
-            deviceRegistry.unshift(curEntry);
-          }
+        // Determine current IP
+        let currentIp = externalIp || localState.deviceIp || '127.0.0.1';
+        if (currentIp.includes('Detecting') && externalIp) {
+          currentIp = externalIp;
         }
 
-        const baselineCohort = {
-          ch13: { attempts: 420, correct: 344 },
-          ch14: { attempts: 385, correct: 312 },
-          ch15: { attempts: 410, correct: 320 },
-          ch16: { attempts: 360, correct: 295 },
-          ch17: { attempts: 390, correct: 335 },
-          ch18: { attempts: 450, correct: 338 },
-          ch19: { attempts: 340, correct: 268 },
-          ch20: { attempts: 375, correct: 304 },
-          ch21: { attempts: 395, correct: 332 },
-          ch22: { attempts: 350, correct: 294 }
+        const activeSec = localState.activeSeconds || localState.activeDwellSeconds || 0;
+        const isPaused = localState.isTimerPaused !== false && (localState.status && localState.status.includes('Paused'));
+
+        // Ensure active device is present in list
+        const devId = localState.deviceId || 'DEV-1';
+        const activeEntry = {
+          deviceIp: currentIp,
+          deviceId: devId,
+          activeSeconds: activeSec,
+          activeTimeFormatted: formatDuration(activeSec),
+          status: isPaused ? 'Paused (Idle > 60s)' : 'Active',
+          lastClick: localState.lastClick || new Date().toISOString()
         };
 
-        const mergedChapters = (typeof ECON122_DATA !== 'undefined' ? ECON122_DATA.chapters : []).map((ch) => {
-          const base = baselineCohort[ch.id] || { attempts: 300, correct: 240 };
-          const loc = (localTelemetry.chapterStats && localTelemetry.chapterStats[ch.id]) || { attempts: 0, correct: 0 };
-          const totalAttempts = base.attempts + loc.attempts;
-          const totalCorrect = base.correct + loc.correct;
-          const accuracy = totalAttempts > 0 ? (totalCorrect / totalAttempts) * 100 : 0;
-          return {
-            id: ch.id,
-            number: ch.number,
-            title: ch.title,
-            attempts: totalAttempts,
-            correct: totalCorrect,
-            accuracy: Number(accuracy.toFixed(1))
-          };
-        });
-
-        const questionAudits = (typeof ECON122_DATA !== 'undefined' ? ECON122_DATA.questions : []).map((q) => {
-          const lengths = q.options.map((o) => o.text.length);
-          const ratio = Math.max(...lengths) / Math.min(...lengths);
-          return {
-            topic: q.topic || q.source || 'Macroeconomic Problem',
-            chapter: q.chapter || q.chapterId,
-            difficulty: q.difficulty,
-            ratio: Number(ratio.toFixed(3)),
-            passesInvariants: ratio <= 1.25 && q.options.every((o) => Boolean(o.refutation))
-          };
-        });
-
-        return {
-          generatedAt: new Date().toISOString(),
-          localDevice: localTelemetry,
-          deviceRegistry,
-          chapters: mergedChapters,
-          questionAudits
-        };
-      }
-
-      function populateAdminTelemetry() {
-        const payload = buildTelemetryPayload();
-        const devices = payload.deviceRegistry || [];
-        const loc = payload.localDevice || {};
-
-        // Unique IPs
-        const uniqueIps = new Set(devices.map((d) => d.deviceIp)).size;
-        document.getElementById('adm-ip-count').textContent = uniqueIps || 1;
-        document.getElementById('adm-current-ip').textContent = `Current: ${loc.deviceIp || '127.0.0.1 (Local)'}`;
-
-        // Total non-AFK active hours
-        const totalActiveSec = devices.reduce((sum, d) => sum + (d.activeDwellSeconds || 0), 0);
-        const totalActiveHours = (totalActiveSec / 3600).toFixed(1);
-        document.getElementById('adm-total-active-hours').textContent = `${totalActiveHours} hrs`;
-
-        // Live Active count
-        const activeCount = devices.filter((d) => !d.isAFK && d.status && d.status.includes('Active')).length;
-        document.getElementById('adm-live-active-count').textContent = `${activeCount} / ${devices.length}`;
-        const activeStatusBadge = document.getElementById('adm-active-status-badge');
-        if (loc.isAFK) {
-          activeStatusBadge.textContent = '🟡 AFK (Idle > 60s)';
-          activeStatusBadge.style.color = '#f59e0b';
+        const existingIdx = list.findIndex((x) => x.deviceId === devId || x.deviceIp === currentIp);
+        if (existingIdx >= 0) {
+          list[existingIdx] = activeEntry;
         } else {
-          activeStatusBadge.textContent = '🟢 Active Engagement';
-          activeStatusBadge.style.color = '#10b981';
+          list.unshift(activeEntry);
         }
 
-        // Psychometric status
-        const passCount = payload.questionAudits.filter((qa) => qa.passesInvariants).length;
-        document.getElementById('adm-psych-status').textContent = `${passCount} / ${payload.questionAudits.length} PASS`;
+        // Summary metrics
+        const uniqueIps = new Set(list.map((x) => x.deviceIp)).size;
+        document.getElementById('adm-ip-count').textContent = uniqueIps || 1;
+        document.getElementById('adm-ip-sub').textContent = `Current Device IP: ${currentIp}`;
 
-        // Filter text
-        const filterInput = document.getElementById('adm-filter-input');
-        const filterVal = filterInput ? filterInput.value.trim().toLowerCase() : '';
+        const totalSecondsAll = list.reduce((sum, x) => sum + (x.activeSeconds || 0), 0);
+        document.getElementById('adm-total-active-time').textContent = formatDuration(totalSecondsAll);
 
-        // Device Log Table
-        const tableBody = document.getElementById('adm-device-table-body');
-        const filteredDevices = devices.filter((d) => {
-          if (!filterVal) return true;
-          return (
-            (d.deviceIp || '').toLowerCase().includes(filterVal) ||
-            (d.deviceId || '').toLowerCase().includes(filterVal) ||
-            (d.status || '').toLowerCase().includes(filterVal)
-          );
-        });
+        const liveBadge = document.getElementById('adm-live-badge');
+        if (isPaused) {
+          liveBadge.innerHTML = '⏸ Counter Paused (No click detected within 60s)';
+          liveBadge.style.color = '#f59e0b';
+        } else {
+          liveBadge.innerHTML = '<span class="live-pulse"></span>Timer Running (Click detected within last 60s)';
+          liveBadge.style.color = '#10b981';
+        }
 
-        tableBody.innerHTML = filteredDevices.map((d) => {
-          const isAfk = d.isAFK || (d.status && d.status.includes('AFK'));
-          const statusBadge = isAfk
-            ? '<span class="badge badge-afk">🟡 AFK (Idle > 1m)</span>'
-            : (d.status && d.status.includes('Active')
-                ? '<span class="badge badge-active">🟢 Active Now</span>'
-                : '<span class="badge badge-offline">⚪ Paused</span>');
-          const qualBadge = d.isActiveQualified
-            ? '<span class="badge badge-emerald">✅ Qualified (≥ 5m)</span>'
-            : '<span class="badge badge-amber">⏳ In Progress</span>';
+        // Table Rows
+        const tbody = document.getElementById('adm-device-table-body');
+        tbody.innerHTML = list.map((item) => {
+          const itemPaused = item.status && item.status.includes('Paused');
+          const statusBadge = itemPaused
+            ? '<span class="badge badge-paused">⏸ Paused (Idle &ge; 60s)</span>'
+            : '<span class="badge badge-active">🟢 Active Now</span>';
 
-          const firstTime = d.firstSeen ? new Date(d.firstSeen).toLocaleTimeString() : '—';
-          const lastTime = d.lastSeen ? new Date(d.lastSeen).toLocaleTimeString() : '—';
+          let lastClickAgo = 'Just now';
+          if (item.lastClick) {
+            const diffSec = Math.floor((Date.now() - new Date(item.lastClick).getTime()) / 1000);
+            if (diffSec < 5) lastClickAgo = 'Just now';
+            else if (diffSec < 60) lastClickAgo = `${diffSec}s ago`;
+            else lastClickAgo = `${Math.floor(diffSec / 60)}m ago`;
+          }
 
           return `
             <tr>
-              <td><strong>${d.deviceIp}</strong></td>
-              <td><span class="mono" style="font-size: 0.8rem;">${d.deviceId}</span></td>
-              <td class="tabular-nums"><strong>${d.activeHoursFormatted || '0.0 hrs (0m)'}</strong></td>
+              <td><strong style="font-size: 1.05rem;">${item.deviceIp}</strong></td>
+              <td><strong class="tabular-nums" style="font-size: 1.15rem; color: var(--accent-emerald);">${formatDuration(item.activeSeconds || 0)}</strong></td>
               <td>${statusBadge}</td>
-              <td class="tabular-nums" style="font-size: 0.82rem;">${firstTime}</td>
-              <td class="tabular-nums" style="font-size: 0.82rem;">${lastTime}</td>
-              <td class="tabular-nums">${d.questionsAnswered} att (${d.accuracyPct}%)</td>
-              <td>${qualBadge}</td>
+              <td class="tabular-nums">${lastClickAgo}</td>
             </tr>
           `;
         }).join('');
-
-        // Chapters Heatmap
-        const heatBody = document.getElementById('adm-chapter-heatmap-body');
-        heatBody.innerHTML = payload.chapters.map((c) => {
-          const color = c.accuracy >= 80 ? '#10b981' : (c.accuracy >= 70 ? '#38bdf8' : '#f59e0b');
-          return `
-            <tr>
-              <td><strong>Ch ${c.number}:</strong> ${c.title}</td>
-              <td class="tabular-nums">${c.attempts}</td>
-              <td class="tabular-nums"><strong>${c.accuracy.toFixed(1)}%</strong></td>
-              <td style="min-width: 140px;">
-                <div class="heatmap-bar-track">
-                  <div class="heatmap-bar-fill" style="width: ${c.accuracy}%; background: ${color};"></div>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-
-        // Questions Audit
-        const qBody = document.getElementById('adm-question-audit-body');
-        qBody.innerHTML = payload.questionAudits.map((qa) => `
-          <tr>
-            <td>${qa.topic}</td>
-            <td class="mono">${qa.chapter.toUpperCase()}</td>
-            <td>${qa.difficulty}</td>
-            <td class="tabular-nums">${qa.ratio.toFixed(3)}</td>
-            <td><span class="badge badge-emerald">${qa.passesInvariants ? 'PASS ≤ 1.25' : 'FAIL'}</span></td>
-          </tr>
-        `).join('');
       }
 
-      // Filter event listener
-      const filterInp = document.getElementById('adm-filter-input');
-      if (filterInp) {
-        filterInp.addEventListener('input', populateAdminTelemetry);
-      }
-
-      // CSV Export for Device IP & Active Usage Hours
-      document.getElementById('btn-export-ip-csv').addEventListener('click', () => {
-        const payload = buildTelemetryPayload();
-        const rows = [['Device_IP', 'Device_ID', 'Active_Hours_Dec', 'Active_Seconds', 'Status', 'First_Seen', 'Last_Seen', 'Questions_Attempted', 'Questions_Correct', 'Accuracy_Pct', 'Qualified_User']];
-        payload.deviceRegistry.forEach((d) => {
+      // Export CSV
+      document.getElementById('btn-export-csv').addEventListener('click', () => {
+        let list = [];
+        try {
+          list = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
+        } catch (_) {}
+        const rows = [['Device_IP', 'Active_Seconds', 'Active_Time_Formatted', 'Status', 'Last_Click']];
+        list.forEach((item) => {
           rows.push([
-            `"${d.deviceIp}"`,
-            `"${d.deviceId}"`,
-            (d.activeDwellSeconds / 3600).toFixed(2),
-            d.activeDwellSeconds,
-            `"${d.status}"`,
-            `"${d.firstSeen}"`,
-            `"${d.lastSeen}"`,
-            d.questionsAnswered,
-            d.questionsCorrect,
-            d.accuracyPct,
-            d.isActiveQualified ? 'YES' : 'NO'
+            `"${item.deviceIp}"`,
+            item.activeSeconds || 0,
+            `"${formatDuration(item.activeSeconds || 0)}"`,
+            `"${item.status}"`,
+            `"${item.lastClick || ''}"`
           ]);
         });
         const csv = rows.map((r) => r.join(',')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'econ122_device_ip_usage_log.csv';
-        a.click();
-      });
-
-      // JSON Export
-      document.getElementById('btn-export-json').addEventListener('click', () => {
-        const data = buildTelemetryPayload();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'econ122_telemetry_export.json';
+        a.download = 'econ122_device_active_time.csv';
         a.click();
       });
     })();
