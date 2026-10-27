@@ -418,7 +418,7 @@ html_doc = f"""<!DOCTYPE html>
     <div class="cover-eyebrow">North-West University • ECON122 Introduction to Macroeconomics</div>
     <h1>Master Print Study Guide, Formula Vault &amp; Problem Compendium ({len(data['questions'])} Standalone Problems)</h1>
     <p style="font-size: 8.1pt; color: #334155;">
-      100% Aligned with Philip Mohr — <em>Economics for South African Students</em> (Chapters 13 to 22), SARB Monetary Policy Frameworks, and Stats SA National Accounts. Every analytical problem is presented in full-width single-column clarity with step-by-step KaTeX derivations.
+      Comprehensive Macroeconomic Study Guide (Chapters 13 to 22), incorporating SARB Monetary Policy Frameworks and Stats SA National Accounting standards. Every analytical problem is presented in full-width single-column clarity with step-by-step KaTeX derivations.
     </p>
   </div>
 

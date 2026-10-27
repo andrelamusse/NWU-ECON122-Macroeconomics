@@ -14,7 +14,7 @@ PDF_GUIDE = os.path.join(ROOT, "ECON122_Master_Study_Guide.pdf")
 NODE_TEST_JS = os.path.join(ROOT, "scripts", "run_vm_tests.js")
 
 FORBIDDEN_REGEX = re.compile(
-    r"(Past[\s-]Paper|\bExam\b|\bTutorial\b|\bSection [A-C]\b|\bQ\d+\.\d+|Question \d|201[6-9]|202[0-5]|Mahikeng|Potchefstroom|Vanderbijlpark)",
+    r"(Past[\s-]Paper|\bExam\b|\bTutorial\b|\bSection [A-C]\b|\bQ\d+\.\d+|Question \d|201[6-9]|202[0-5]|Mahikeng|Potchefstroom|Vanderbijlpark|\bMohr\b|\bTextbook\b|\bStudy Unit\b|\bNotional\b)",
     re.IGNORECASE,
 )
 
@@ -62,9 +62,10 @@ const ENGINE = sandbox.ECON122_ENGINE;
 assert(DATA && Array.isArray(DATA.chapters), 'ECON122_DATA.chapters must exist');
 assert.strictEqual(DATA.chapters.length, 10, 'Must have all 10 prescribed chapters (Ch 13-22)');
 for (const ch of DATA.chapters) {
-  assert(typeof ch.studyUnit === 'string' && ch.studyUnit.startsWith('Study Unit'), `Chapter ${ch.id} must have a Study Unit mapping`);
-  assert(typeof ch.studyHours === 'string' && ch.studyHours.includes('Hours'), `Chapter ${ch.id} must have studyHours string`);
+  assert(ch.title && ch.number >= 13 && ch.number <= 22, `Chapter ${ch.id} must have a valid title`);
   assert(Array.isArray(ch.learningOutcomes) && ch.learningOutcomes.length >= 2, `Chapter ${ch.id} must have learningOutcomes`);
+  assert(Array.isArray(ch.formulas) && ch.formulas.length >= 2, `Chapter ${ch.id} must have formulas`);
+  assert(Array.isArray(ch.concepts) && ch.concepts.length >= 2, `Chapter ${ch.id} must have concepts`);
 }
 assert.strictEqual(DATA.questions.length, 150, 'Must have all 150 verified standalone questions');
 assert.strictEqual(DATA.pastPapers.length, 5, 'Must have 5 synthesis suites');
@@ -179,13 +180,16 @@ assert(collided[2].y - collided[1].y >= 18, 'Labels b and c must be separated by
 // 5. Verify Admin SHA-256 Cryptographic Gate (no plaintext passcodes, valid SHA-256 hashes)
 assert(!adminCode.includes('NWU-ECON122-ADMIN'), 'SECURITY FAILURE: Plaintext passcode found in admin.html!');
 assert(!adminCode.includes('ECON122-2026'), 'SECURITY FAILURE: Plaintext passcode found in admin.html!');
+assert(!adminCode.includes('admin122'), 'SECURITY FAILURE: Plaintext passcode found in admin.html!');
 const expectedHash1 = crypto.createHash('sha256').update('NWU-ECON122-ADMIN').digest('hex');
 const expectedHash2 = crypto.createHash('sha256').update('ECON122-2026').digest('hex');
+const expectedHash3 = crypto.createHash('sha256').update('admin122').digest('hex');
 assert(adminCode.includes(expectedHash1), 'admin.html must contain SHA-256 digest 1');
 assert(adminCode.includes(expectedHash2), 'admin.html must contain SHA-256 digest 2');
+assert(adminCode.includes(expectedHash3), 'admin.html must contain SHA-256 digest 3');
 assert(adminCode.includes('VALID_PASSCODE_HASHES.includes(digest)'), 'admin.html must verify SHA-256 digest');
 
-console.log('NODE_VM_SANDBOX_PASS: All 150 questions (x50 shuffle rounds = 7,500 checks), 150 unique topics, Study Units 1-6 learning outcomes, zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
+console.log('NODE_VM_SANDBOX_PASS: All 150 questions (x50 shuffle rounds = 7,500 checks), 150 unique topics, learning outcomes, zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
 """
     with open(NODE_TEST_JS, "w", encoding="utf-8") as f:
         f.write(node_script)
@@ -288,7 +292,7 @@ def audit_headless_browser_dom():
     )
     dom = res.stdout
     assert "Chapter 13: Measuring the Performance of the Economy" in dom, "Vault DOM did not render Chapter 13"
-    assert "Official Study Guide Learning Outcomes" in dom, "Vault DOM did not render Study Guide Learning Outcomes card"
+    assert "Key Learning Objectives" in dom, "Vault DOM did not render Learning Objectives card"
     assert "chapter-schematic-frame" in dom and "Lorenz Curve" in dom, "Vault DOM did not render Chapter 13 SVG schematic"
     assert "svg" in dom and "E0 (Y* =" in dom, "2D Vector SVG Lab did not render equilibrium E0"
     assert "Problem 1 of 150 (150 Standalone Problems)" in dom, "Quiz engine did not render 150 Standalone Problems deck"

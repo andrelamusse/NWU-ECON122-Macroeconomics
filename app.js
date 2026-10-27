@@ -161,7 +161,7 @@
       ]
     },
     'schedule_d': {
-      label: 'Study Unit 2.2 Schedule (Jerome R288k & Sally R4.5m)',
+      label: 'Personal Income Tax Schedule D (Jerome R288k & Sally R4.5m)',
       rebates: { primary: 13500, secondary: 7407, tertiary: 2466 },
       brackets: [
         { min: 0, max: 189880, base: 0, rate: 0.18 },
@@ -550,8 +550,12 @@
      -------------------------------------------------------------------------- */
   const TelemetryEngine = (function () {
     const STORAGE_KEY = 'econ122_telemetry_v1';
+    const DEVICE_REGISTRY_KEY = 'econ122_device_log_v2';
     let state = null;
     let isWindowActive = true;
+    let lastActivityTime = Date.now();
+    let isAFK = false;
+    let deviceIp = null;
 
     function simpleHash(str) {
       let h = 2166136261 >>> 0;
@@ -564,9 +568,9 @@
 
     function generateDeviceFingerprint() {
       if (typeof window === 'undefined' || typeof document === 'undefined') {
-        return 'node-vm-device';
+        return 'DEV-NODE-VM';
       }
-      let canvasSig = 'no-canvas';
+      let canvasSig = 'NO-CANVAS';
       try {
         const c = document.createElement('canvas');
         c.width = 160;
@@ -585,15 +589,42 @@
 
       const hwSig = simpleHash(
         [
-          navigator.userAgent || '',
-          navigator.language || '',
-          screen.width + 'x' + screen.height,
-          screen.colorDepth || 24,
-          navigator.hardwareConcurrency || 4,
-          Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Johannesburg'
+          (navigator.userAgent || ''),
+          (navigator.language || ''),
+          (window.screen ? window.screen.width + 'x' + window.screen.height : '800x600'),
+          (window.screen ? window.screen.colorDepth : 24),
+          (navigator.hardwareConcurrency || 4),
+          (Intl.DateTimeFormat ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Africa/Johannesburg')
         ].join('|')
       );
-      return 'DEV-' + canvasSig.toUpperCase() + '-' + hwSig.toUpperCase();
+      return 'DEV-' + canvasSig.slice(0, 4).toUpperCase() + '-' + hwSig.slice(0, 4).toUpperCase();
+    }
+
+    async function detectDeviceIp() {
+      if (typeof fetch === 'undefined') return;
+      try {
+        const r = await fetch('https://api.ipify.org?format=json', { cache: 'no-store' });
+        const d = await r.json();
+        if (d && d.ip) {
+          deviceIp = d.ip;
+          if (state) {
+            state.deviceIp = d.ip;
+            saveState();
+          }
+        }
+      } catch (_) {
+        try {
+          const r2 = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+          const d2 = await r2.json();
+          if (d2 && d2.ip) {
+            deviceIp = d2.ip;
+            if (state) {
+              state.deviceIp = d2.ip;
+              saveState();
+            }
+          }
+        } catch (_) {}
+      }
     }
 
     function loadState() {
@@ -609,10 +640,15 @@
         const fp = generateDeviceFingerprint();
         state = {
           deviceId: fp,
+          deviceIp: deviceIp || '127.0.0.1 (Local)',
           firstSeen: new Date().toISOString(),
           lastSeen: new Date().toISOString(),
           activeDwellSeconds: 0,
+          activeHours: 0,
           isActiveUserQualified: false, // >= 300s active dwell time
+          isCurrentlyActive: true,
+          isAFK: false,
+          status: '🟢 Active Now',
           questionsAnswered: 0,
           questionsCorrect: 0,
           mistakeIds: [],
@@ -620,6 +656,9 @@
           recentEvents: []
         };
         saveState();
+      }
+      if (deviceIp && (!state.deviceIp || state.deviceIp.includes('Local'))) {
+        state.deviceIp = deviceIp;
       }
       return state;
     }
@@ -629,13 +668,74 @@
       try {
         state.lastSeen = new Date().toISOString();
         state.isActiveUserQualified = state.activeDwellSeconds >= 300;
+        state.activeHours = Number((state.activeDwellSeconds / 3600).toFixed(2));
+        if (deviceIp && (!state.deviceIp || state.deviceIp.includes('Local'))) {
+          state.deviceIp = deviceIp;
+        }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        syncDeviceRegistry();
       } catch (_) {}
+    }
+
+    function syncDeviceRegistry() {
+      if (typeof localStorage === 'undefined' || !state) return;
+      try {
+        let registry = [];
+        const raw = localStorage.getItem(DEVICE_REGISTRY_KEY);
+        if (raw) {
+          registry = JSON.parse(raw);
+        }
+        if (!Array.isArray(registry)) registry = [];
+
+        const ip = state.deviceIp || deviceIp || '127.0.0.1 (Local)';
+        const devId = state.deviceId || 'DEV-MAIN';
+        const activeMins = Math.floor(state.activeDwellSeconds / 60);
+        const activeSecsRem = state.activeDwellSeconds % 60;
+        const activeHoursDec = (state.activeDwellSeconds / 3600).toFixed(2);
+        const formattedUsage = `${activeHoursDec} hrs (${activeMins}m ${activeSecsRem}s)`;
+
+        const devIndex = registry.findIndex((d) => d.deviceId === devId || d.deviceIp === ip);
+        const devEntry = {
+          deviceIp: ip,
+          deviceId: devId,
+          userAgent: (typeof navigator !== 'undefined' ? (navigator.platform || navigator.userAgent.slice(0, 32)) : 'Web Browser'),
+          firstSeen: state.firstSeen,
+          lastSeen: state.lastSeen,
+          activeDwellSeconds: state.activeDwellSeconds,
+          activeHoursFormatted: formattedUsage,
+          status: isAFK ? '🟡 AFK (Idle > 1m)' : (isWindowActive && !document.hidden ? '🟢 Active Now' : '⚪ Paused'),
+          isAFK: isAFK,
+          isActiveQualified: state.activeDwellSeconds >= 300,
+          questionsAnswered: state.questionsAnswered || 0,
+          questionsCorrect: state.questionsCorrect || 0,
+          accuracyPct: state.questionsAnswered > 0 ? Number(((state.questionsCorrect / state.questionsAnswered) * 100).toFixed(1)) : 0
+        };
+
+        if (devIndex >= 0) {
+          registry[devIndex] = devEntry;
+        } else {
+          registry.unshift(devEntry);
+        }
+        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(registry));
+      } catch (_) {}
+    }
+
+    function recordActivity() {
+      lastActivityTime = Date.now();
+      if (isAFK) {
+        isAFK = false;
+        if (state) {
+          state.isAFK = false;
+          state.status = '🟢 Active Now';
+          saveState();
+        }
+      }
     }
 
     function recordQuestionAttempt(question, isCorrect) {
       if (!state) loadState();
       if (!state) return;
+      recordActivity();
       state.questionsAnswered += 1;
       if (isCorrect) {
         state.questionsCorrect += 1;
@@ -669,29 +769,77 @@
     function startHeartbeat() {
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
       loadState();
+      detectDeviceIp();
+
+      // Listen for human interactions
+      const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'input'];
+      events.forEach((evt) => {
+        window.addEventListener(evt, recordActivity, { passive: true });
+      });
+
       document.addEventListener('visibilitychange', () => {
         isWindowActive = !document.hidden;
+        if (document.hidden) {
+          if (state) state.status = '⚪ Paused (Background)';
+          saveState();
+        } else {
+          recordActivity();
+        }
       });
       window.addEventListener('blur', () => {
         isWindowActive = false;
+        if (state) state.status = '⚪ Paused (Blurred)';
+        saveState();
       });
       window.addEventListener('focus', () => {
         isWindowActive = !document.hidden;
+        recordActivity();
       });
 
+      // 1-second interval checks AFK status (stopping counter when idle >= 60s)
       setInterval(() => {
-        if (isWindowActive && !document.hidden && state) {
-          state.activeDwellSeconds += 5;
+        if (!state) return;
+        const idleDurationMs = Date.now() - lastActivityTime;
+        if (idleDurationMs >= 60000) {
+          isAFK = true;
+          state.isAFK = true;
+          state.status = '🟡 AFK (Idle > 1m)';
+          state.isCurrentlyActive = false;
+        } else {
+          isAFK = false;
+          state.isAFK = false;
+          state.isCurrentlyActive = isWindowActive && !document.hidden;
+          if (state.isCurrentlyActive) {
+            state.status = '🟢 Active Now';
+          }
+        }
+
+        // Increment active dwell time ONLY if user is actively engaged (NOT AFK)
+        if (!isAFK && isWindowActive && !document.hidden) {
+          state.activeDwellSeconds = (state.activeDwellSeconds || 0) + 1;
+        }
+
+        // Save state every 5 seconds
+        if (state.activeDwellSeconds % 5 === 0) {
           saveState();
         }
-      }, 5000);
+      }, 1000);
+
+      window.addEventListener('beforeunload', () => {
+        if (state) {
+          state.status = '⚪ Offline (Closed)';
+          saveState();
+        }
+      });
     }
 
     return {
       loadState,
       recordQuestionAttempt,
       startHeartbeat,
-      getState: () => state || loadState()
+      getState: () => state || loadState(),
+      getDeviceIp: () => deviceIp || (state ? state.deviceIp : null),
+      isUserAFK: () => isAFK
     };
   })();
 
@@ -1047,7 +1195,7 @@
       navList.innerHTML = '';
       ECON122_DATA.chapters.forEach((ch) => {
         const chQCount = ECON122_DATA.questions.filter((q) => (q.chapter || q.chapterId) === ch.id).length;
-        const pageShort = (ch.pages || '').split(' (')[0].replace('Mohr 6e, ', '');
+        const pageShort = ch.shortTitle || ch.title;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'chapter-nav-btn' + (ch.id === activeChapterId ? ' active' : '');
@@ -1056,7 +1204,7 @@
             <span class="ch-num-badge">Ch ${ch.number}</span>
             <div class="chapter-nav-titles">
               <span class="chapter-nav-main">${ch.title}</span>
-              <span class="chapter-nav-sub">${(ch.studyUnit || pageShort).split(' — ')[0]} • ${pageShort} • ${(ch.formulas || []).length} Eqs</span>
+              <span class="chapter-nav-sub">${pageShort} • ${(ch.formulas || []).length} Equations</span>
             </div>
           </div>
           <span class="chapter-nav-count">${chQCount} Qs</span>
@@ -1098,8 +1246,8 @@
     const outcomesHtml = (ch.learningOutcomes || []).length > 0 ? `
       <div class="glass-card" style="margin-bottom: 1.35rem; border-left: 4px solid var(--accent-emerald);">
         <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
-          <span class="badge badge-emerald">🎯 ${ch.studyUnit || ('Chapter ' + ch.number)} — Official Study Guide Learning Outcomes</span>
-          <span class="badge badge-sky">⏱ Recommended Study Time: ${ch.studyHours || '10 Hours'}</span>
+          <span class="badge badge-emerald">🎯 Chapter ${ch.number} — Key Learning Objectives</span>
+          
         </div>
         <ul style="margin: 0.55rem 0 0 1.15rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.45rem 1.25rem; font-size: 0.88rem; color: var(--text-secondary);">
           ${(ch.learningOutcomes || []).map((lo) => `<li style="line-height: 1.45;">${renderInlineLatexText(lo)}</li>`).join('')}
@@ -1160,8 +1308,8 @@
         <div>
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapter ${ch.number}</span>
-            <span class="badge badge-emerald">${ch.studyUnit || ch.shortTitle || 'Prescribed Core'}</span>
-            <span class="badge badge-indigo">${ch.pages} • ${ch.studyHours || '10 Hours'}</span>
+            <span class="badge badge-emerald">Chapter ${ch.number}</span>
+            <span class="badge badge-indigo">${ch.pages || ch.shortTitle}</span>
             <span class="badge badge-amber">${chQuestions.length} Standalone Problems</span>
           </div>
           <h2>Chapter ${ch.number}: ${ch.title}</h2>
@@ -1182,7 +1330,7 @@
           ${schem.svg}
           <div class="schematic-caption">
             <span>${schem.caption}</span>
-            <span style="color: var(--accent-sky);">Mohr Ch ${ch.number}</span>
+            <span style="color: var(--accent-sky);">Chapter ${ch.number}</span>
           </div>
         </div>
       </div>
@@ -1571,7 +1719,7 @@
         <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 1rem;">
           <div class="kpi-tile"><div class="kpi-label">Equilibrium Output Y*</div><div class="kpi-value">${coords.Y_eq.toFixed(1)}</div><div class="kpi-sub">Potential Yf = 120.0</div></div>
           <div class="kpi-tile"><div class="kpi-label">Price Level Index P*</div><div class="kpi-value">${coords.P_eq.toFixed(1)}</div><div class="kpi-sub">Baseline P0 = 80.0</div></div>
-          <div class="kpi-tile"><div class="kpi-label">Active Regime</div><div class="kpi-value" style="font-size: 1rem;">${regime}</div><div class="kpi-sub">Mohr Ch 19 &amp; 20</div></div>
+          <div class="kpi-tile"><div class="kpi-label">Active Regime</div><div class="kpi-value" style="font-size: 1rem;">${regime}</div><div class="kpi-sub">Macro Theory</div></div>
         </div>
       `;
     } else if (cfg.id === 'money') {
@@ -1593,7 +1741,7 @@
         <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 1rem;">
           <div class="kpi-tile"><div class="kpi-label">SARB Repo Rate</div><div class="kpi-value">${coords.repo.toFixed(2)}%</div><div class="kpi-sub">Sets Commercial Bank Cost</div></div>
           <div class="kpi-tile"><div class="kpi-label">Endogenous Money M*</div><div class="kpi-value">R${coords.M_eq.toFixed(0)}bn</div><div class="kpi-sub">No Vertical Ms Curve!</div></div>
-          <div class="kpi-tile"><div class="kpi-label">Mohr Ch 14 Law</div><div class="kpi-value" style="font-size: 0.95rem;">Accommodation Policy</div><div class="kpi-sub">Quantity M adjusts to L at i0</div></div>
+          <div class="kpi-tile"><div class="kpi-label">Monetary Law</div><div class="kpi-value" style="font-size: 0.95rem;">Accommodation Policy</div><div class="kpi-sub">Quantity M adjusts to L at i0</div></div>
         </div>
       `;
     } else if (cfg.id === 'externality') {
@@ -1643,7 +1791,7 @@
         <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 1rem;">
           <div class="kpi-tile"><div class="kpi-label">Exchange Rate (R/$)</div><div class="kpi-value">R${coords.E_zar.toFixed(2)}</div><div class="kpi-sub">Baseline: R18.50 / $</div></div>
           <div class="kpi-tile"><div class="kpi-label">FX Volume Traded</div><div class="kpi-value">$${coords.Q_fx.toFixed(1)}bn</div><div class="kpi-sub">Daily Spot Turnover</div></div>
-          <div class="kpi-tile"><div class="kpi-label">Currency Regime</div><div class="kpi-value" style="font-size: 0.9rem;">${status}</div><div class="kpi-sub">Mohr Ch 16</div></div>
+          <div class="kpi-tile"><div class="kpi-label">Currency Regime</div><div class="kpi-value" style="font-size: 0.9rem;">${status}</div><div class="kpi-sub">Foreign Sector</div></div>
         </div>
       `;
     } else {
@@ -1667,7 +1815,7 @@
         <div class="kpi-bento-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 1rem;">
           <div class="kpi-tile"><div class="kpi-label">Gini Coefficient</div><div class="kpi-value">${g.toFixed(2)}</div><div class="kpi-sub">0 = Perfect Equality, 1 = Max Inequality</div></div>
           <div class="kpi-tile"><div class="kpi-label">Gini Index (0–100)</div><div class="kpi-value">${(g * 100).toFixed(0)}</div><div class="kpi-sub">Area A / (Area A + Area B)</div></div>
-          <div class="kpi-tile"><div class="kpi-label">Bottom 50% Income Share</div><div class="kpi-value">${Math.max(4, (50 * (1 - g)).toFixed(1))}%</div><div class="kpi-sub">Mohr Ch 13 &amp; 21</div></div>
+          <div class="kpi-tile"><div class="kpi-label">Bottom 50% Income Share</div><div class="kpi-value">${Math.max(4, (50 * (1 - g)).toFixed(1))}%</div><div class="kpi-sub">Lorenz Distribution</div></div>
         </div>
       `;
     }
@@ -1828,7 +1976,7 @@
                 <option value="schedule_a">Statutory Schedule A (R825,000 Benchmark)</option>
                 <option value="schedule_b">Statutory Schedule B (R315,850 Benchmark)</option>
                 <option value="schedule_c">Statutory Schedule C (R384,000 Benchmark)</option>
-                <option value="schedule_d">Study Unit 2.2 Schedule (Jerome R288k &amp; Sally R4.5m)</option>
+                <option value="schedule_d">Personal Income Tax Schedule D (Jerome R288k &amp; Sally R4.5m)</option>
               </select>
             </div>
             <div class="input-field-wrap"><label>Annual Taxable Income (R)</label><input type="number" id="tax-income" class="num-input" value="825000" step="5000" /></div>
@@ -2190,7 +2338,7 @@
                   <span class="badge ${isCorrect ? 'badge-emerald' : 'badge-rose'}">
                     ${isCorrect ? '✅ First-Principles Mastery Verified' : '❌ Diagnostic Refutation & Step-by-Step Derivation'}
                   </span>
-                  <span class="badge badge-sky">Prescribed Reference: ${q.citation || q.topic || 'Core Principle'}</span>
+                  <span class="badge badge-sky">Core Concept: ${q.topic || q.citation || 'Core Principle'}</span>
                 </div>
                 <button type="button" class="btn-primary" id="btn-quiz-next-fb">${nextLabel}</button>
               </div>
@@ -2425,7 +2573,7 @@
 
       const loRows = (ch.learningOutcomes || []).length > 0 ? `
         <div style="margin-bottom: 0.7rem; padding: 0.55rem 0.7rem; border-radius: 10px; background: rgba(48, 209, 88, 0.06); border: 1px solid rgba(48, 209, 88, 0.22); font-size: 0.78rem;">
-          <strong style="color: var(--accent-emerald);">🎯 ${ch.studyUnit || ''} Learning Outcomes:</strong>
+          <strong style="color: var(--accent-emerald);">🎯 Chapter ${ch.number} Learning Objectives:</strong>
           <ul style="margin: 0.3rem 0 0 1rem; color: var(--text-secondary);">
             ${(ch.learningOutcomes || []).map((lo) => `<li>${renderInlineLatexText(lo)}</li>`).join('')}
           </ul>
@@ -2436,8 +2584,8 @@
         <div class="glass-card cheat-block" style="margin-bottom: 1rem;">
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapter ${ch.number}</span>
-            <span class="badge badge-emerald">${ch.studyUnit || 'Prescribed Core'}</span>
-            <span class="badge badge-indigo">${ch.pages} • ${ch.studyHours || '10 Hours'}</span>
+            <span class="badge badge-emerald">Chapter ${ch.number}</span>
+            <span class="badge badge-indigo">${ch.pages || ch.shortTitle}</span>
           </div>
           <h3 style="margin-bottom: 0.5rem;">Ch ${ch.number}: ${ch.title}</h3>
           <p style="font-size: 0.84rem; margin-bottom: 0.75rem;">${renderInlineLatexText(ch.summary)}</p>

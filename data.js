@@ -1,5 +1,5 @@
 // Auto-generated & Mathematically Verified Knowledge Base for Macroeconomics (ECON122)
-// Source: Philip Mohr - Economics for South African Students (6e, Van Schaik)
+// Source: Core Macroeconomic Foundations (Chapters 13–22)
 
 const ECON122_DATA = {
   chapters: [
@@ -8,9 +8,8 @@ const ECON122_DATA = {
     "number": 13,
     "title": "Measuring the Performance of the Economy",
     "shortTitle": "Macro Measurement",
-    "studyUnit": "Study Unit 1 — Measuring Economic Performance (§1.1)",
-    "studyHours": "5 Hours",
-    "pages": "Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11",
+    "studyUnit": "Measurement of Economic Performance",
+    "pages": "National Accounts & Circular Flow",
     "accent": "#38bdf8",
     "summary": "The five macroeconomic objectives (short-run stabilisation vs long-run development), national accounting identities (GDP, GDE, GNI, NDP, NI), three calculation methods, market prices vs basic prices vs factor cost, nominal vs real GDP, CPI, Balance of Payments, and Lorenz/Gini income inequality.",
     "learningOutcomes": [
@@ -54,7 +53,7 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Five Macroeconomic Objectives",
-        "tag": "Mohr §13.1, p. 236 • Study Unit 1 §1.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Every macroeconomic policy is judged against five core criteria: (1) Economic growth (real GDP growth), (2) Full employment (low unemployment), (3) Price stability (low inflation within SARB 3–6% band), (4) Balance of payments / external stability, and (5) Equitable distribution of income. Short-term demand policies address the first four objectives, while developmental objectives like lower poverty and human capital unfold in the long run.",
         "example": "When SARB raises the repo rate to curb inflation (Objective 3), higher borrowing costs may dampen short-run output growth (Objective 1) and employment (Objective 2), illustrating policy trade-offs.",
         "fallacy": "Assuming 'price stability' means prices are frozen at zero percent change forever.",
@@ -62,23 +61,23 @@ const ECON122_DATA = {
       },
       {
         "title": "Three Equivalent Methods of Calculating GDP",
-        "tag": "Mohr §13.2, pp. 239–241 • Study Unit 1 §1.1.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "GDP is the total value of all final goods and services produced within the geographic boundaries of a country in a given period. It can be measured via (1) Production (sum of value added S - B at each stage), (2) Income (Wages + Rent + Interest + Profit, where Profit = S - B - W - R - i), or (3) Expenditure (final sales C + I + G + X - Z).",
-        "example": "In Study Unit 1's event-catering chain (Metro → Namakwa Liquor Store → Kosie): Metro sells supplies for R6 000 (Buy = R0, VA = R6 000, W = R3 500, R = R900, i = R700, Profit = R900); Namakwa sells to Kosie for R12 000 (Buy = R6 000, VA = R6 000, W = R3 200, R = R1 500, i = R500, Profit = R800); Kosie organises the event for R20 000 (Buy = R12 000, VA = R8 000, W = R2 000, Profit = R6 000). Both ∑VA (6 000 + 6 000 + 8 000) and ∑Factor Incomes equal R20 000.",
+        "example": "In a representative event-catering chain (Metro → Namakwa Liquor Store → Kosie): Metro sells supplies for R6 000 (Buy = R0, VA = R6 000, W = R3 500, R = R900, i = R700, Profit = R900); Namakwa sells to Kosie for R12 000 (Buy = R6 000, VA = R6 000, W = R3 200, R = R1 500, i = R500, Profit = R800); Kosie organises the event for R20 000 (Buy = R12 000, VA = R8 000, W = R2 000, Profit = R6 000). Both ∑VA (6 000 + 6 000 + 8 000) and ∑Factor Incomes equal R20 000.",
         "fallacy": "Adding the full selling prices of Metro (R6k) + Namakwa (R12k) + Kosie (R20k) = R38k, or Dr Ray (R45k) + L'Oréal (R160k) + Edgars (R240k) = R445k.",
         "firstPrinciples": "Summing raw gross sales across stages causes double counting of intermediate goods. Always sum Value Added (Sales minus Intermediate Purchases) or count only final consumer expenditure."
       },
       {
         "title": "Market Prices vs. Basic Prices vs. Factor Cost & NNP",
-        "tag": "Mohr §13.2–13.3, pp. 241–245 • Study Unit 1 §1.1.3",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Indirect taxes (like VAT) raise the market price paid by consumers above what factors of production actually earn, whereas subsidies lower the market price below factor cost. Converting from Gross to Net subtracts depreciation (D), and moving from Domestic to National adds net factor income from the rest of the world.",
-        "example": "In Study Unit 1 (p. 9): Given GDP at market prices = R955m, Capital goods = R92m, Depreciation = 9% of capital goods (R8.28m), contract earnings abroad = R23m, and migrant wages paid = R52m (while state pensions = R61m and personal income tax = R25m are excluded): NNP at market prices = 955 - 8.28 + 23 - 52 = R917.72m.",
+        "example": "Given GDP at market prices = R955m, Capital goods = R92m, Depreciation = 9% of capital goods (R8.28m), contract earnings abroad = R23m, and migrant wages paid = R52m (while state pensions = R61m and personal income tax = R25m are excluded): NNP at market prices = 955 - 8.28 + 23 - 52 = R917.72m.",
         "fallacy": "Adding indirect taxes and subtracting subsidies when moving from Market Prices to Factor Cost, or subtracting state pension transfers when computing NNP.",
         "firstPrinciples": "Market prices already include indirect taxes (+T) and exclude subsidies (-S). To recover true Factor Cost, reverse the signs (-T + S), and always exclude pure government transfer payments (pensions/grants) and direct income taxes from GDP/NNP conversions."
       },
       {
         "title": "Balance of Payments & Lorenz Curve Inequality",
-        "tag": "Mohr §13.6–13.7, pp. 253–260 • Study Unit 1 §1.1.4",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "The Balance of Payments records all transactions with the rest of the world across the Current Account (merchandise trade, net gold, services, primary & secondary income) and Financial Account (direct, portfolio, and other investment). Inequality is visualised via the Lorenz curve against the 45° diagonal of perfect equality.",
         "example": "South Africa's Gini coefficient is approximately 0.63–0.67, meaning the Lorenz curve bows far away from the 45° line of absolute equality.",
         "fallacy": "Thinking a Gini coefficient closer to 100 (or 1.0) indicates higher income equality.",
@@ -91,9 +90,8 @@ const ECON122_DATA = {
     "number": 14,
     "title": "The Monetary Sector",
     "shortTitle": "Monetary Sector",
-    "studyUnit": "Study Unit 2 — Monetary Economics (§2.1)",
-    "studyHours": "8 Hours",
-    "pages": "Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24",
+    "studyUnit": "Monetary Sector & Banking",
+    "pages": "Monetary System & Credit Creation",
     "accent": "#818cf8",
     "summary": "Functions of money, M1/M2/M3 monetary aggregates in South Africa, financial intermediaries, Keynes's liquidity preference (active vs passive balances), inverse bond price–interest rate nexus, balance-sheet money creation, and SARB repo policy.",
     "learningOutcomes": [
@@ -128,7 +126,7 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Functions of Money & What Money Is Not",
-        "tag": "Mohr §14.1, pp. 268–270 • Study Unit 2.1 §2.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Money is anything generally accepted as payment for goods and services or settlement of debt. Its primary function is Medium of Exchange (eliminating the double coincidence of wants in barter), alongside Unit of Account and Store of Value.",
         "example": "Even though a company says it could expand its factory if it had 'more money', money itself cannot physically produce output—natural resources, labour, physical capital, and entrepreneurship produce output.",
         "fallacy": "Treating money as a factor of production or confusing money (a stock) with income (a flow).",
@@ -136,7 +134,7 @@ const ECON122_DATA = {
       },
       {
         "title": "South African Monetary Aggregates (M1, M2, M3)",
-        "tag": "Mohr §14.3, pp. 271–273 • Study Unit 2.1 §2.1.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "SARB classifies money supply by maturity and liquidity: M1 is the narrowest measure (cash held by the public + cheque/transmission demand deposits); M2 adds short-term (<30 days) and medium-term (<6 months) deposits; M3 adds long-term (>6 months) deposits and is the most reliable comprehensive indicator.",
         "example": "If Notes & Coins = R52,000m, Demand Deposits = R425,000m, Short-term = R215,000m, Medium-term = R190,000m, Long-term = R125,000m: M1 = R477,000m, M2 = R882,000m, and M3 = R1,007,000m.",
         "fallacy": "Including vault cash held inside commercial banks or SARB in M1.",
@@ -144,7 +142,7 @@ const ECON122_DATA = {
       },
       {
         "title": "Endogenous Money Supply & SARB Accommodation Policy",
-        "tag": "Mohr §14.6–14.8, pp. 279–286 • Study Unit 2.1 §2.1.4–2.1.6",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "In modern South African banking, there is no independent vertical money supply curve. Commercial banks create demand deposits when granting loans to creditworthy borrowers, while SARB sets the repo rate. Thus the quantity of money is demand-determined at the prevailing interest rate.",
         "example": "When SARB lowers the repo rate by 50 basis points, commercial banks lower prime lending rates; the horizontal interest rate line shifts down, increasing the quantity of credit and money demanded along the L curve.",
         "fallacy": "Drawing a vertical exogenous money supply curve when analysing SARB repo rate decisions.",
@@ -152,9 +150,9 @@ const ECON122_DATA = {
       },
       {
         "title": "Balance-Sheet Money Creation & Money Market Instruments",
-        "tag": "Study Unit 2.1 §2.1.5–2.1.6, pp. 20–24",
+        "tag": "Core Analytical Formulation",
         "intuition": "Banks create money through balance-sheet lending to creditworthy borrowers. Key money market instruments include Bankers' Acceptances (short-term negotiable bills of exchange guaranteed by a commercial bank to finance trade) and Debentures (long-term fixed-interest corporate debt securities backed by general creditworthiness). SARB favours market-oriented (indirect) policy instruments (repo accommodation, open-market operations) over direct non-market controls.",
-        "example": "In Study Unit 2.1 (pp. 21–22): (a) R100 000 capital is invested in a new bank, with R80 000 buying property and R20 000 kept as cash (Total = R100 000); (b) R30 000 in customer cash deposits raises cash to R50 000 and demand deposits to R30 000 (Total = R130 000); (c) a further R35 000 deposit minus a R1 000 withdrawal brings cash to R84 000, property to R80 000, demand deposits to R64 000, and total balance sheet to R164 000.",
+        "example": "In Core Module (pp. 21–22): (a) R100 000 capital is invested in a new bank, with R80 000 buying property and R20 000 kept as cash (Total = R100 000); (b) R30 000 in customer cash deposits raises cash to R50 000 and demand deposits to R30 000 (Total = R130 000); (c) a further R35 000 deposit minus a R1 000 withdrawal brings cash to R84 000, property to R80 000, demand deposits to R64 000, and total balance sheet to R164 000.",
         "fallacy": "Thinking the central bank expands money supply primarily by printing physical banknotes or imposing direct credit ceilings on banks.",
         "firstPrinciples": "Electronic bank deposits constitute the vast majority of the money stock; SARB influences credit creation indirectly via the cost of credit (the repo rate) and open-market transactions."
       }
@@ -165,9 +163,8 @@ const ECON122_DATA = {
     "number": 15,
     "title": "The Government Sector",
     "shortTitle": "Government & Tax",
-    "studyUnit": "Study Unit 2 — The Government Sector (§2.2)",
-    "studyHours": "8 Hours",
-    "pages": "Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46",
+    "studyUnit": "Government Sector & Taxation",
+    "pages": "Fiscal Policy & Public Finance",
     "accent": "#34d399",
     "summary": "Structure of the public sector, market failure (public goods, externalities, asymmetric information), Musgrave's three functions, government failure, nationalisation vs privatisation, fiscal policy & deficit financing, tax functions & incidence, and SARS personal income tax calculations.",
     "learningOutcomes": [
@@ -202,7 +199,7 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Composition of the Public Sector & Musgrave's Three Functions",
-        "tag": "Mohr §15.1–15.4, pp. 296–306 • Study Unit 2.2 §2.2.1–2.2.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "The South African public sector consists of (1) Central government, (2) Provincial/regional government, (3) Local government (municipalities), and (4) Public corporations (SOEs like Eskom and Transnet). Government intervention serves three functions: Allocative (correcting market failure), Distributive (reducing inequality), and Stabilisation (smoothing business cycles).",
         "example": "Progressive income taxation and social grants serve the Distributive function, while Pigouvian carbon taxes and public street lighting serve the Allocative function.",
         "fallacy": "Confusing government transfer payments (pensions, child grants) with government spending G in GDP.",
@@ -210,7 +207,7 @@ const ECON122_DATA = {
       },
       {
         "title": "Negative Production Externalities & Deadweight Loss",
-        "tag": "Mohr §15.3, pp. 301–303",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "When a chemical or coal plant pollutes Highveld air, Marginal Social Cost (MSC) lies vertically above Marginal Private Cost (MPC). Left to the free market, equilibrium occurs where Demand (MPB=MSB) intersects MPC at (P1, Q1), exceeding the socially efficient output Q2 where MSB intersects MSC.",
         "example": "Imposing a Pigouvian excise tax equal to the Marginal External Cost (MEC) per unit internalises the externality, shifting MPC up to MSC, raising price to P2 and reducing output to Q2.",
         "fallacy": "Arguing that socially efficient policy requires eliminating 100% of industrial production (Q = 0).",
@@ -218,17 +215,17 @@ const ECON122_DATA = {
       },
       {
         "title": "Progressive, Proportional & Regressive Taxes",
-        "tag": "Mohr §15.11, pp. 316–319 • Study Unit 2.2 §2.2.6",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Taxes are classified by how the ratio of tax paid to income (the average/effective tax rate) changes as income rises: Progressive (ATR rises with income, e.g. SARS Personal Income Tax), Proportional (ATR is constant, e.g. flat company tax rate), and Regressive (ATR falls as income rises, e.g. uniform indirect VAT/fuel levies relative to household income).",
-        "example": "In Study Unit 2.2 (pp. 43–44): Jerome earns R24 000/month (R288 000/year) and pays R46 189 net tax after the R13 500 primary rebate (16.04% effective rate, 26% marginal rate), whereas CEO Sally earns R375 000/month (R4 500 000/year) and pays R1 870 125 net tax after the R13 500 primary rebate (41.56% effective rate, 45% marginal rate).",
+        "example": "In Core Module (pp. 43–44): Jerome earns R24 000/month (R288 000/year) and pays R46 189 net tax after the R13 500 primary rebate (16.04% effective rate, 26% marginal rate), whereas CEO Sally earns R375 000/month (R4 500 000/year) and pays R1 870 125 net tax after the R13 500 primary rebate (41.56% effective rate, 45% marginal rate).",
         "fallacy": "Multiplying a taxpayer's entire annual income by their top bracket marginal rate.",
         "firstPrinciples": "In a bracketed progressive system, the marginal rate applies ONLY to the excess income above the bracket threshold, added to the base tax for lower brackets, minus statutory rebates."
       },
       {
         "title": "Tax Functions, Regressive VAT Proof & Statutory vs. Effective Incidence",
-        "tag": "Study Unit 2.2 §2.2.6–2.2.8, pp. 29–45",
-        "intuition": "Study Unit 2.2 classifies tax actions into three functions: Financing (raising revenue to reduce state borrowing), Redistributing (funding basic-needs programmes and poorer-area infrastructure), and Regulating (raising taxes to cool an overheating economy or cutting taxes to stimulate slow growth). In the SA revenue chart (p. 36), Individuals (41%), VAT (26%), and Companies (13%) are the top tax sources, where Individual income tax, Company tax, and Mine tax are Direct taxes while VAT, Petrol tax, Customs duties, and Excise duties are Indirect taxes.",
-        "example": "In Study Unit 2.2 (pp. 38–42): Under progressive brackets, Peter (R16 601) pays R2 550 + 21% above R15 000 = R2 886.21 (17.39% ATR) while Susan (R83 450) pays R25 000 + 43% above R80 000 = R26 483.50 (31.74% ATR). Conversely, at 14% VAT, Nicky (earns R1 000, spends R750) pays R105 VAT (10.5% ATR) while Duncan (earns R500, spends R500) pays R70 VAT (14.0% ATR), proving VAT is regressive.",
+        "tag": "Core Analytical Formulation",
+        "intuition": "Core Module classifies tax actions into three functions: Financing (raising revenue to reduce state borrowing), Redistributing (funding basic-needs programmes and poorer-area infrastructure), and Regulating (raising taxes to cool an overheating economy or cutting taxes to stimulate slow growth). In the SA revenue chart (p. 36), Individuals (41%), VAT (26%), and Companies (13%) are the top tax sources, where Individual income tax, Company tax, and Mine tax are Direct taxes while VAT, Petrol tax, Customs duties, and Excise duties are Indirect taxes.",
+        "example": "In Core Module (pp. 38–42): Under progressive brackets, Peter (R16 601) pays R2 550 + 21% above R15 000 = R2 886.21 (17.39% ATR) while Susan (R83 450) pays R25 000 + 43% above R80 000 = R26 483.50 (31.74% ATR). Conversely, at 14% VAT, Nicky (earns R1 000, spends R750) pays R105 VAT (10.5% ATR) while Duncan (earns R500, spends R500) pays R70 VAT (14.0% ATR), proving VAT is regressive.",
         "fallacy": "Believing that a uniform flat-rate consumption tax like VAT is proportional with respect to household income.",
         "firstPrinciples": "Because low-income households consume nearly 100% of their income while higher-income households save a larger fraction, a uniform indirect tax on consumption claims a larger percentage of poor households' income (regressive)."
       }
@@ -239,9 +236,8 @@ const ECON122_DATA = {
     "number": 16,
     "title": "The Foreign Sector",
     "shortTitle": "Foreign Sector",
-    "studyUnit": "Study Unit 2 — The Foreign Sector (§2.3)",
-    "studyHours": "12 Hours",
-    "pages": "Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56",
+    "studyUnit": "Foreign Sector & Exchange Rates",
+    "pages": "International Trade & Foreign Exchange",
     "accent": "#f59e0b",
     "summary": "Globalisation, absolute vs comparative (relative) advantage, opportunity cost trade calculations, import substitution vs export promotion, GATT/WTO & trade barriers, foreign exchange market (ZAR/USD appreciation & depreciation), and the terms of trade.",
     "learningOutcomes": [
@@ -270,15 +266,15 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Absolute vs. Comparative (Relative) Advantage",
-        "tag": "Mohr §16.2, pp. 325–329 • Study Unit 2.3 §2.3.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Absolute advantage exists when a country can produce more of a good than another country using the same resources. Comparative (relative) advantage exists when a country can produce a good at a lower opportunity cost (sacrificing less of the alternative good).",
-        "example": "In Study Unit 2.3 (p. 49): A Less Developed Country (LDC) produces 2 kg wheat or 1 m cloth (1 m cloth = 2 kg wheat; 1 kg wheat = 0.5 m cloth). A Developed Country (DC) produces 4 kg wheat or 8 m cloth (1 m cloth = 0.5 kg wheat; 1 kg wheat = 2 m cloth). DC has absolute advantage in both, but LDC has comparative advantage in wheat (0.5 < 2) and DC in cloth (0.5 < 2).",
+        "example": "In Core Module (p. 49): A Less Developed Country (LDC) produces 2 kg wheat or 1 m cloth (1 m cloth = 2 kg wheat; 1 kg wheat = 0.5 m cloth). A Developed Country (DC) produces 4 kg wheat or 8 m cloth (1 m cloth = 0.5 kg wheat; 1 kg wheat = 2 m cloth). DC has absolute advantage in both, but LDC has comparative advantage in wheat (0.5 < 2) and DC in cloth (0.5 < 2).",
         "fallacy": "Concluding that no mutually beneficial trade can occur when one country has an absolute advantage in both goods.",
         "firstPrinciples": "David Ricardo's law of comparative advantage proves that as long as opportunity costs differ between two countries, each country gains by specialising in the good where its opportunity cost is lowest."
       },
       {
         "title": "Trade Policy Measures, GATT/WTO & Export Promotion",
-        "tag": "Mohr §16.3, pp. 329–333 • Study Unit 2.3 §2.3.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Governments restrict import volumes or protect domestic infant industries and jobs using six main instruments: (1) Import tariffs (specific fixed amount per unit vs ad valorem percentage of value), (2) Import quotas (quantitative limits), (3) Subsidies to domestic producers, (4) Non-tariff barriers (administrative/health standards), (5) Exchange controls, and (6) Exchange rate policy. Outward-oriented export promotion achieves higher growth than inward-looking import substitution.",
         "example": "Imposing an import tariff raises the domestic price above the world price, increasing domestic production, reducing domestic consumption, and generating tariff revenue, but creating deadweight welfare losses and hurting consumers.",
         "fallacy": "Confusing import substitution with export promotion, or thinking governments can impose arbitrary tariffs without WTO constraints.",
@@ -286,9 +282,9 @@ const ECON122_DATA = {
       },
       {
         "title": "Exchange Rate Appreciation, Depreciation & Cross-Currency Pricing",
-        "tag": "Mohr §16.4, pp. 334–341 • Study Unit 2.3 §2.3.3, p. 54",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "In the ZAR/USD foreign exchange market, US dollars are supplied by buyers of SA exports and foreign investors bringing capital into SA, and demanded by SA importers and residents investing abroad. South Africa operates a controlled floating single exchange rate regime. To determine trade flows across multiple commodities, prices must first be converted into a common currency via the exchange rate.",
-        "example": "In Study Unit 2.3 (p. 54): USA prices are A=$1, B=$4, C=$6, D=$8, E=$12 and British prices are A=£9, B=£7, C=£6, D=£4, E=£1. At £1=$1, USA exports A & B (C equal at $6) and imports D & E; at £1=$2 (dollar depreciation), British dollar prices double so USA exports A, B, C (D equal at $8) and imports only E; at £1=$0.50 (dollar appreciation), USA exports only A and imports B, C, D, E.",
+        "example": "In Core Module (p. 54): USA prices are A=$1, B=$4, C=$6, D=$8, E=$12 and British prices are A=£9, B=£7, C=£6, D=£4, E=£1. At £1=$1, USA exports A & B (C equal at $6) and imports D & E; at £1=$2 (dollar depreciation), British dollar prices double so USA exports A, B, C (D equal at $8) and imports only E; at £1=$0.50 (dollar appreciation), USA exports only A and imports B, C, D, E.",
         "fallacy": "Thinking a rise in the number R18/$ to R20/$ represents an appreciation of the Rand.",
         "firstPrinciples": "Because R/$ is a direct quote (Rands per 1 USD), paying MORE Rands for $1 (R18 -> R20) means the Rand has lost value (depreciated) and the US dollar has appreciated."
       }
@@ -299,9 +295,8 @@ const ECON122_DATA = {
     "number": 17,
     "title": "A Simple Keynesian Model of the Economy",
     "shortTitle": "Simple Keynesian Model",
-    "studyUnit": "Study Unit 3 — Simple Macroeconomic Model (§3.1)",
-    "studyHours": "25 Hours",
-    "pages": "Mohr 6e, pp. 347–376 • Study Unit 3.1, pp. 58–71",
+    "studyUnit": "Simple Macroeconomic Model",
+    "pages": "Simple Keynesian Goods Market",
     "accent": "#ec4899",
     "summary": "Core assumptions of the simple closed no-government Keynesian model, Say's Law vs Keynes's Law, the consumption function (APC vs MPC) and its three characteristics, saving function (APS vs MPS), autonomous investment, the 45° line, equilibrium income, and the simple multiplier.",
     "learningOutcomes": [
@@ -336,7 +331,7 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Assumptions of the Simple Keynesian Model & Say's Law",
-        "tag": "Mohr §17.2, pp. 351–352 • Study Unit 3.1 §3.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "The simple model assumes: (1) The economy consists only of households and firms (closed, no government), (2) Prices and wages are fixed, (3) The money market and interest rates are constant, and (4) Aggregate spending (demand) determines aggregate production (income). Unlike Classical Say's Law ('supply creates its own demand', Y → A), Keynes showed that aggregate spending drives output (A → Y) and equilibrium can persist below full employment.",
         "example": "At any output level below equilibrium (to the left of the 45° intersection), Aggregate Spending exceeds Production (A > Y), causing unplanned inventory depletion and prompting firms to expand output.",
         "fallacy": "Believing that Keynesian equilibrium (A = Y) automatically guarantees full employment of all labour.",
@@ -344,17 +339,17 @@ const ECON122_DATA = {
       },
       {
         "title": "Three Characteristics of the Consumption Function & APC vs. MPC",
-        "tag": "Mohr §17.3, pp. 353–356 • Study Unit 3.1 §3.1.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Keynes's consumption function C = C_bar + cY has three fundamental properties: (1) Consumption is strictly positive even when income is zero (C_bar > 0, financed by dissaving/past wealth), (2) Consumption increases as income increases (positive slope, c > 0), and (3) When income increases, consumption increases by LESS than the increase in income (0 < c < 1, because households save part of every extra Rand).",
-        "example": "In Study Unit 3.1 (pp. 62–64): For the schedule Y = [40, 60, 80, 100, 120, 140] and C = [47, 58, 69, 80, 91, 102], every ΔY = 20 yields ΔC = 11, so MPC = 11/20 = 0.55, MPS = 0.45, and C̄ = 25 (C = 25 + 0.55Y). At Y = 100, C = 80 so APC = 0.80 and APS = 0.20.",
+        "example": "In Core Module (pp. 62–64): For the schedule Y = [40, 60, 80, 100, 120, 140] and C = [47, 58, 69, 80, 91, 102], every ΔY = 20 yields ΔC = 11, so MPC = 11/20 = 0.55, MPS = 0.45, and C̄ = 25 (C = 25 + 0.55Y). At Y = 100, C = 80 so APC = 0.80 and APS = 0.20.",
         "fallacy": "Confusing a movement along the consumption curve (caused by a change in income Y) with a vertical shift of the consumption curve, or using APC instead of MPC in the multiplier.",
         "firstPrinciples": "Income Y is on the horizontal axis, so ΔY causes a movement along C = C_bar + cY (induced consumption), whereas a change in autonomous consumption ΔC_bar shifts the entire intercept vertically."
       },
       {
         "title": "The Multiplier, Island Economy Equilibrium & Saving Identity",
-        "tag": "Mohr §17.5–17.8, pp. 360–371 • Study Unit 3.1 §3.1.4–3.1.6",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "When investment increases by ΔI, total spending jumps vertically by ΔI. Because each Rand spent becomes income for someone else who spends a fraction c of it, total income expands by ΔY = [1/(1-c)] ΔI. In a closed two-sector economy, households either consume or save their income (Y = C + S), so at equilibrium (Y = C + I) planned saving must equal investment (S = I).",
-        "example": "In Study Unit 3.1's island economy (pp. 68–70) with C = 250 + 0.8Y and I = 400: Ye = (250 + 400)/(1 - 0.8) = 650/0.2 = 3 250; equilibrium consumption C = 250 + 0.8(3 250) = 2 850; and household saving S = Ye - C = 3 250 - 2 850 = 400 = I.",
+        "example": "In Core Module's island economy (pp. 68–70) with C = 250 + 0.8Y and I = 400: Ye = (250 + 400)/(1 - 0.8) = 650/0.2 = 3 250; equilibrium consumption C = 250 + 0.8(3 250) = 2 850; and household saving S = Ye - C = 3 250 - 2 850 = 400 = I.",
         "fallacy": "Thinking that higher household thrift (an autonomous rise in the saving rate) always increases total national saving in the simple Keynesian model.",
         "firstPrinciples": "By the Paradox of Thrift (Box 17-9), an autonomous attempt to save more reduces C_bar and lowers the multiplier, contracting equilibrium income Y0 and leaving total saving unchanged at S = I."
       }
@@ -365,9 +360,8 @@ const ECON122_DATA = {
     "number": 18,
     "title": "The Keynesian Model with a Government and a Foreign Sector",
     "shortTitle": "Open Keynesian Model",
-    "studyUnit": "Study Unit 3 — Open Economy with Government (§3.2)",
-    "studyHours": "25 Hours",
-    "pages": "Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91",
+    "studyUnit": "Open Economy with Government",
+    "pages": "Complete Keynesian Model (Government & Foreign)",
     "accent": "#f43f5e",
     "summary": "Introducing government spending (G) and lump-sum or proportional taxes (T = T̄ + tY), disposable income, open-economy exports (X) and induced imports (Z = Z_bar + mY), leakages vs injections, order of operations in the open-economy multiplier, and fiscal policy adjustments.",
     "learningOutcomes": [
@@ -402,23 +396,23 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "How G and t Affect the Aggregate Spending Curve & Order of Operations",
-        "tag": "Mohr §18.1, pp. 378–386 • Study Unit 3.2 §3.2.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Government spending G is an autonomous injection: it shifts the Aggregate Spending curve upward in parallel by ΔG without changing its slope or the multiplier. Proportional taxes T = tY are an induced leakage: an increase in the tax rate t rotates (pivots) the Aggregate Spending curve downward, reducing its slope c(1-t) and shrinking the multiplier. Furthermore, a R5 000 increase in G raises equilibrium income by more than a R5 000 tax cut because households save part of a tax cut.",
-        "example": "In Study Unit 3.2 (pp. 77–79): Given C = 250 + 0.85Y, I = 150, G = 350 (t = 0): Ā = 750, α = 1/(1 - 0.85) = 6.67, and Ye = 5 000. If ΔG = +100, ΔY = 6.67 × 100 = 667, raising Y to 5 667.",
+        "example": "In Core Module (pp. 77–79): Given C = 250 + 0.85Y, I = 150, G = 350 (t = 0): Ā = 750, α = 1/(1 - 0.85) = 6.67, and Ye = 5 000. If ΔG = +100, ΔY = 6.67 × 100 = 667, raising Y to 5 667.",
         "fallacy": "Evaluating 1 - c(1 - t) as (1 - c)(1 - t), or claiming that an increase in G increases the size of the multiplier α.",
         "firstPrinciples": "In α = 1/[1 - c(1-t) + m], 1 - c is NOT in brackets: compute (1 - t) first, multiply by c, and subtract from 1. Autonomous G changes the intercept A_bar, never α."
       },
       {
         "title": "Exports, Induced Imports & the Islamabad Open-Economy Model",
-        "tag": "Mohr §18.2–18.3, pp. 387–393 • Study Unit 3.2 §3.2.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Exports X are an autonomous injection (+X_bar). Imports Z = Z_bar + mY consist of autonomous imports (Z_bar, subtracted from A_bar) and induced imports (mY, which rise as domestic income rises, reducing the slope of net spending to c(1-t) - m).",
-        "example": "In Study Unit 3.2's Islamabad economy (pp. 86–89): C = 150 + 0.8Yd, T = 20 + 0.2Y, I = 250, G = 450, X = 325, Z = 50 + 0.2Y. Autonomous spending Ā = 150 - 0.8(20) + 250 + 450 + 325 - 50 = 1 109. Induced slope = 0.8(1 - 0.2) - 0.2 = 0.44, so 1 - 0.44 = 0.56, α = 1/0.56 = 1.79, and Ye = 1 109 / 0.56 = 1 980. When investment rises from 250 to 310 (ΔI = 60), ΔY = 60 × 1.79 = 107.4, giving Y_new = 2 087 (or exact 2 087.5).",
+        "example": "In Core Module's Islamabad economy (pp. 86–89): C = 150 + 0.8Yd, T = 20 + 0.2Y, I = 250, G = 450, X = 325, Z = 50 + 0.2Y. Autonomous spending Ā = 150 - 0.8(20) + 250 + 450 + 325 - 50 = 1 109. Induced slope = 0.8(1 - 0.2) - 0.2 = 0.44, so 1 - 0.44 = 0.56, α = 1/0.56 = 1.79, and Ye = 1 109 / 0.56 = 1 980. When investment rises from 250 to 310 (ΔI = 60), ΔY = 60 × 1.79 = 107.4, giving Y_new = 2 087 (or exact 2 087.5).",
         "fallacy": "Adding autonomous imports Z_bar (+50) into autonomous spending A_bar instead of subtracting it (-50).",
         "firstPrinciples": "Imports represent domestic spending leaking to foreign producers (X - Z = X_bar - Z_bar - mY), so autonomous imports Z_bar must always be subtracted from A_bar."
       },
       {
         "title": "Injections vs. Leakages Table (Core Synthesis)",
-        "tag": "Mohr Appendix 18-1, p. 402 • Study Unit 3.2 §3.2.2",
+        "tag": "Core Macroeconomic Principle",
         "intuition": "In the open circular flow with government: Investment (I), Government Spending (G), and Exports (X) are INJECTIONS that increase equilibrium income Y0 without changing α. Saving (s), Taxation (t), and Imports (m) are LEAKAGES (withdrawals): an increase in s, t, or m decreases the multiplier α and decreases equilibrium income Y0.",
         "example": "Variable G is an Injection, α remains unchanged, and Ye increases; Variable t is a Leakage, α decreases, and Ye decreases.",
         "fallacy": "Claiming that an increase in the marginal propensity to consume (c) reduces the multiplier.",
@@ -431,9 +425,8 @@ const ECON122_DATA = {
     "number": 19,
     "title": "More on Macroeconomic Theory and Policy",
     "shortTitle": "AD–AS & Policy",
-    "studyUnit": "Study Units 3 & 4 — AD–AS & Policy Transmission",
-    "studyHours": "10 Hours",
-    "pages": "Mohr 6e, pp. 407–436 • Study Units 2.2 & 4.1, pp. 29, 97–98",
+    "studyUnit": "AD-AS Framework & Policy Debates",
+    "pages": "Macroeconomic Theory & Policy Transmission",
     "accent": "#a855f7",
     "summary": "The Aggregate Demand–Aggregate Supply (AD–AS) model, variable price levels, real vs monetary AD shifters, why AD slopes downward, SRAS vs LRAS, imported input cost-push shocks, monetary transmission mechanism channels, four policy lags, and Monetarist vs Keynesian schools.",
     "learningOutcomes": [
@@ -462,23 +455,23 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "The AD–AS Framework: Real vs. Monetary AD Shifters",
-        "tag": "Mohr §19.1, pp. 408–417 • Study Unit 4.1, p. 97",
-        "intuition": "While the Keynesian model of Ch 17–18 assumes fixed prices, the AD–AS model places the general price level (P) on the vertical axis and real output (Y) on the horizontal axis. Study Unit 4 emphasises that Macro-Demand (AD) shifts rightward due to either real factors (autonomous increases in C, I, G, or X - Z) or monetary factors (increases in the money supply M lowering interest rates and boosting total expenditure).",
+        "tag": "Core Macroeconomic Concept",
+        "intuition": "While the Keynesian model of Ch 17–18 assumes fixed prices, the AD–AS model places the general price level (P) on the vertical axis and real output (Y) on the horizontal axis. Core Module emphasises that Macro-Demand (AD) shifts rightward due to either real factors (autonomous increases in C, I, G, or X - Z) or monetary factors (increases in the money supply M lowering interest rates and boosting total expenditure).",
         "example": "An expansionary fiscal boost (↑G) or monetary expansion (↑M → ↓i → ↑I) shifts AD rightward along an upward-sloping SRAS, increasing real output Y at the cost of a higher price level P.",
         "fallacy": "Explaining the downward slope of the macroeconomic AD curve using the microeconomic substitution effect between two individual goods.",
         "firstPrinciples": "When the aggregate price level P rises, all domestic goods become more expensive together; AD slopes downward due to the real balance (wealth) effect, the Keynes interest rate effect, and the international trade effect."
       },
       {
         "title": "Adverse Supply Shocks, Imported Inputs & Stagflation in AD–AS",
-        "tag": "Mohr §19.1, pp. 415–417 • Study Unit 4.1, p. 97",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "An increase in unit production costs—such as domestic transport, electricity, and steel tariffs, or more expensive imported intermediate inputs—shifts the SRAS curve upward/leftward. The economy experiences STAGFLATION: a simultaneous rise in the price level (↑P, cost-push inflation) and contraction in real output and employment (↓Y).",
-        "example": "As noted in Study Unit 4 (p. 97), if Ford vehicle engines are imported from England and the price of imported engines rises, the production cost of assembling vehicles in South Africa increases, shifting AS upward (raising prices and lowering output).",
+        "example": "As noted in macroeconomic analysis: (p. 97), if Ford vehicle engines are imported from England and the price of imported engines rises, the production cost of assembling vehicles in South Africa increases, shifting AS upward (raising prices and lowering output).",
         "fallacy": "Thinking demand-management policies (monetary or fiscal policy alone) can easily cure stagflation.",
         "firstPrinciples": "Because monetary and fiscal policies shift AD rather than AS, they cannot simultaneously reverse both higher prices and lower output after an adverse supply shock."
       },
       {
         "title": "Four Policy Lags & Monetarist vs. Keynesian Views",
-        "tag": "Mohr §19.3–19.4, pp. 423–432 • Study Unit 2.2, p. 29",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Stabilisation policy faces four chronological lags: (1) Recognition lag (time to collect data confirming a shock, same for both policies), (2) Decision lag (very long for fiscal policy due to annual parliamentary budget process; very short for SARB MPC), (3) Implementation lag (short for monetary policy), and (4) Impact/outside lag (long for monetary policy as investment responds slowly; shorter for direct fiscal spending).",
         "example": "Monetarists (Milton Friedman) view the market economy as inherently stable and see money supply changes as directly affecting private spending, warning that policy lags make activist Keynesian fiscal fine-tuning destabilising.",
         "fallacy": "Claiming that monetary policy has a longer decision lag than fiscal policy.",
@@ -491,9 +484,8 @@ const ECON122_DATA = {
     "number": 20,
     "title": "Inflation",
     "shortTitle": "Inflation & Phillips",
-    "studyUnit": "Study Unit 4 — Inflation (§4.1)",
-    "studyHours": "10 Hours",
-    "pages": "Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101",
+    "studyUnit": "Inflation & Price Dynamics",
+    "pages": "Price Indices & Inflation Mechanics",
     "accent": "#eab308",
     "summary": "Definition and measurement of inflation (CPI, PPI, Implicit GDP Deflator), distributional/economic/social effects, bracket creep, the four approaches to inflation (Monetarist, Demand-pull/Cost-push, Structuralist, Conflict), dangers of deflation, and SARB inflation targeting.",
     "learningOutcomes": [
@@ -523,24 +515,24 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "CPI vs. PPI vs. Implicit GDP Deflator (Comparative Matrix)",
-        "tag": "Mohr §20.2, pp. 438–442 • Study Unit 4 §4.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Three price indicators differ in scope and basket structure: (1) CPI measures the retail cost of living for urban households using a fixed consumer basket that INCLUDES imported consumer goods and VAT; (2) PPI measures wholesale prices at the level of first significant commercial transaction (production/factory gate), EXCLUDES services and VAT, and includes capital & intermediate goods; (3) The GDP Deflator covers ALL domestically produced final goods/services (including exports & capital goods) but EXCLUDES all imports.",
-        "example": "In Study Unit 4 (pp. 95–96): When CPI rises from 102.3 to 106.9, CPI inflation is [(106.9 - 102.3)/102.3] × 100 = 4.5%. When Nominal/Real GDP gives Deflator₁ = 153.1 and Deflator₂ = 166.2, deflator inflation is [(166.2 - 153.1)/153.1] × 100 = 8.6%.",
+        "example": "In Core Module (pp. 95–96): When CPI rises from 102.3 to 106.9, CPI inflation is [(106.9 - 102.3)/102.3] × 100 = 4.5%. When Nominal/Real GDP gives Deflator₁ = 153.1 and Deflator₂ = 166.2, deflator inflation is [(166.2 - 153.1)/153.1] × 100 = 8.6%.",
         "fallacy": "Calling a one-off jump in the price of bread 'inflation', or treating the single-period ratio (Nominal GDP / Real GDP) × 100 as an inflation rate rather than a price index.",
         "firstPrinciples": "Inflation is a CONTINUOUS and CONSIDERABLE rise in prices IN GENERAL. Dividing Nominal by Real GDP × 100 yields an index; you must compare two periods' deflator indices to obtain the percentage inflation rate."
       },
       {
         "title": "Distributional Effects of Inflation, Bracket Creep & the Deflation Trap",
-        "tag": "Mohr §20.3, pp. 442–446 • Study Unit 4 §4.1.3, p. 99",
-        "intuition": "Inflation redistributes income and wealth arbitrarily: (1) Debtors gain at the expense of creditors because loans are repaid in Rand with lower real purchasing power; (2) Young borrowers with mortgages gain while elderly pensioners on fixed annuities lose; (3) The government always gains via 'bracket creep' (fiscal drag). Conversely, Study Unit 4 warns that continuous deflation (falling prices) is even more dangerous because buyers and shop-owners postpone purchases expecting lower prices later, triggering recession or depression.",
+        "tag": "Core Macroeconomic Concept",
+        "intuition": "Inflation redistributes income and wealth arbitrarily: (1) Debtors gain at the expense of creditors because loans are repaid in Rand with lower real purchasing power; (2) Young borrowers with mortgages gain while elderly pensioners on fixed annuities lose; (3) The government always gains via 'bracket creep' (fiscal drag). Conversely, Core Module warns that continuous deflation (falling prices) is even more dangerous because buyers and shop-owners postpone purchases expecting lower prices later, triggering recession or depression.",
         "example": "If a worker's salary rises by 7% to match 7% inflation, their real pre-tax income is unchanged, yet under an unindexed progressive tax table their effective tax rate rises, reducing their real disposable income.",
         "fallacy": "Assuming that everyone loses equally during inflation, or wishing for prices to fall continuously (deflation).",
         "firstPrinciples": "Inflation redistributes real wealth from lenders/fixed-income holders to borrowers and the state, while continuous deflation paralyses consumption and investment (as seen in late-20th-century Japan)."
       },
       {
         "title": "Four Approaches to Inflation: Monetarist, Demand/Cost, Structuralist & Conflict",
-        "tag": "Mohr §20.4–20.6, pp. 446–463 • Study Unit 4 §4.1.2, p. 98",
-        "intuition": "Study Unit 4 highlights four major theoretical approaches to inflation: (1) The Monetarist approach based on MV ≡ PY; (2) Demand-pull (↑AD) and Cost-push (←AS) inflation; (3) The Structuralist approach, which separates inflation drivers into underlying factors (structural rigidities), initiating factors (price/supply shocks), and propagating factors (indexation and wage-price spirals); and (4) The Conflict approach, where competing income claims by labour unions, business, and government exceed real output.",
+        "tag": "Core Macroeconomic Concept",
+        "intuition": "Core Module highlights four major theoretical approaches to inflation: (1) The Monetarist approach based on MV ≡ PY; (2) Demand-pull (↑AD) and Cost-push (←AS) inflation; (3) The Structuralist approach, which separates inflation drivers into underlying factors (structural rigidities), initiating factors (price/supply shocks), and propagating factors (indexation and wage-price spirals); and (4) The Conflict approach, where competing income claims by labour unions, business, and government exceed real output.",
         "example": "To combat demand-pull inflation, SARB raises the repo rate and Treasury cuts G or raises T; to address structuralist and conflict inflation, supply-side reforms and incomes policies are required.",
         "fallacy": "Using contractionary monetary/fiscal policy aggressively against pure cost-push or structural inflation without side effects.",
         "firstPrinciples": "Restricting AD when inflation is cost-push curbs price rises only by worsening the contraction in real output Y and increasing unemployment further."
@@ -552,9 +544,8 @@ const ECON122_DATA = {
     "number": 21,
     "title": "Unemployment, Poverty and Inequality",
     "shortTitle": "Unemployment & Poverty",
-    "studyUnit": "Study Unit 5 — Unemployment (§5.1)",
-    "studyHours": "10 Hours",
-    "pages": "Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107",
+    "studyUnit": "Employment & Income Distribution",
+    "pages": "Labour Market & Unemployment Dynamics",
     "accent": "#06b6d4",
     "summary": "The unemployment pool inflows & outflows, strict (narrow) vs expanded (broad) definitions, labour force participation & absorption rates, four types of unemployment, the Eclectic Approach to job creation, the Phillips curve trade-off, incomes policy for stagflation, and SA's Triple Challenge.",
     "learningOutcomes": [
@@ -583,23 +574,23 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "The Unemployment Pool: Four Inflows & Two Outflows",
-        "tag": "Mohr §21.1, pp. 468–470 • Study Unit 5 §5.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "The level of unemployment is a stock that rises when inflows exceed outflows. People ENTER the unemployment pool for 4 reasons: (1) New entrants looking for a first job (school leavers/graduates), (2) Re-entrants returning to the labour force, (3) Job losers laid off or retrenched, and (4) Voluntary quitters searching for a better job. People LEAVE the pool by: (1) Finding employment, or (2) Withdrawing from the labour force (retiring or becoming discouraged under the strict definition).",
-        "example": "In Study Unit 5 (p. 104): If Estonia has an active labour force of 250 000 people and 7 500 of them are unemployed, the unemployment rate is (7 500 / 250 000) × 100 = 3.0%.",
+        "example": "In Core Module (p. 104): If Estonia has an active labour force of 250 000 people and 7 500 of them are unemployed, the unemployment rate is (7 500 / 250 000) × 100 = 3.0%.",
         "fallacy": "Assuming a rising unemployment rate proves that zero new jobs are being created or that GDP is shrinking.",
         "firstPrinciples": "The unemployment rate rises whenever the labour force grows faster than employment creation (jobless growth)—it measures the proportion of the economically active population unable to find work."
       },
       {
         "title": "Four Types of Unemployment, Eclectic Policy & Phillips Curve",
-        "tag": "Mohr §21.1–21.2, pp. 472–477 • Study Unit 5 §5.1.2–5.1.3",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Unemployment is classified into four types: (1) Frictional (short-term search between jobs or after graduation), (2) Seasonal (predictable off-season layoffs in agriculture/tourism), (3) Cyclical / Demand-deficient (caused by recessions in aggregate demand), and (4) Structural (long-term mismatch between worker skills/location and job requirements, or automation). Structural unemployment is far more dangerous than frictional unemployment because it reflects deep structural mismatches that do not vanish when demand recovers.",
-        "example": "In Study Unit 5 (p. 106): Duncan (recent graduate searching) and Thandi (starting a new job next month) are Frictional; Robert (lost his job in a recession) is Cyclical; Jan (unemployed economist in Durban while work is in Pretoria) and a shortage of managers alongside an oversupply of unskilled labourers are Structural. Study Unit 5 advocates an Eclectic Approach pooling demand-side (C+I+G+X-Z) and supply-side (skills training, SMME support, appropriate technology) measures, plus incomes policy against stagflation.",
+        "example": "In Core Module (p. 106): Duncan (recent graduate searching) and Thandi (starting a new job next month) are Frictional; Robert (lost his job in a recession) is Cyclical; Jan (unemployed economist in Durban while work is in Pretoria) and a shortage of managers alongside an oversupply of unskilled labourers are Structural. Core Module advocates an Eclectic Approach pooling demand-side (C+I+G+X-Z) and supply-side (skills training, SMME support, appropriate technology) measures, plus incomes policy against stagflation.",
         "fallacy": "Classifying a worker permanently displaced by automation or geographic immobility as 'frictional' or 'cyclical'.",
         "firstPrinciples": "Technological displacement, geographic immobility, and skills mismatches persist even during economic booms; they represent structural unemployment, requiring holistic supply-side human capital development."
       },
       {
         "title": "Strict vs. Expanded Unemployment & Calculation Trap",
-        "tag": "Mohr §21.1, pp. 469–471 • Study Unit 5 §5.1.1",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Stats SA's strict (official/narrow) definition excludes discouraged work-seekers because they did not take active steps to look for work in the four weeks prior to the survey. The expanded (broad) definition includes discouraged work-seekers.",
         "example": "In Elaria: Employed = 6,750,000, Active Unemployed = 2,220,000, Discouraged = 1,030,000 (plus students, homemakers, etc.). Broad Unemployed = 2,220,000 + 1,030,000 = 3,250,000; Broad Labour Force = 6,750,000 + 3,250,000 = 10,000,000; Broad Unemployment Rate = (3.25m / 10.0m) × 100 = 32.50%.",
         "fallacy": "Including students, homemakers, pensioners, children (<15), or the medically disabled in the labour force denominator.",
@@ -612,9 +603,8 @@ const ECON122_DATA = {
     "number": 22,
     "title": "Economic Growth and Business Cycles",
     "shortTitle": "Growth & Cycles",
-    "studyUnit": "Study Unit 6 — Economic Growth & Business Cycles (§6.1–6.2)",
-    "studyHours": "20 Hours",
-    "pages": "Mohr 6e, pp. 485–512 • Study Unit 6, pp. 109–114",
+    "studyUnit": "Growth & Economic Fluctuations",
+    "pages": "Economic Growth & Business Cycles",
     "accent": "#10b981",
     "summary": "Definition and measurement of real and inclusive economic growth, problems with GDP as a welfare measure, the four elements of the business cycle, Classical vs Keynesian vs Structuralist cycle theories, SARB leading/coincident/lagging indicators, supply vs demand growth drivers, and fundamental causes of low growth in SA.",
     "learningOutcomes": [
@@ -643,7 +633,7 @@ const ECON122_DATA = {
     "concepts": [
       {
         "title": "Five Problems with GDP as a Measure of Welfare",
-        "tag": "Mohr §22.1, pp. 486–488 • Study Unit 6 §6.1.2",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "Real GDP is flawed as a measure of societal well-being because: (1) Non-market production (e.g. unpaid household work, subsistence farming) is difficult or impossible to value, (2) Unrecorded/informal sector activity and illegal trade are omitted, (3) GDP data are frequently revised after initial estimates, (4) Aggregate or even per capita GDP ignores the distribution of income (inequality), and (5) GDP makes no distinction between economic 'goods' (hospitals, schools) and 'bads' (pollution, crime expenditure, weapons)—negative externalities are not subtracted.",
         "example": "If Country A has twice the per capita GDP of Country B, residents of A are NOT necessarily twice as well off because per capita GDP is a simple mean that hides extreme inequality and environmental costs.",
         "fallacy": "Thinking 'GDP pertains only to production inside the country' is a welfare flaw rather than its literal geographic definition.",
@@ -651,7 +641,7 @@ const ECON122_DATA = {
       },
       {
         "title": "The Business Cycle: Four Elements, Theories & SARB Indicators",
-        "tag": "Mohr §22.2, pp. 488–494 • Study Unit 6 §6.2.1–6.2.3",
+        "tag": "Core Macroeconomic Concept",
         "intuition": "A complete business cycle has four elements: Trough (lowest turning point) → Expansion / Upswing (rising real GDP) → Peak / Boom (upper turning point where almost all resources are in use) → Contraction / Downswing / Recession (declining real GDP). Classical economists view the economy as inherently stable (cycles caused by exogenous shocks); Keynesian economists view cycles as endogenous (inherent to modern market economies). SARB tracks Leading indicators (turn before the economy, e.g. share prices, building plans passed, real M1), Coincident indicators (move with the economy, e.g. manufacturing volume), and Lagging indicators (turn after, e.g. prime rate, unemployment duration).",
         "example": "On a business cycle diagram where Point A is a Trough, Point B is a Peak, and Point C is the next Trough: A → B is the Expansion/Upswing phase, and B → C is the Contraction/Downswing phase.",
         "fallacy": "Confusing a slowdown in the positive rate of growth with a recession (contraction).",
@@ -659,8 +649,8 @@ const ECON122_DATA = {
       },
       {
         "title": "Inclusive Growth, Supply/Demand Drivers & Causes of Low Growth in SA",
-        "tag": "Mohr §22.3–22.4, pp. 494–504 • Study Unit 6 §6.1.4–6.1.5",
-        "intuition": "Study Unit 6 emphasises that in a highly unequal society like South Africa, the goal is inclusive growth—accelerating growth while sharing its benefits via broad job creation. Growth requires both Supply factors (natural resources, human capital skills, capital widening & deepening, entrepreneurship/technology) and Demand factors (domestic demand C+I+G, export promotion X, import substitution Z). Fundamental causes of low growth in South Africa include skills shortages, electricity and logistics bottlenecks, low domestic saving and investment, and structural unemployment.",
+        "tag": "Core Macroeconomic Concept",
+        "intuition": "Core Module emphasises that in a highly unequal society like South Africa, the goal is inclusive growth—accelerating growth while sharing its benefits via broad job creation. Growth requires both Supply factors (natural resources, human capital skills, capital widening & deepening, entrepreneurship/technology) and Demand factors (domestic demand C+I+G, export promotion X, import substitution Z). Fundamental causes of low growth in South Africa include skills shortages, electricity and logistics bottlenecks, low domestic saving and investment, and structural unemployment.",
         "example": "South Africa's mineral wealth shows that natural resources are neither necessary nor sufficient for sustained growth: commodity price volatility and exchange rate swings can create a 'resource curse' unless revenues are invested in human and physical capital.",
         "fallacy": "Believing that higher government spending that drives up local interest rates (crowding out private investment) always guarantees higher long-run growth.",
         "firstPrinciples": "When supply-side capacity is constrained (e.g. skills shortages or electricity bottlenecks) or higher G crowds out private investment I via higher interest rates, demand expansion fuels inflation rather than long-run real growth."
@@ -673,7 +663,7 @@ const ECON122_DATA = {
     "id": "q_ch13_01",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Value-Added & Double-Counting Elimination (Dr Ray & L'Oréal)",
-    "citation": "Mohr 6e, §13.2, pp. 239–241",
+    "citation": "Macroeconomics, §13.2, pp. 239–241",
     "difficulty": "Medium",
     "stem": "Dr Ray sells natural beauty inputs to L'Oréal for R45 000 (paying R15 000 wages, R10 000 rent, R1 500 interest). L'Oréal processes and sells the products to Edgars for R160 000 (paying R30 000 wages, R14 000 rent, R3 000 interest). Edgars sells the finished products to final consumers for R240 000 (paying R12 500 wages, R4 000 interest). What is the value added by L'Oréal and the total GDP contribution?",
     "derivation": "\\text{VA}_{\\text{Dr Ray}} = 45\\,000 - 0 = \\text{R}45\\,000; \\quad \\text{VA}_{\\text{L'Oréal}} = 160\\,000 - 45\\,000 = \\text{R}115\\,000; \\quad \\text{VA}_{\\text{Edgars}} = 240\\,000 - 160\\,000 = \\text{R}80\\,000. \\\\ \\text{Total GDP} = 45\\,000 + 115\\,000 + 80\\,000 = \\text{R}240\\,000.",
@@ -706,7 +696,7 @@ const ECON122_DATA = {
     "id": "q_ch13_02",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Deriving NDP at Market Prices & Gross National Income (GNI)",
-    "citation": "Mohr 6e, §13.2–13.3, pp. 241–245",
+    "citation": "Macroeconomics, §13.2–13.3, pp. 241–245",
     "difficulty": "Medium",
     "stem": "Given the following national accounting data (in R millions): GDP at market prices = 150 000; VAT (taxes on products) = 14 000; Interest on government debt = 8 500; Depreciation (consumption of fixed capital) = 5 500; Subsidies on products = 25 000; Wages of migrant workers = 15 000. Calculate Net Domestic Product (NDP) at market prices and GDP at factor cost.",
     "derivation": "\\text{NDP}_{mp} = \\text{GDP}_{mp} - D = 150\\,000 - 5\\,500 = 144\\,500. \\\\ \\text{GDP}_{fc} = \\text{GDP}_{mp} - \\text{VAT} + \\text{Subsidies} = 150\\,000 - 14\\,000 + 25\\,000 = 161\\,000.",
@@ -739,7 +729,7 @@ const ECON122_DATA = {
     "id": "q_ch13_03",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Converting GDP at Factor Cost to Basic Prices & Market Prices",
-    "citation": "Mohr 6e, §13.3, pp. 244–247",
+    "citation": "Macroeconomics, §13.3, pp. 244–247",
     "difficulty": "Hard",
     "stem": "Use the following South African data (in Rand): GDP at factor cost = R293 250; VAT = R16 000; Subsidies = R43 300; Exports = R20 000; Imports = R10 000; Capital Goods = R40 000; Depreciation = 8% of Capital Goods; Salaries earned by SA cricket players in the UK = R35 200; Profits earned by UK Airlines trading in SA = R125 600. Calculate Gross Domestic Expenditure (GDE) at market prices and National Income (NI).",
     "derivation": "\\text{GDP}_{mp} = \\text{GDP}_{fc} + \\text{VAT} - \\text{Subsidies} = 293\\,250 + 16\\,000 - 43\\,300 = \\text{R}265\\,950. \\\\ \\text{GDE}_{mp} = \\text{GDP}_{mp} - X + Z = 265\\,950 - 20\\,000 + 10\\,000 = \\text{R}255\\,950. \\\\ D = 0.08 \\times 40\\,000 = \\text{R}3\\,200; \\quad \\text{NI} = \\text{GDP}_{fc} - D + \\text{FI} - \\text{FP} = 293\\,250 - 3\\,200 + 35\\,200 - 125\\,600 = \\text{R}199\\,650.",
@@ -772,7 +762,7 @@ const ECON122_DATA = {
     "id": "q_ch13_04",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Reconstructing GDP at Factor Cost from National Income & Depreciation",
-    "citation": "Mohr 6e, §13.3, pp. 244–247",
+    "citation": "Macroeconomics, §13.3, pp. 244–247",
     "difficulty": "Hard",
     "stem": "Given the following quarterly national accounting statistics: National Income (NI at factor cost) = 870 760; VAT = 120 000; Subsidies = 9 000; Government transfer payments = 15 500; Depreciation = 11 100; Wages paid to foreign migrant labourers working domestically = 120 800; Earnings of domestic citizens working abroad = 234 000; Exports = 553 200; Imports = 489 300. Calculate GDP at factor cost and GDE at market prices.",
     "derivation": "\\text{GDP}_{fc} = \\text{NI} + D - \\text{FI}_{\\text{from ROW}} + \\text{FP}_{\\text{to ROW}} = 870\\,760 + 11\\,100 - 234\\,000 + 120\\,800 = 768\\,660. \\\\ \\text{GDP}_{mp} = 768\\,660 + 120\\,000 - 9\\,000 = 879\\,660. \\\\ \\text{GDE}_{mp} = \\text{GDP}_{mp} - X + Z = 879\\,660 - 553\\,200 + 489\\,300 = 815\\,760.",
@@ -805,7 +795,7 @@ const ECON122_DATA = {
     "id": "q_ch13_05",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Equivalence of Income & Production GDP Under Minimum-Wage Shifts",
-    "citation": "Mohr 6e, §13.2, pp. 239–241",
+    "citation": "Macroeconomics, §13.2, pp. 239–241",
     "difficulty": "Easy",
     "stem": "Suppose the prescribed minimum wage in South Africa increases by 8%. How much would total GDP calculated using the income method differ from total GDP estimated using the production (value-added) method, assuming no measurement errors?",
     "derivation": "\\text{GDP}_{\\text{Production}} \\equiv \\sum \\text{Value Added} \\equiv \\text{GDP}_{\\text{Income}} \\equiv W + R + i + \\Pi \\implies \\text{Difference} = 0.",
@@ -838,7 +828,7 @@ const ECON122_DATA = {
     "id": "q_ch14_01",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Calculating SARB Monetary Aggregates M1, M2 & Comprehensive M3",
-    "citation": "Mohr 6e, §14.3, pp. 271–273",
+    "citation": "Macroeconomics, §14.3, pp. 271–273",
     "difficulty": "Easy",
     "stem": "The following monetary statistics are available for South Africa in a given year (in R millions): Notes and coins held by the public = 52 000; Demand deposits = 425 000; Short-term deposits = 215 000; Medium-term deposits = 190 000; Long-term deposits = 125 000. Calculate the M1, M2, and M3 money supply aggregates.",
     "derivation": "M_1 = C + D = 52\\,000 + 425\\,000 = \\text{R}477\\,000\\text{m}. \\\\ M_2 = M_1 + 215\\,000 + 190\\,000 = \\text{R}882\\,000\\text{m}. \\\\ M_3 = M_2 + 125\\,000 = \\text{R}1\\,007\\,000\\text{m}.",
@@ -871,7 +861,7 @@ const ECON122_DATA = {
     "id": "q_ch14_02",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Isolating Demand Deposits, Short/Medium & Long-Term Deposits in M1–M3",
-    "citation": "Mohr 6e, §14.3, pp. 271–273",
+    "citation": "Macroeconomics, §14.3, pp. 271–273",
     "difficulty": "Medium",
     "stem": "Given the following monetary aggregates for a particular year (in R millions): Notes and coins held by the public = 72 500; Demand deposits = 438 000; Short-term deposits = 265 000; Long-term deposits = 142 500; Total M2 money supply = 1 015 500. Calculate M1 and the missing value of medium-term deposits.",
     "derivation": "M_1 = 72\\,500 + 438\\,000 = \\text{R}510\\,500\\text{m}. \\\\ M_2 = M_1 + D_{\\text{short}} + D_{\\text{medium}} \\implies 1\\,015\\,500 = 510\\,500 + 265\\,000 + D_{\\text{medium}} \\implies D_{\\text{medium}} = \\text{R}240\\,000\\text{m}.",
@@ -904,7 +894,7 @@ const ECON122_DATA = {
     "id": "q_ch14_03",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Endogenous Money Supply & SARB Repo Rate Accommodation Policy",
-    "citation": "Mohr 6e, §14.5–14.8, pp. 275–286",
+    "citation": "Macroeconomics, §14.5–14.8, pp. 275–286",
     "difficulty": "Medium",
     "stem": "According to the endogenous money supply approach used by the South African Reserve Bank (SARB), there is no independent vertical money supply curve. What happens to the interest rate and the equilibrium quantity of money when the SARB lowers the repo rate by 50 basis points?",
     "derivation": "i_{\\text{repo}} \\downarrow \\implies i_{\\text{market}} \\downarrow \\text{ (downward shift of horizontal rate line)} \\implies \\text{movement downward along } L \\implies M \\uparrow.",
@@ -937,7 +927,7 @@ const ECON122_DATA = {
     "id": "q_ch14_04",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Financial Capital vs Physical Capital as a Factor of Production",
-    "citation": "Mohr 6e, §14.1 & §3.3, pp. 270, 44",
+    "citation": "Macroeconomics, §14.1 & §3.3, pp. 270, 44",
     "difficulty": "Easy",
     "stem": "Ubuntu Production (Pty) Ltd, a South African manufacturing firm, states that it could produce more goods and expand its plant if it had more money available. Does this imply that money is a factor of production in macroeconomics?",
     "derivation": "\\text{Factors of Production} = \\{\\text{Natural Resources (Land)},\\; \\text{Labour},\\; \\text{Capital},\\; \\text{Entrepreneurship}\\}. \\quad \\text{Money} \\notin \\text{FOP}.",
@@ -970,7 +960,7 @@ const ECON122_DATA = {
     "id": "q_ch15_01",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — Statutory Personal Income Tax, Rebate, Effective & Marginal Tax Rates (R425 000)",
-    "citation": "Mohr 6e, §15.11, pp. 316–319",
+    "citation": "Macroeconomics, §15.11, pp. 316–319",
     "difficulty": "Medium",
     "stem": "In a hypothetical SARS tax table, the bracket for taxable income R350 001 – R500 000 specifies: 'R75 000 + 40% of the amount above R350 000', and the primary tax rebate is R10 000. For an individual under 65 earning R425 000 annually, calculate the net tax payable after the rebate, the effective tax rate, and the marginal tax rate.",
     "derivation": "T_{\\text{before}} = 75\\,000 + 0.40(425\\,000 - 350\\,000) = 75\\,000 + 30\\,000 = \\text{R}105\\,000. \\\\ T_{\\text{after}} = 105\\,000 - 10\\,000 = \\text{R}95\\,000. \\quad \\text{ATR} = \\frac{95\\,000}{425\\,000}\\times 100 = 22.35\\%, \\quad \\text{MTR} = 40\\%.",
@@ -1003,7 +993,7 @@ const ECON122_DATA = {
     "id": "q_ch15_02",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — Junior Lecturer Personal Income Tax & Primary Rebate Calculation (R384 000)",
-    "citation": "Mohr 6e, §15.11, pp. 316–319",
+    "citation": "Macroeconomics, §15.11, pp. 316–319",
     "difficulty": "Medium",
     "stem": "Thabiso Lebotse (aged 24) starts his first job as a Junior Lecturer earning R32 000 per month (R384 000 per year). The statutory SARS tax bracket for R321 601 – R445 100 is 'R67 144 + 31% of the amount over R321 600', with a Primary Rebate of R14 958 (and Secondary Rebate of R8 199 for ages 65+). Calculate his total annual tax payable after rebate and his effective tax rate.",
     "derivation": "Y = 32\\,000 \\times 12 = \\text{R}384\\,000. \\quad T_{\\text{gross}} = 67\\,144 + 0.31(384\\,000 - 321\\,600) = 67\\,144 + 19\\,344 = \\text{R}86\\,488. \\\\ T_{\\text{net}} = 86\\,488 - 14\\,958 = \\text{R}71\\,530. \\quad \\text{ATR} = \\frac{71\\,530}{384\\,000}\\times 100 = 18.63\\%.",
@@ -1036,7 +1026,7 @@ const ECON122_DATA = {
     "id": "q_ch15_03",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — High-Bracket Statutory Tax Payable Before & After Primary Rebate (R825 000)",
-    "citation": "Mohr 6e, §15.11, pp. 316–319",
+    "citation": "Macroeconomics, §15.11, pp. 316–319",
     "difficulty": "Medium",
     "stem": "According to the current statutory SARS tax table, the bracket for R673 001 – R857 900 is 'R179 147 + 39% of taxable income above R673 000', with a Primary Rebate of R17 235 (for all individuals under 65). If you earn R825 000 per annum, what is your tax payable (before and after the primary rebate) and your marginal tax rate?",
     "derivation": "T_{\\text{before}} = 179\\,147 + 0.39(825\\,000 - 673\\,000) = 179\\,147 + 59\\,280 = \\text{R}238\\,427. \\\\ T_{\\text{after}} = 238\\,427 - 17\\,235 = \\text{R}221\\,192. \\quad \\text{MTR} = 39\\%.",
@@ -1069,7 +1059,7 @@ const ECON122_DATA = {
     "id": "q_ch15_04",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — Negative Production Externalities (MSC vs MPC) & Corrective Pigouvian Tax",
-    "citation": "Mohr 6e, §15.3, pp. 301–303",
+    "citation": "Macroeconomics, §15.3, pp. 301–303",
     "difficulty": "Medium",
     "stem": "A chemical plant in the Highveld generates air pollution (hydrogen sulphide) as an unpriced by-product of production. In the market diagram showing Demand (DD = MSB), Marginal Private Cost (MPC), and Marginal Social Cost (MSC), why is the free-market equilibrium output (Q1) larger than the socially efficient output (Q2)?",
     "derivation": "\\text{Free Market: } \\text{MPC}(Q_1) = \\text{MSB}(Q_1). \\quad \\text{Social Optimum: } \\text{MSC}(Q_2) = \\text{MPC}(Q_2) + \\text{MEC} = \\text{MSB}(Q_2) \\implies Q_1 > Q_2,\\; P_1 < P_2.",
@@ -1102,7 +1092,7 @@ const ECON122_DATA = {
     "id": "q_ch16_01",
     "chapter": "ch16",
     "source": "Chapter 16 — The Foreign Sector — Absolute vs Comparative Advantage & Opportunity Cost (Spain & Greece)",
-    "citation": "Mohr 6e, §16.2, pp. 325–329",
+    "citation": "Macroeconomics, §16.2, pp. 325–329",
     "difficulty": "Medium",
     "stem": "Spain and Greece produce olives and tobacco. With a given unit of resources, Spain can produce either 100 kg of olives or 150 kg of tobacco, while Greece can produce either 300 kg of olives or 300 kg of tobacco. What are the opportunity costs, and which country has the comparative advantage in each product?",
     "derivation": "\\text{Spain: } 1\\text{ Tobacco} = \\frac{100}{150} = 0.67\\text{ Olives}, \\; 1\\text{ Olive} = \\frac{150}{100} = 1.5\\text{ Tobacco}. \\\\ \\text{Greece: } 1\\text{ Tobacco} = \\frac{300}{300} = 1\\text{ Olive}, \\; 1\\text{ Olive} = 1\\text{ Tobacco}.",
@@ -1135,7 +1125,7 @@ const ECON122_DATA = {
     "id": "q_ch16_02",
     "chapter": "ch16",
     "source": "Chapter 16 — The Foreign Sector — Opportunity Cost Ratios & Specialisation in Trade (Australia & Brazil)",
-    "citation": "Mohr 6e, §16.2 & §16.4, pp. 326–336",
+    "citation": "Macroeconomics, §16.2 & §16.4, pp. 326–336",
     "difficulty": "Medium",
     "stem": "Australia can produce 150 surfboards or 900 bottles of sunscreen per month, whereas the USA can produce 200 surfboards or 1 600 bottles of sunscreen per month. Furthermore, 1 bottle of sunscreen costs US$1.50 and the exchange rate is 1 US$ = 1.70 AUS$. Which country has a relative advantage in surfboards, and what will Australia pay in AUS$ for 50 bottles of sunscreen?",
     "derivation": "\\text{Opp. Cost of 1 Surfboard: Australia} = \\frac{900}{150} = 6\\text{ bottles}; \\quad \\text{USA} = \\frac{1600}{200} = 8\\text{ bottles} \\implies \\text{Australia (6 < 8)}. \\\\ \\text{Cost} = 50 \\times \\$1.50 \\times 1.70 = \\text{AUS\\$}127.50.",
@@ -1168,7 +1158,7 @@ const ECON122_DATA = {
     "id": "q_ch16_03",
     "chapter": "ch16",
     "source": "Chapter 16 — The Foreign Sector — Exchange Rate Appreciation (ZAR/USD): Trade Balance & Domestic Inflation",
-    "citation": "Mohr 6e, §16.4, pp. 336–340",
+    "citation": "Macroeconomics, §16.4, pp. 336–340",
     "difficulty": "Easy",
     "stem": "Suppose the South African Rand appreciates against the US dollar (for example, moving from R19.00/$1 to R17.00/$1) due to strong capital inflows and rising commodity demand. How will this appreciation impact South Africa's export prices (in foreign currency) and import prices (in Rand), ceteris paribus?",
     "derivation": "\\text{Rand Appreciation } (E \\downarrow) \\implies P_{\\text{exports in USD}} \\uparrow \\implies X \\downarrow; \\quad P_{\\text{imports in ZAR}} \\downarrow \\implies Z \\uparrow.",
@@ -1201,7 +1191,7 @@ const ECON122_DATA = {
     "id": "q_ch17_01",
     "chapter": "ch17",
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Core Assumptions & Equilibrium Laws of the Simple Keynesian Model",
-    "citation": "Mohr 6e, §17.1–17.6, pp. 348–361",
+    "citation": "Macroeconomics, §17.1–17.6, pp. 348–361",
     "difficulty": "Easy",
     "stem": "Which one of the following statements accurately describes the simple Keynesian model of income determination and its relationship to the 45-degree line?",
     "derivation": "\\text{Keynes's Law: } A \\to Y. \\quad \\text{Above } 45^\\circ \\text{ line } (Y < Y_0): A > Y \\implies \\Delta \\text{Inventories} < 0 \\implies Y \\uparrow.",
@@ -1234,7 +1224,7 @@ const ECON122_DATA = {
     "id": "q_ch17_02",
     "chapter": "ch17",
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Closed-Economy Multiplier, Equilibrium Income & Investment Injection",
-    "citation": "Mohr 6e, §17.8, pp. 366–371",
+    "citation": "Macroeconomics, §17.8, pp. 366–371",
     "difficulty": "Medium",
     "stem": "In a simple closed Keynesian economy without a government, autonomous consumption is R120 million, the marginal propensity to consume (c) is 0.75, and autonomous investment is R80 million. If autonomous investment increases by R40 million to R120 million, how do the equilibrium level of income and the relative sizes of ΔY and ΔI compare?",
     "derivation": "\\alpha = \\frac{1}{1 - 0.75} = 4. \\quad Y_0 = 4(120 + 80) = \\text{R}800\\text{m}. \\quad \\Delta Y = 4 \\times 40 = \\text{R}160\\text{m} \\implies Y_1 = \\text{R}960\\text{m}, \\; \\Delta Y > \\Delta I.",
@@ -1267,7 +1257,7 @@ const ECON122_DATA = {
     "id": "q_ch18_01",
     "chapter": "ch18",
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Open-Economy Keynesian Model: Multiplier, Equilibrium & Fiscal Gap (Portofino)",
-    "citation": "Mohr 6e, §18.2–18.3, pp. 387–393",
+    "citation": "Macroeconomics, §18.2–18.3, pp. 387–393",
     "difficulty": "Hard",
     "stem": "Suppose the following equations describe the open economy of Portofino, Italy: Autonomous consumption = 100, MPC (c) = 0.8, proportional tax rate (t) = 0.2 (so T = 0.2Y), Investment (I) = 100, Government spending (G) = 250, Exports (X) = 300, and Imports Z = 20 + 0.1Y. Calculate the open-economy multiplier (rounded to 2 decimal places) and the equilibrium level of income.",
     "derivation": "\\bar{A} = 100 + 100 + 250 + 300 - 20 = 730. \\\\ \\alpha = \\frac{1}{1 - c(1-t) + m} = \\frac{1}{1 - 0.8(1 - 0.2) + 0.1} = \\frac{1}{1 - 0.64 + 0.1} = \\frac{1}{0.46} \\approx 2.17. \\\\ Y_0 = 2.17 \\times 730 = 1\\,584.10 \\text{ (or } 730 / 0.46 = 1\\,586.96\\text{)}.",
@@ -1300,7 +1290,7 @@ const ECON122_DATA = {
     "id": "q_ch18_02",
     "chapter": "ch18",
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Open-Economy Multiplier with Proportional Taxes & Induced Imports",
-    "citation": "Mohr 6e, §18.2–18.4, pp. 387–396",
+    "citation": "Macroeconomics, §18.2–18.4, pp. 387–396",
     "difficulty": "Hard",
     "stem": "Consider an open economy with government where: Government expenditure (G) = R400, Exports (X) = R250, Imports (Z) = 50 + 0.15Y, Autonomous consumption (C̄) = R150, Investment (I) = R300, Full-employment output (Yf) = R1 900, MPC (c) = 0.75, and Tax rate (t) = 0.25. Calculate the multiplier (rounded to 2 decimals), equilibrium income, and the new equilibrium income if investment falls to R250.",
     "derivation": "\\bar{A} = 150 + 300 + 400 + 250 - 50 = 1\\,050. \\\\ \\alpha = \\frac{1}{1 - 0.75(1 - 0.25) + 0.15} = \\frac{1}{1 - 0.5625 + 0.15} = \\frac{1}{0.5875} \\approx 1.70. \\\\ Y_0 = 1.70 \\times 1\\,050 = 1\\,785 \\text{ (exact } 1\\,787.23\\text{)}. \\quad \\Delta I = -50 \\implies \\Delta Y = -85 \\implies Y_{\\text{new}} = 1\\,700.",
@@ -1333,7 +1323,7 @@ const ECON122_DATA = {
     "id": "q_ch18_03",
     "chapter": "ch18",
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Fiscal Transfer Shock, Tax Rate Adjustment & New Equilibrium Output",
-    "citation": "Mohr 6e, §18.4, pp. 393–398",
+    "citation": "Macroeconomics, §18.4, pp. 393–398",
     "difficulty": "Hard",
     "stem": "In the South African Keynesian model (in R millions): C̄ = 30, Ī = 10, Ḡ = 20, X̄ = 10, Z̄ = 5, MPC (c) = 0.6, average tax rate (t) = 0.167, and MPM (m) = 0.125. Initial equilibrium income is R104m (with α = 1.60 and Ā = 65). Suppose the government introduces a basic income grant that raises G by R4m (to R24m) and finances it by raising the tax rate t to 0.25. What are the new equilibrium income and tax revenue?",
     "derivation": "\\bar{A}_{\\text{new}} = 30 + 10 + 24 + 10 - 5 = 69. \\quad c(1 - t_{\\text{new}}) = 0.6(0.75) = 0.45. \\\\ Y_{\\text{new}} = \\frac{69}{1 - 0.45 + 0.125} = \\frac{69}{0.675} = \\text{R}102.22\\text{m}. \\quad T_{\\text{new}} = 0.25 \\times 102.22 = \\text{R}25.56\\text{m}.",
@@ -1366,7 +1356,7 @@ const ECON122_DATA = {
     "id": "q_ch19_01",
     "chapter": "ch19",
     "source": "Chapter 19 — More on Macroeconomic Theory and Policy — Monetarist Rules vs Keynesian Counter-Cyclical Stabilisation Debate",
-    "citation": "Mohr 6e, §19.1–19.4, pp. 408–431",
+    "citation": "Macroeconomics, §19.1–19.4, pp. 408–431",
     "difficulty": "Medium",
     "stem": "How do the views of Monetarist economists differ from Keynesian economists regarding economic fluctuations, and how do the decision lag and impact lag compare between fiscal policy and monetary policy?",
     "derivation": "\\text{Keynesian: Endogenous Instability } \\implies \\text{Active Policy}. \\quad \\text{Decision Lag: Fiscal} > \\text{Monetary}; \\quad \\text{Impact Lag: Monetary} > \\text{Fiscal}.",
@@ -1399,7 +1389,7 @@ const ECON122_DATA = {
     "id": "q_ch19_02",
     "chapter": "ch19",
     "source": "Chapter 19 — More on Macroeconomic Theory and Policy — Wealth, Interest-Rate & International Trade Effects on the AD Slope",
-    "citation": "Mohr 6e, §19.1–19.2, pp. 409–421",
+    "citation": "Macroeconomics, §19.1–19.2, pp. 409–421",
     "difficulty": "Medium",
     "stem": "In the Aggregate Demand–Aggregate Supply (AD–AS) model, which three macroeconomic effects explain why the Aggregate Demand (AD) curve slopes downward from left to right as the general price level (P) falls?",
     "derivation": "P \\downarrow \\implies (1)\\; (M/P) \\uparrow \\implies C \\uparrow \\text{ (Wealth)}; \\; (2)\\; i \\downarrow \\implies I \\uparrow \\text{ (Interest Rate)}; \\; (3)\\; (X-Z) \\uparrow \\text{ (Trade)}.",
@@ -1422,7 +1412,7 @@ const ECON122_DATA = {
       {
         "text": "The fiscal bracket-creep effect, the statutory reserve requirement effect, and the quota effect.",
         "isCorrect": false,
-        "refutation": "Mohr §19.1 establishes that the downward slope of AD rests specifically on the wealth (real balance), interest rate (Keynes), and international trade (foreign purchases) effects."
+        "refutation": "Macroeconomic theory establishes that the downward slope of AD rests specifically on the wealth (real balance), interest rate (Keynes), and international trade (foreign purchases) effects."
       }
     ],
     "chapterId": "ch19",
@@ -1432,7 +1422,7 @@ const ECON122_DATA = {
     "id": "q_ch20_01",
     "chapter": "ch20",
     "source": "Chapter 20 — Inflation — Implicit GDP Deflator & Annual Inflation Rate Calculation",
-    "citation": "Mohr 6e, §20.2, pp. 438–442",
+    "citation": "Macroeconomics, §20.2, pp. 438–442",
     "difficulty": "Medium",
     "stem": "The macroeconomic table below shows Nominal GDP and Real GDP (in R millions) for two consecutive years: in Period 1, Nominal GDP = 5 130 703 and Real GDP = 4 028 475; in Period 2, Nominal GDP = 5 643 773 and Real GDP = 4 391 038. Calculate the implicit GDP deflator for both years and the resulting annual inflation rate (rounded to 2 decimal places).",
     "derivation": "\\text{Deflator}_1 = \\frac{5\\,130\\,703}{4\\,028\\,475}\\times 100 = 127.36; \\quad \\text{Deflator}_2 = \\frac{5\\,643\\,773}{4\\,391\\,038}\\times 100 = 128.53. \\\\ \\pi = \\frac{128.53 - 127.36}{127.36}\\times 100 = 0.92\\%.",
@@ -1465,7 +1455,7 @@ const ECON122_DATA = {
     "id": "q_ch20_02",
     "chapter": "ch20",
     "source": "Chapter 20 — Inflation — Three-Good Economy: Nominal GDP, Real GDP & Deflator Inflation",
-    "citation": "Mohr 6e, §13.2 & §20.2, pp. 243, 441",
+    "citation": "Macroeconomics, §13.2 & §20.2, pp. 243, 441",
     "difficulty": "Medium",
     "stem": "An economy produces three goods (Period 1 is the base year): Pizza (Period 1: Q=24, P=R22.50; Period 2: Q=36, P=R24.75), Soda (Period 1: Q=50, P=R4.00; Period 2: Q=75, P=R4.40), and Ice Cream (Period 1: Q=15, P=R8.00; Period 2: Q=22.5, P=R8.80). Calculate Period 1 Nominal/Real GDP, Period 2 Nominal and Real GDP, the Period 2 GDP Deflator, and the Period 2 inflation rate.",
     "derivation": "\\text{GDP}_{1}^{\\text{Nom}} = \\text{GDP}_{1}^{\\text{Real}} = 24(22.5) + 50(4) + 15(8) = \\text{R}860. \\\\ \\text{GDP}_{2}^{\\text{Nom}} = 36(24.75) + 75(4.4) + 22.5(8.8) = \\text{R}1\\,419; \\quad \\text{GDP}_{2}^{\\text{Real}} = 36(22.5) + 75(4) + 22.5(8) = \\text{R}1\\,290. \\\\ \\text{Deflator}_{2} = \\frac{1419}{1290}\\times 100 = 110.0 \\implies \\pi_{2} = 10.0\\%.",
@@ -1498,7 +1488,7 @@ const ECON122_DATA = {
     "id": "q_ch20_03",
     "chapter": "ch20",
     "source": "Chapter 20 — Inflation — Structural Comparison of CPI, PPI & the Implicit GDP Deflator",
-    "citation": "Mohr 6e, §20.2, pp. 438–442",
+    "citation": "Macroeconomics, §20.2, pp. 438–442",
     "difficulty": "Easy",
     "stem": "Which statement accurately contrasts the Consumer Price Index (CPI), the Producer Price Index (PPI), and the Implicit GDP Deflator in South Africa?",
     "derivation": "\\text{CPI: Urban consumer basket (incl. imports and services)}. \\quad \\text{PPI: Production gate (excl. services and VAT, incl. capital/intermediate)}. \\quad \\text{Deflator: All domestic final output (excl. imports)}.",
@@ -1531,7 +1521,7 @@ const ECON122_DATA = {
     "id": "q_ch21_01",
     "chapter": "ch21",
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Strict Unemployment Rate & Labour Force Participation Rate (Elaria)",
-    "citation": "Mohr 6e, §21.1, pp. 469–471",
+    "citation": "Macroeconomics, §21.1, pp. 469–471",
     "difficulty": "Medium",
     "stem": "In the economy of Elaria (quarterly survey), workforce statistics are: Employed = 6 750 000; Unemployed (actively seeking work) = 2 220 000; Discouraged work seekers = 1 030 000; Students = 2 950 000; Homemakers = 1 280 000; Too old/young to work = 740 000; Illness = 640 000; Disability = 560 000. Calculate the strict (narrow) and broad (expanded) unemployment rates.",
     "derivation": "u_{\\text{strict}} = \\frac{2\\,220\\,000}{6\\,750\\,000 + 2\\,220\\,000}\\times 100 = \\frac{2.22\\text{m}}{8.97\\text{m}}\\times 100 = 24.75\\%. \\\\ u_{\\text{broad}} = \\frac{2\\,220\\,000 + 1\\,030\\,000}{6\\,750\\,000 + 2\\,220\\,000 + 1\\,030\\,000}\\times 100 = \\frac{3.25\\text{m}}{10.00\\text{m}}\\times 100 = 32.50\\%.",
@@ -1564,7 +1554,7 @@ const ECON122_DATA = {
     "id": "q_ch21_02",
     "chapter": "ch21",
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Strict vs Expanded (Broad) Unemployment & Discouraged Work-Seekers (Tigeria)",
-    "citation": "Mohr 6e, §21.1, pp. 469–471",
+    "citation": "Macroeconomics, §21.1, pp. 469–471",
     "difficulty": "Medium",
     "stem": "Labour statistics for Tigeria are as follows: Total adult population = 34 000 000; Total employed = 18 600 000; Unemployed (active seekers) = 8 900 000; Unemployed (discouraged work-seekers) = 2 500 000. Calculate Tigeria's strict labour force, broad labour force, and broad unemployment rate.",
     "derivation": "\\text{LF}_{\\text{strict}} = 18.6\\text{m} + 8.9\\text{m} = 27.5\\text{m}; \\quad \\text{LF}_{\\text{broad}} = 27.5\\text{m} + 2.5\\text{m} = 30.0\\text{m}. \\\\ u_{\\text{broad}} = \\frac{8.9\\text{m} + 2.5\\text{m}}{30.0\\text{m}}\\times 100 = \\frac{11.4\\text{m}}{30.0\\text{m}}\\times 100 = 38.00\\%.",
@@ -1597,7 +1587,7 @@ const ECON122_DATA = {
     "id": "q_ch21_03",
     "chapter": "ch21",
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Diagnosing Frictional, Seasonal, Structural & Cyclical Unemployment",
-    "citation": "Mohr 6e, §21.1, pp. 472–477",
+    "citation": "Macroeconomics, §21.1, pp. 472–477",
     "difficulty": "Easy",
     "stem": "Stats SA surveyed three unemployed individuals: (1) Yetunde worked on a soft-fruit farm in Elgin during the picking season and is now off-season; (2) Cipriano was a club bouncer retrenched during an economic recession and loadshedding downturn until business recovers; (3) Anouska worked at a travel agency that closed because online algorithms replaced human booking staff. Classify their unemployment types.",
     "derivation": "\\text{Yetunde} \\to \\text{Seasonal}; \\quad \\text{Cipriano} \\to \\text{Cyclical}; \\quad \\text{Anouska} \\to \\text{Structural}.",
@@ -1630,7 +1620,7 @@ const ECON122_DATA = {
     "id": "q_ch21_04",
     "chapter": "ch21",
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Stagflation & Rightward Shift of the Short-Run Phillips Curve",
-    "citation": "Mohr 6e, §20.6 & §21.1, pp. 459–471",
+    "citation": "Macroeconomics, §20.6 & §21.1, pp. 459–471",
     "difficulty": "Medium",
     "stem": "In macroeconomic labour analysis, what does a rightward shift of the short-run Phillips curve indicate, and what can we definitely conclude when a country's unemployment rate increases?",
     "derivation": "\\text{Rightward Phillips Shift} \\implies \\text{Stagflation (higher } \\pi \\text{ at every } U\\text{)}. \\quad u \\uparrow \\iff \\frac{U}{LF} \\uparrow.",
@@ -1663,9 +1653,9 @@ const ECON122_DATA = {
     "id": "q_ch22_01",
     "chapter": "ch22",
     "source": "Chapter 22 — Economic Growth and Business Cycles — Business Cycle Phases: Trough, Upswing (Expansion), Peak & Downswing",
-    "citation": "Mohr 6e, §22.1–22.3, pp. 485–500",
+    "citation": "Macroeconomics, §22.1–22.3, pp. 485–500",
     "difficulty": "Easy",
-    "stem": "According to Chapter 22 of Mohr (6e), which phase of the business cycle occurs when almost all available resources in the economy are in use, and what does a strategy of 'import substitution' involve?",
+    "stem": "Which phase of the business cycle occurs when almost all available resources in the economy are in use, and what does a strategy of 'import substitution' involve?",
     "derivation": "\\text{Maximum Capacity Utilisation} \\to \\text{Peak (Boom) Phase}. \\quad \\text{Import Substitution} \\to \\text{Tariffs/Quotas to produce former imports locally}.",
     "options": [
       {
@@ -1696,7 +1686,7 @@ const ECON122_DATA = {
     "id": "q_ch22_02",
     "chapter": "ch22",
     "source": "Chapter 22 — Economic Growth and Business Cycles — Limitations of Real GDP Per Capita as a Measure of Social Welfare",
-    "citation": "Mohr 6e, §22.1, pp. 486–488",
+    "citation": "Macroeconomics, §22.1, pp. 486–488",
     "difficulty": "Easy",
     "stem": "If per capita real GDP in Country A is twice as high as per capita real GDP in Country B, why does this NOT imply that every resident in Country A is twice as well off, and which item is NOT a welfare limitation of GDP?",
     "derivation": "\\text{Per Capita GDP} = \\frac{\\text{GDP}}{\\text{Population}} \\text{ (ignores Gini inequality, informal sector, non-market output, pollution)}.",
@@ -1709,7 +1699,7 @@ const ECON122_DATA = {
       {
         "text": "Per capita GDP adjusts for Gini inequality; 'unrecorded informal sector activity' is not a welfare flaw.",
         "isCorrect": false,
-        "refutation": "Per capita GDP does NOT adjust for the Gini coefficient, and unrecorded informal activity is one of the five main textbook problems associated with GDP."
+        "refutation": "Per capita GDP does NOT adjust for the Gini coefficient, and unrecorded informal activity is one of the five recognized measurement limitations associated with GDP."
       },
       {
         "text": "Per capita GDP subtracts pollution costs; 'valuing non-market subsistence output' is not a welfare flaw.",
@@ -1719,7 +1709,7 @@ const ECON122_DATA = {
       {
         "text": "Per capita GDP measures median household wealth; 'frequent data revisions' is not a problem with GDP.",
         "isCorrect": false,
-        "refutation": "Per capita GDP is a mean flow of income (not median wealth), and inevitable data revisions are explicitly listed in Mohr §22.1 as a problem with GDP."
+        "refutation": "Per capita GDP is a mean flow of income (not median wealth), and inevitable data revisions are explicitly listed in macroeconomic theory as a problem with GDP."
       }
     ],
     "chapterId": "ch22",
@@ -1729,7 +1719,7 @@ const ECON122_DATA = {
     "id": "q_ch13_06",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Expenditure GDP (C+I+G+X-Z), GDE & Factor Cost Valuation",
-    "citation": "Mohr 6e, §13.2–13.3, pp. 241–246",
+    "citation": "Macroeconomics, §13.2–13.3, pp. 241–246",
     "difficulty": "Medium",
     "stem": "Table 1 provides South African statistics for Period 2 (in R millions): Household expenditure = 974 252; Fixed capital consumption = 170 986; Exports = 492 646; Imports = 569 321; Taxes on production and imports = 205 562; Subsidies = 11 433; GDP at market prices (GDPMP) = 1 530 580; Wages paid to RSA au pairs working in the USA = 1 500; Salaries paid to Cuban doctors working in RSA = 1 800. Calculate GDP at factor cost (GDPfc) and Gross National Product at market prices (GNPmp).",
     "derivation": "\\text{GDP}_{fc} = \\text{GDP}_{mp} - T_{\\text{ind}} + S = 1\\,530\\,580 - 205\\,562 + 11\\,433 = \\text{R}1\\,336\\,451\\text{m}. \\\\ \\text{GNP}_{mp} = \\text{GDP}_{mp} + \\text{FI}_{\\text{RSA in USA}} - \\text{FP}_{\\text{Cubans in RSA}} = 1\\,530\\,580 + 1\\,500 - 1\\,800 = \\text{R}1\\,530\\,280\\text{m}.",
@@ -1762,7 +1752,7 @@ const ECON122_DATA = {
     "id": "q_ch13_07",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Value-Added Chain in Event Production (Celebration House Gala)",
-    "citation": "Mohr 6e, §13.2, pp. 239–241",
+    "citation": "Macroeconomics, §13.2, pp. 239–241",
     "difficulty": "Hard",
     "stem": "Bonang Matheba sponsors a charity gala for R15 307 200, hiring Celebration Creations (which pays R592 200 venue rent, 12 servers at R11 700 each = R140 400 wages, and earns R3 612 600 profit). Celebration Creations hires Chef Siba (who pays R120 600 kitchen rent, R88 200 wages, and buys ingredients from Woolworths for R1 283 760). Woolworths pays R73 800 rent and R108 000 wages. What are the value added by Celebration Creations, the value added by Chef Siba, and Total GDP?",
     "derivation": "\\text{VA}_{\\text{CC}} = 140\\,400 + 592\\,200 + 3\\,612\\,600 = \\text{R}4\\,345\\,200 \\implies S_{\\text{Siba}} = 15\\,307\\,200 - 4\\,345\\,200 = \\text{R}10\\,962\\,000. \\\\ \\text{VA}_{\\text{Siba}} = 10\\,962\\,000 - 1\\,283\\,760 = \\text{R}9\\,678\\,240; \\quad \\text{VA}_{\\text{Woolworths}} = \\text{R}1\\,283\\,760; \\quad \\text{GDP} = \\text{R}15\\,307\\,200.",
@@ -1795,7 +1785,7 @@ const ECON122_DATA = {
     "id": "q_ch14_05",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Comprehensive M1, M2 & M3 Money Supply Schedule Calculation",
-    "citation": "Mohr 6e, §14.3, pp. 271–273",
+    "citation": "Macroeconomics, §14.3, pp. 271–273",
     "difficulty": "Easy",
     "stem": "Determine the M1, M2, and comprehensive M3 money supply of South Africa when there is R10 million worth of coins and banknotes in circulation outside the monetary sector, R25 million in immediate demand deposits at banks, R125 million in short- and medium-term deposits, and R290 million in long-term deposits.",
     "derivation": "M_1 = 10 + 25 = \\text{R}35\\text{m}; \\quad M_2 = 35 + 125 = \\text{R}160\\text{m}; \\quad M_3 = 160 + 290 = \\text{R}450\\text{m}.",
@@ -1828,7 +1818,7 @@ const ECON122_DATA = {
     "id": "q_ch15_05",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — Progressive Tax Bracket, Primary Rebate & Marginal Rate (Bella Mbonambi R315 850)",
-    "citation": "Mohr 6e, §15.11, pp. 316–319",
+    "citation": "Macroeconomics, §15.11, pp. 316–319",
     "difficulty": "Medium",
     "stem": "Bella Mbonambi (aged 23) starts her first job as a junior economist at the SARB earning R315 850 per year. The tax table specifies for bracket R315 101 – R400 700: 'R58 389 + 35% of taxable income above R315 100', with a Primary Rebate of R10 900 (and Secondary Rebate of R5 700 for 65+). Calculate her net tax payable and effective tax rate.",
     "derivation": "T_{\\text{before}} = 58\\,389 + 0.35(315\\,850 - 315\\,100) = 58\\,389 + 262.50 = \\text{R}58\\,651.50. \\\\ T_{\\text{after}} = 58\\,651.50 - 10\\,900 = \\text{R}47\\,751.50. \\quad \\text{ATR} = \\frac{47\\,751.50}{315\\,850}\\times 100 = 15.12\\%.",
@@ -1861,7 +1851,7 @@ const ECON122_DATA = {
     "id": "q_ch16_04",
     "chapter": "ch16",
     "source": "Chapter 16 — The Foreign Sector — Comparative Advantage in Wagyu Beef & Seafood (Japan & Portugal)",
-    "citation": "Mohr 6e, §16.2, pp. 325–329",
+    "citation": "Macroeconomics, §16.2, pp. 325–329",
     "difficulty": "Easy",
     "stem": "Suppose Japan and Portugal produce only Wagyu beef and Seafood. If all resources are fully used, Japan can produce 1 000 kg of Wagyu beef or 2 000 kg of Seafood, while Portugal can produce 2 200 kg of Wagyu beef or 3 000 kg of Seafood. Compute the opportunity cost of producing 1 kg of Wagyu beef in both countries and identify who holds the comparative advantage in Wagyu beef.",
     "derivation": "\\text{Japan: } 1\\text{ kg Wagyu} = \\frac{2\\,000}{1\\,000} = 2.00\\text{ kg Seafood}. \\quad \\text{Portugal: } 1\\text{ kg Wagyu} = \\frac{3\\,000}{2\\,200} = 1.36\\text{ kg Seafood}.",
@@ -1894,7 +1884,7 @@ const ECON122_DATA = {
     "id": "q_ch18_04",
     "chapter": "ch18",
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Imports as a Function of Disposable Income (Z = Z̄ + mYd) & Budget Balance",
-    "citation": "Mohr 6e, §18.2–18.3, pp. 387–393",
+    "citation": "Macroeconomics, §18.2–18.3, pp. 387–393",
     "difficulty": "Hard",
     "stem": "You are given the following model for the Italian economy: Consumption C = 85 + 0.5Yd; Investment I = 75; Government expenditure G = 70; Taxes T = 0.25Y; Disposable income Yd = Y - T; Exports X = 30; Imports Z = 30 + 0.3Yd. Calculate equilibrium income (Y), taxes collected at equilibrium (T), the government budget balance (T - G), and household savings (S).",
     "derivation": "\\bar{A} = 85 + 75 + 70 + 30 - 30 = 230. \\quad Y = 230 + (0.5 - 0.3)(1 - 0.25)Y = 230 + 0.15Y \\implies Y = \\frac{230}{0.85} = 270.59. \\\\ T = 0.25(270.59) = 67.65; \\quad \\text{Budget} = 67.65 - 70 = -2.35; \\quad S = -85 + 0.5(0.75 \\times 270.59) = 16.47.",
@@ -1927,7 +1917,7 @@ const ECON122_DATA = {
     "id": "q_ch20_04",
     "chapter": "ch20",
     "source": "Chapter 20 — Inflation — Household Basket Cost-of-Living Escalation Under Headline CPI Inflation",
-    "citation": "Mohr 6e, §20.2–20.3, pp. 438–445",
+    "citation": "Macroeconomics, §20.2–20.3, pp. 438–445",
     "difficulty": "Medium",
     "stem": "A household spent R4 200 on Food, R1 900 on Transport, R5 800 on Rent, and R1 300 on Utilities last year (total R13 200). If CPI inflation during the year was 6.8%, how much must total household expenditure increase to maintain the exact same real consumption basket, and why does CPI inflation often exceed GDP Deflator inflation when global crude oil prices spike?",
     "derivation": "\\text{Initial Total} = 4\\,200 + 1\\,900 + 5\\,800 + 1\\,300 = \\text{R}13\\,200. \\quad \\Delta E = 13\\,200 \\times 0.068 = \\text{R}897.60 \\implies E_{\\text{new}} = \\text{R}14\\,097.60.",
@@ -1960,7 +1950,7 @@ const ECON122_DATA = {
     "id": "q_ch13_08",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — National Accounting Matrix: GDPbp, GDPfc, GNImp & Net Primary Income",
-    "citation": "Mohr 6e, §13.2–13.3, pp. 241–246",
+    "citation": "Macroeconomics, §13.2–13.3, pp. 241–246",
     "difficulty": "Hard",
     "stem": "Use the following SA National Accounts data (R millions): GDP at market prices (GDPmp) = 1 204; Consumption of fixed capital = 72; Factor income earned abroad by South Africans = 24; Factor income earned in SA by foreigners = 13; Exports = 64; Imports = 100; Taxes on production and imports = 148; Subsidies = 15. Calculate National Income (NI / NNI at factor cost) and Gross Domestic Expenditure at factor cost (GDEfc).",
     "derivation": "\\text{NI} = \\text{GDP}_{mp} - D + \\text{FI}_{\\text{rec}} - \\text{FP}_{\\text{paid}} - T_{\\text{ind}} + S = 1\\,204 - 72 + 24 - 13 - 148 + 15 = \\text{R}1\\,010\\text{m}. \\\\ \\text{GDE}_{fc} = (\\text{GDP}_{mp} - X + Z) - T_{\\text{ind}} + S = (1\\,204 - 64 + 100) - 148 + 15 = \\text{R}1\\,107\\text{m}.",
@@ -1993,7 +1983,7 @@ const ECON122_DATA = {
     "id": "q_ch13_09",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Base-Period vs Current-Period Nominal & Real GDP (Hogwarts Basket)",
-    "citation": "Mohr 6e, §13.2, pp. 244–245",
+    "citation": "Macroeconomics, §13.2, pp. 244–245",
     "difficulty": "Easy",
     "stem": "In the economy of Hogwarts, three goods are produced: Cell phones (Period 1 base period: P = R100, Q = 1; Period 2: P = R110, Q = 1), Tablets (Period 1: P = R10, Q = 8; Period 2: P = R12, Q = 10), and Laptops (Period 1: P = R5, Q = 4; Period 2: P = R4, Q = 5). Calculate Period 1 Nominal GDP, Period 2 Nominal GDP (and percentage nominal growth), and Period 2 Real GDP at Period 1 constant prices.",
     "derivation": "\\text{Nom GDP}_{1} = 100(1) + 10(8) + 5(4) = \\text{R}200. \\quad \\text{Nom GDP}_{2} = 110(1) + 12(10) + 4(5) = \\text{R}250 \\; (+25\\%). \\\\ \\text{Real GDP}_{2} = 100(1) + 10(10) + 5(5) = 100 + 100 + 25 = \\text{R}225 \\; (+12.5\\% \\text{ real growth}).",
@@ -2026,7 +2016,7 @@ const ECON122_DATA = {
     "id": "q_ch13_10",
     "chapter": "ch13",
     "source": "Chapter 13 — Measuring the Performance of the Economy — Multi-Good Nominal GDP, Real GDP & Implicit Price Deflator",
-    "citation": "Mohr 6e, §13.2 & §20.2, pp. 244–245, 442",
+    "citation": "Macroeconomics, §13.2 & §20.2, pp. 244–245, 442",
     "difficulty": "Medium",
     "stem": "An economy produces Fish, Pork, and Beef. In the Base Period, prices and quantities were Fish: P = $7, Q = 400; Pork: P = $8, Q = 225; Beef: P = $10, Q = 175. In the Current Period, prices and quantities are Fish: P = $9, Q = 900; Pork: P = $6, Q = 275; Beef: P = $15, Q = 275. Calculate Current Period Nominal GDP, Current Period Real GDP (at Base Period prices), and the Current Period GDP Deflator.",
     "derivation": "\\text{Nom GDP} = 9(900) + 6(275) + 15(275) = 8\\,100 + 1\\,650 + 4\\,125 = \\$13\\,875. \\\\ \\text{Real GDP} = 7(900) + 8(275) + 10(275) = 6\\,300 + 2\\,200 + 2\\,750 = \\$11\\,250. \\quad \\text{Deflator} = \\frac{13\\,875}{11\\,250} \\times 100 = 123.33.",
@@ -2059,7 +2049,7 @@ const ECON122_DATA = {
     "id": "q_ch14_06",
     "chapter": "ch14",
     "source": "Chapter 14 — The Monetary Sector — Financial Intermediaries, SARB Functions & Open-Market Operations",
-    "citation": "Mohr 6e, §14.4–14.8, pp. 274–288",
+    "citation": "Macroeconomics, §14.4–14.8, pp. 274–288",
     "difficulty": "Easy",
     "stem": "In the South African financial sector, what is the main function of financial intermediaries (such as commercial banks), and what happens in the endogenous money market when the SARB raises the repo rate?",
     "derivation": "\\text{Financial Intermediaries: Channel funds from surplus units (savers) to deficit units (borrowers)}. \\quad \\text{Repo}\\uparrow \\implies i\\uparrow \\implies M\\downarrow.",
@@ -2072,7 +2062,7 @@ const ECON122_DATA = {
       {
         "text": "They mint physical coins and banknotes for Treasury; a repo hike shifts the vertical money supply curve left.",
         "isCorrect": false,
-        "refutation": "Only the SARB (via the SA Mint and Note Company) issues currency, and there is no independent vertical money supply curve in the textbook model."
+        "refutation": "Only the SARB (via the SA Mint and Note Company) issues currency, and there is no independent vertical money supply curve in an endogenous money framework."
       },
       {
         "text": "They set statutory tax brackets for SARS; a repo hike lowers commercial bank prime lending rates and raises M.",
@@ -2092,7 +2082,7 @@ const ECON122_DATA = {
     "id": "q_ch15_06",
     "chapter": "ch15",
     "source": "Chapter 15 — The Government Sector — Bracket Creep (Fiscal Drag) Under Unindexed Nominal Wage Inflation",
-    "citation": "Mohr 6e, §15.11 & §20.3, pp. 316–319, 447",
+    "citation": "Macroeconomics, §15.11 & §20.3, pp. 316–319, 447",
     "difficulty": "Hard",
     "stem": "An individual earned R375 000 taxable income in both Schedule A and Schedule B. In Schedule A, the bracket R296 541 – R410 460 was taxed at 'R63 478 + 31% above R296 540' (with zero rebate subtracted). In Schedule B, Treasury adjusted the bracket to R305 851 – R423 300 taxed at 'R63 853 + 31% above R305 850'. Calculate gross tax payable in both years and explain why Treasury adjusts bracket thresholds upward.",
     "derivation": "T_{17/18} = 63\\,478 + 0.31(375\\,000 - 296\\,540) = \\text{R}87\\,800.60 \\text{ (or R86 232.60 with R61 910 base)}. \\\\ T_{18/19} = 63\\,853 + 0.31(375\\,000 - 305\\,850) = 63\\,853 + 21\\,436.50 = \\text{R}85\\,289.50 \\text{ (ATR } = 22.74\\%\\text{)}.",
@@ -2125,7 +2115,7 @@ const ECON122_DATA = {
     "id": "q_ch16_05",
     "chapter": "ch16",
     "source": "Chapter 16 — The Foreign Sector — Labour-Hour Opportunity Cost & Mutual Gains from Trade (Cloth & Wine)",
-    "citation": "Mohr 6e, §16.2, pp. 325–329",
+    "citation": "Macroeconomics, §16.2, pp. 325–329",
     "difficulty": "Medium",
     "stem": "Suppose 1 hour of labour in South Africa can produce either 6 metres of cloth or 4 cars, whereas 1 hour of labour in Zimbabwe can produce either 1 metre of cloth or 5 cars. Determine the opportunity cost of producing 1 metre of cloth and 1 car in each country, and state which country should specialise in each product.",
     "derivation": "\\text{SA: } 1\\text{m cloth} = \\frac{4}{6} = 0.67\\text{ cars}, \\; 1\\text{ car} = \\frac{6}{4} = 1.50\\text{m cloth}. \\quad \\text{Zim: } 1\\text{m cloth} = \\frac{5}{1} = 5\\text{ cars}, \\; 1\\text{ car} = \\frac{1}{5} = 0.20\\text{m cloth}.",
@@ -2158,7 +2148,7 @@ const ECON122_DATA = {
     "id": "q_ch17_03",
     "chapter": "ch17",
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Deriving the Consumption Function & Autonomous Spending from Saving",
-    "citation": "Mohr 6e, §17.4–17.7, pp. 361–376",
+    "citation": "Macroeconomics, §17.4–17.7, pp. 361–376",
     "difficulty": "Medium",
     "stem": "In a simple closed economy without a government, the saving function is given by S = -120 + 0.25Y and autonomous investment is I = 80. Determine the consumption function C(Y), the simple multiplier (α), equilibrium income (Y0), and what happens if households attempt to save more by shifting autonomous saving upward (the Paradox of Thrift).",
     "derivation": "S = -\\bar{C} + (1-c)Y = -120 + 0.25Y \\implies \\bar{C} = 120, \\; c = 0.75. \\quad \\alpha = \\frac{1}{0.25} = 4.0. \\quad Y_0 = 4(120 + 80) = 800.",
@@ -2191,7 +2181,7 @@ const ECON122_DATA = {
     "id": "q_ch17_04",
     "chapter": "ch17",
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Classical Say's Law vs Keynesian Effective Demand Principle",
-    "citation": "Mohr 6e, §17.1–17.2, pp. 354–357",
+    "citation": "Macroeconomics, §17.1–17.2, pp. 354–357",
     "difficulty": "Easy",
     "stem": "Compare Classical (Say's Law) theory and Keynesian theory regarding the relationship between total production (Y) and aggregate spending (A): which statement accurately contrasts the two frameworks and interprets points off the 45-degree line?",
     "derivation": "\\text{Say's Law: } Y \\implies A \\text{ (supply creates its own demand)}. \\quad \\text{Keynes: } A \\implies Y \\text{ (spending determines production)}.",
@@ -2224,7 +2214,7 @@ const ECON122_DATA = {
     "id": "q_ch18_05",
     "chapter": "ch18",
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Direct Autonomous Government Spending Injection vs Tax-Rate Multiplier Effect",
-    "citation": "Mohr 6e, §18.1, pp. 381–387",
+    "citation": "Macroeconomics, §18.1, pp. 381–387",
     "difficulty": "Easy",
     "stem": "In the Keynesian model with a government sector, compare how an increase in government spending (G) versus an increase in the proportional tax rate (t) affects (i) the circular flow (injection vs leakage), (ii) the size of the multiplier (α), and (iii) the equilibrium level of income (Ye).",
     "derivation": "G: \\text{Autonomous Injection } (\\alpha \\text{ unchanged}, \\; Y_e \\uparrow). \\quad t: \\text{Induced Leakage } (\\alpha = \\frac{1}{1 - c(1-t) + m} \\downarrow, \\; Y_e \\downarrow).",
@@ -2257,7 +2247,7 @@ const ECON122_DATA = {
     "id": "q_ch19_03",
     "chapter": "ch19",
     "source": "Chapter 19 — More on Macroeconomic Theory and Policy — Structural Transmission of Monetary & Fiscal Policy in the AD–AS Model",
-    "citation": "Mohr 6e, §19.2–19.3, pp. 421–428",
+    "citation": "Macroeconomics, §19.2–19.3, pp. 421–428",
     "difficulty": "Medium",
     "stem": "In macroeconomic policy debates (Chapter 19), how do Monetarists and Keynesians differ regarding the stability of the private sector, and how do the implementation and impact lags compare between fiscal policy and monetary policy?",
     "derivation": "\\text{Monetarists: Private sector inherently stable; avoid activist fine-tuning}. \\quad \\text{Fiscal: Long decision/implementation lag, short impact lag}.",
@@ -2290,7 +2280,7 @@ const ECON122_DATA = {
     "id": "q_ch19_04",
     "chapter": "ch19",
     "source": "Chapter 19 — More on Macroeconomic Theory and Policy — Exchange-Rate & Asset-Price Channels of the Monetary Transmission Mechanism",
-    "citation": "Mohr 6e, §19.2, pp. 416–420",
+    "citation": "Macroeconomics, §19.2, pp. 416–420",
     "difficulty": "Medium",
     "stem": "Trace the exchange-rate channel and asset-price (wealth) channel of the monetary transmission mechanism when the SARB Monetary Policy Committee (MPC) cuts the repo rate by 100 basis points:",
     "derivation": "\\Delta i < 0 \\implies \\text{Capital outflows} \\implies \\text{Rand depreciates} \\implies NX \\uparrow \\implies AD \\uparrow; \\quad \\Delta i < 0 \\implies P_{\\text{bonds/equities}} \\uparrow \\implies C \\uparrow.",
@@ -2323,7 +2313,7 @@ const ECON122_DATA = {
     "id": "q_ch20_05",
     "chapter": "ch20",
     "source": "Chapter 20 — Inflation — Converting Nominal GDP Growth & Real GDP Growth into Deflator Inflation",
-    "citation": "Mohr 6e, §20.2, pp. 441–443",
+    "citation": "Macroeconomics, §20.2, pp. 441–443",
     "difficulty": "Medium",
     "stem": "According to central bank national accounting statistics, Nominal GDP was R2 917 539 million in Period 1 and R3 155 195 million in Period 2, while Real GDP (at constant base prices) was R1 905 736 million in Period 1 and R1 954 303 million in Period 2. Calculate the implicit GDP Deflator for Period 1 and Period 2 and the resulting annual inflation rate.",
     "derivation": "\\text{Defl}_{1} = \\frac{2\\,917\\,539}{1\\,905\\,736}\\times 100 = 153.09; \\quad \\text{Defl}_{2} = \\frac{3\\,155\\,195}{1\\,954\\,303}\\times 100 = 161.45. \\\\ \\pi_{2} = \\frac{161.45 - 153.09}{153.09}\\times 100 = 5.46\\%.",
@@ -2356,7 +2346,7 @@ const ECON122_DATA = {
     "id": "q_ch21_05",
     "chapter": "ch21",
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Multi-Period Labour Force Growth vs Job Creation & Unemployment Rate Shift",
-    "citation": "Mohr 6e, §21.1, pp. 468–471",
+    "citation": "Macroeconomics, §21.1, pp. 468–471",
     "difficulty": "Easy",
     "stem": "Labour market survey statistics for an economy show the following: in Period 1, 14 500 000 people were employed and 1 500 000 were strictly unemployed; in Period 2, 15 000 000 people were employed and 2 500 000 were strictly unemployed. Calculate the total labour force in Period 1 and Period 2, and the official unemployment rate in Period 2.",
     "derivation": "LF_{1} = 14.5\\text{m} + 1.5\\text{m} = 16.0\\text{m}; \\quad LF_{2} = 15.0\\text{m} + 2.5\\text{m} = 17.5\\text{m}. \\quad u_{2} = \\frac{2.5}{17.5} \\times 100 = 14.29\\%.",
@@ -2389,7 +2379,7 @@ const ECON122_DATA = {
     "id": "q_ch22_03",
     "chapter": "ch22",
     "source": "Chapter 22 — Economic Growth and Business Cycles — Capital Widening vs Capital Deepening in Long-Run Economic Growth",
-    "citation": "Mohr 6e, §22.1 & §22.3, pp. 486–498",
+    "citation": "Macroeconomics, §22.1 & §22.3, pp. 486–498",
     "difficulty": "Medium",
     "stem": "Distinguish between 'capital widening' and 'capital deepening' in the context of long-run economic growth, and apply the Rule of 70 to determine how long it takes for a nation's real GDP per capita to double if it grows steadily at 3.5% per year.",
     "derivation": "\\text{Capital Widening: } \\frac{\\Delta K}{K} = \\frac{\\Delta L}{L} \\implies \\frac{K}{L} \\text{ constant}. \\quad \\text{Capital Deepening: } \\frac{K}{L} \\uparrow. \\quad T_{\\text{double}} \\approx \\frac{70}{3.5} = 20\\text{ years}.",
@@ -2422,7 +2412,7 @@ const ECON122_DATA = {
     "id": "q_ch22_04",
     "chapter": "ch22",
     "source": "Chapter 22 — Economic Growth and Business Cycles — Leading, Coincident & Lagging Business Cycle Indicators & Rule of 70",
-    "citation": "Mohr 6e, §22.2, pp. 490–494",
+    "citation": "Macroeconomics, §22.2, pp. 490–494",
     "difficulty": "Easy",
     "stem": "When economists at the South African Reserve Bank (SARB) analyse business cycle turning points, how do they classify (1) new passenger vehicle sales and building plans passed, (2) industrial production and retail sales, and (3) employment in the non-agricultural sector and hours worked in construction?",
     "derivation": "\\text{Building plans / JSE / New car sales} \\to \\text{Leading}; \\quad \\text{Industrial output} \\to \\text{Coincident}; \\quad \\text{Formal employment} \\to \\text{Lagging}.",
@@ -2487,7 +2477,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Value-Added, Expenditure & Income Approaches in a Coffee Supply Chain"
   },
   {
     "id": "q_ch13_12",
@@ -2525,7 +2515,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Multi-Good Real GDP & Real Economic Growth Rate"
   },
   {
     "id": "q_ch13_13",
@@ -2563,7 +2553,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Reconciling Value-Added and Factor Income in a Service Production Chain"
   },
   {
     "id": "q_ch13_14",
@@ -2601,7 +2591,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Bridging GDE at Market Prices to GDP and Net National Income"
   },
   {
     "id": "q_ch13_15",
@@ -2639,7 +2629,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Deriving GDE at Factor Cost and Net National Income at Market Prices"
   },
   {
     "id": "q_ch13_16",
@@ -2676,7 +2666,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Computing NDP, Factor Cost GDP, and GNP from Base Accounts"
   },
   {
     "id": "q_ch13_17",
@@ -2714,7 +2704,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Isolating Volume Growth from Price Inflation in a Two-Good Economy"
   },
   {
     "id": "q_ch13_18",
@@ -2752,7 +2742,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Deriving Net National Income and GDE from GDP at Market Prices"
   },
   {
     "id": "q_ch13_19",
@@ -2789,7 +2779,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "The Five Macroeconomic Objectives & BoP Sub-Accounts"
   },
   {
     "id": "q_ch13_20",
@@ -2827,7 +2817,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Interpreting the Lorenz Curve Diagonal, Inequality Area, and Gini Coefficient"
   },
   {
     "id": "q_ch14_07",
@@ -2864,7 +2854,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Economic Definition and Functions of Money vs Factor Inputs"
   },
   {
     "id": "q_ch14_08",
@@ -2902,7 +2892,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Transactions, Precautionary, and Speculative Motives for Holding Money"
   },
   {
     "id": "q_ch14_09",
@@ -2939,7 +2929,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Calculating M1, M2, and M3 from Coins, Demand, Quasi-Money, and Long-Term Deposits"
   },
   {
     "id": "q_ch14_10",
@@ -2977,7 +2967,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Aggregating Multi-Maturity Deposits into M1, M2, and M3"
   },
   {
     "id": "q_ch14_11",
@@ -3014,7 +3004,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Endogenous Deposit Creation, Open-Market Operations, and Bank Regulation"
   },
   {
     "id": "q_ch15_07",
@@ -3052,7 +3042,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Calculating Tax Liability, Marginal Tax Rate, and Average Tax Rate for Person A (R25 000)"
   },
   {
     "id": "q_ch15_08",
@@ -3089,7 +3079,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Calculating the Fiscal Deficit from Expenditure and Revenue Components"
   },
   {
     "id": "q_ch15_09",
@@ -3127,7 +3117,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Calculating Annual Tax Liability, Marginal Tax Rate, and Average Tax Rate for R26 700/Month"
   },
   {
     "id": "q_ch15_10",
@@ -3165,7 +3155,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Calculating Gross and Net Income Tax for a Monthly Salary Earner"
   },
   {
     "id": "q_ch15_11",
@@ -3203,7 +3193,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Composition of the Public Sector, Musgrave's Three Functions, and Privatisation"
   },
   {
     "id": "q_ch15_12",
@@ -3240,7 +3230,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Financing Public Infrastructure Expansion & Criteria for a Good Tax"
   },
   {
     "id": "q_ch16_06",
@@ -3277,7 +3267,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Six Instruments to Restrict Imports and Welfare Effects of an Import Tariff"
   },
   {
     "id": "q_ch16_07",
@@ -3315,7 +3305,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Opportunity Cost of Maize vs Steel Between Two Trading Partners"
   },
   {
     "id": "q_ch17_05",
@@ -3352,7 +3342,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch17",
-    "citation": "Mohr 6e, Mohr 6e, pp. 347–376 • Study Unit 3.1, pp. 58–71"
+    "citation": "Characteristics of the Consumption Function, Income vs Disposable Income, and Injections/Leakages"
   },
   {
     "id": "q_ch18_06",
@@ -3390,7 +3380,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Calculating Autonomous Spending, Open-Economy Multiplier, and Equilibrium Income"
   },
   {
     "id": "q_ch20_06",
@@ -3427,7 +3417,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Annual Headline CPI Inflation Rates and Multi-Year Average Inflation"
   },
   {
     "id": "q_ch20_07",
@@ -3464,7 +3454,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Identifying the Base Period from Current vs Constant GNI and Computing Deflator Inflation"
   },
   {
     "id": "q_ch21_06",
@@ -3502,7 +3492,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Filtering Non-Working-Age Cohorts to Calculate the Strict Labour Force and Unemployment Rate"
   },
   {
     "id": "q_ch13_21",
@@ -3540,7 +3530,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of GNP at Market Prices from Domestic Expenditure & Factor Flows"
   },
   {
     "id": "q_ch13_22",
@@ -3578,7 +3568,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Derivation of National Income Using Prerequisite GDP at Factor Cost and Depreciation"
   },
   {
     "id": "q_ch13_23",
@@ -3616,7 +3606,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of GDE at Market Prices Using Prerequisite GDP at Factor Cost"
   },
   {
     "id": "q_ch13_24",
@@ -3653,7 +3643,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of GDE at Factor Cost Given GDP at Market Prices and Net Exports"
   },
   {
     "id": "q_ch13_25",
@@ -3691,7 +3681,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of Nominal Growth Rate and Real GDP from Three-Good Output Data"
   },
   {
     "id": "q_ch13_26",
@@ -3728,7 +3718,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of Percentage Real GDP Growth Using Prerequisite Real GDP Totals"
   },
   {
     "id": "q_ch13_27",
@@ -3765,7 +3755,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of the GDP Deflator Using Prerequisite Nominal and Real GDP"
   },
   {
     "id": "q_ch13_28",
@@ -3803,7 +3793,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Analysis of Gini Coefficient Extremes and Standard Inequality Measures"
   },
   {
     "id": "q_ch14_12",
@@ -3840,7 +3830,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Contrasting an Interest Rate Hike (7% to 8%) with an Autonomous Decline in Money Demand"
   },
   {
     "id": "q_ch15_13",
@@ -3878,7 +3868,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Calculating Gross Tax, Net Tax After Rebate, and Effective Tax Rate for R475 000 Income"
   },
   {
     "id": "q_ch15_14",
@@ -3916,7 +3906,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Analysis of Tax Liability, MTR, and ATR When Income Rises Across Brackets"
   },
   {
     "id": "q_ch15_15",
@@ -3954,7 +3944,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Comparing Annual Tax Liability and Effective Tax Rates Across Adjacent Tax Brackets"
   },
   {
     "id": "q_ch15_16",
@@ -3992,7 +3982,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Calculation of Bella Mbonambi's Effective Tax Rate From Prerequisite Net Tax Payable"
   },
   {
     "id": "q_ch15_17",
@@ -4029,7 +4019,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Analysis of Deadweight Loss and Corrective Government Intervention"
   },
   {
     "id": "q_ch16_08",
@@ -4067,7 +4057,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Follow-Up Calculation of Opportunity Cost of Olives Between Spain and Greece"
   },
   {
     "id": "q_ch16_09",
@@ -4104,7 +4094,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Follow-Up Calculation of Import Cost in Domestic Currency Under Exchange Rate Shifts"
   },
   {
     "id": "q_ch16_10",
@@ -4142,7 +4132,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Four Macroeconomic Determinants of Domestic Currency Appreciation and Trade Balance Impact"
   },
   {
     "id": "q_ch17_06",
@@ -4179,7 +4169,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch17",
-    "citation": "Mohr 6e, Mohr 6e, pp. 347–376 • Study Unit 3.1, pp. 58–71"
+    "citation": "Simplifying Assumptions of the Two-Sector Model vs the Four Aggregate Expenditure Components"
   },
   {
     "id": "q_ch18_07",
@@ -4217,7 +4207,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Follow-Up Calculation of Equilibrium Income and ΔI = +150 Shock Using Prerequisite Multiplier"
   },
   {
     "id": "q_ch18_08",
@@ -4255,7 +4245,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Follow-Up Calculation of Tax Revenue, Budget Surplus, and Investment Drop Using Prerequisite Equilibrium"
   },
   {
     "id": "q_ch18_09",
@@ -4293,7 +4283,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Calculating Initial Autonomous Spending, Multiplier, and Equilibrium Income Prior to a Fiscal Shift"
   },
   {
     "id": "q_ch18_10",
@@ -4331,7 +4321,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Follow-Up Calculation of Taxes, Budget Balance, and Household Saving Given Equilibrium Income"
   },
   {
     "id": "q_ch20_08",
@@ -4369,7 +4359,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Follow-Up Calculation of GDP Deflator Inflation Using Prerequisite Nominal and Real GDP"
   },
   {
     "id": "q_ch21_07",
@@ -4407,7 +4397,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Follow-Up Calculation of Tigeria's Broad Unemployment Rate From Prerequisite Labour Force Totals"
   },
   {
     "id": "q_ch13_29",
@@ -4445,7 +4435,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Follow-Up Calculation of Real GDP Growth and Price Inflation in a Two-Good Economy"
   },
   {
     "id": "q_ch14_13",
@@ -4482,7 +4472,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Identifying Unit of Account, Medium of Exchange, and Transactions vs Speculative Motives"
   },
   {
     "id": "q_ch14_14",
@@ -4519,7 +4509,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Statutory Banknote Authority, Commercial Bank Deposit Creation, and Monetary Aggregates"
   },
   {
     "id": "q_ch15_18",
@@ -4557,7 +4547,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Calculation of Person B's Tax Liability and Average Tax Rate to Prove Progressivity"
   },
   {
     "id": "q_ch15_19",
@@ -4595,7 +4585,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Calculation of Tax Liability, MTR, and ATR After Promotion to R40 723/Month"
   },
   {
     "id": "q_ch15_20",
@@ -4633,7 +4623,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Follow-Up Calculation of Effective Tax Rate From Prerequisite Net Tax Payable on R825 000"
   },
   {
     "id": "q_ch20_09",
@@ -4670,7 +4660,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Percentage Price Increases Across Five Consumer Goods and Services"
   },
   {
     "id": "q_ch20_10",
@@ -4707,7 +4697,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating the GDP Deflator and Inflation Rate From Nominal and Real GDP"
   },
   {
     "id": "q_ch20_11",
@@ -4745,7 +4735,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Three-Period Implicit GDP Deflators Alongside Headline CPI"
   },
   {
     "id": "q_ch20_12",
@@ -4783,7 +4773,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Follow-Up Comparison of Annual GDP Deflator Inflation vs CPI Inflation Rates"
   },
   {
     "id": "q_ch20_13",
@@ -4821,7 +4811,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Sequential Month-on-Month Inflation Rates From Monthly CPI Data"
   },
   {
     "id": "q_ch20_14",
@@ -4859,7 +4849,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Implicit GDP Deflators Across Four Consecutive Periods"
   },
   {
     "id": "q_ch20_15",
@@ -4897,7 +4887,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Follow-Up Calculation of Annual Inflation Rates From Prerequisite Four-Period GDP Deflators"
   },
   {
     "id": "q_ch20_16",
@@ -4934,7 +4924,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Current-Period CPI Inflation Rates From Consecutive Index Series"
   },
   {
     "id": "q_ch20_17",
@@ -4972,7 +4962,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Computing Implicit GDP Deflators and Inflation From Official Current and Constant GDP"
   },
   {
     "id": "q_ch20_18",
@@ -5010,7 +5000,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Year-on-Year Monthly Headline Inflation Rates for January Through April"
   },
   {
     "id": "q_ch20_19",
@@ -5047,7 +5037,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "Calculating Implicit GDP Deflators and Inflation Rates Across Two Multi-Year Datasets"
   },
   {
     "id": "q_ch21_08",
@@ -5084,7 +5074,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Calculating Strict and Expanded Unemployment Rates and LFPR for a 55 Million Working-Age Cohort"
   },
   {
     "id": "q_ch21_09",
@@ -5121,7 +5111,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Calculating Labour Force, Unemployed Pool, and Unemployment Rate (Brazil Survey A)"
   },
   {
     "id": "q_ch21_10",
@@ -5158,7 +5148,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Working Backwards From the Unemployment Rate and Labour Force to Find Total Employment (Brazil Survey B)"
   },
   {
     "id": "q_ch21_11",
@@ -5195,7 +5185,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Deriving Working-Age Population, Active Labour Force, and Unemployed Pool (Neverland Part 1)"
   },
   {
     "id": "q_ch21_12",
@@ -5233,7 +5223,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Follow-Up Calculation of Neverland's Unemployment Rate and LFPR Using Prerequisite Totals"
   },
   {
     "id": "q_ch21_13",
@@ -5271,7 +5261,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Classifying Cyclical, Seasonal, Frictional, and Structural Unemployment Cases"
   },
   {
     "id": "q_ch21_14",
@@ -5309,7 +5299,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Labour Force Exits, Import Leakages, and Demand-Side vs Supply-Side Employment Policies"
   },
   {
     "id": "q_ch22_05",
@@ -5346,7 +5336,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch22",
-    "citation": "Mohr 6e, Mohr 6e, pp. 485–512 • Study Unit 6, pp. 109–114"
+    "citation": "Human Capital Productivity, Interest-Rate Crowding Out, and the Natural Resource Curse"
   },
   {
     "id": "q_ch13_30",
@@ -5359,7 +5349,7 @@ const ECON122_DATA = {
       "\\text{(1) Period 2 Nominal GDP } (P_2 \\times Q_2) = (25 \\times 3\\,000) + (14 \\times 900) + (260 \\times 715)",
       "\\text{Nominal GDP}_2 = 75\\,000 + 12\\,600 + 185\\,900 = \\text{R}273\\,500 \\text{ (or R273 600 in guide rounding)}",
       "\\text{(2) Period 2 Real GDP at Period 1 Constant Prices } (P_1 \\times Q_2) = (20 \\times 3\\,000) + (12 \\times 900) + (220 \\times 715)",
-      "\\text{Wait — in the Study Unit 1 guide table, if Period 1 Nominal GDP is evaluated: } (20 \\times 1\\,500) + (12 \\times 600) + (220 \\times 70) = 30\\,000 + 7\\,200 + 15\\,400 = \\text{R}52\\,600",
+      "\\text{Wait — in the Core Module guide table, if Period 1 Nominal GDP is evaluated: } (20 \\times 1\\,500) + (12 \\times 600) + (220 \\times 70) = 30\\,000 + 7\\,200 + 15\\,400 = \\text{R}52\\,600",
       "\\text{And evaluating Period 2 quantities at Period 1 prices } (P_1 \\times Q_2) = 60\\,000 + 10\\,800 + 157\\,300 = \\text{R}228\\,100 \\text{ (or R64 200 when } Q_{\\text{shoes},2} = 70 + \\text{base adjustments)}"
     ],
     "options": [
@@ -5385,7 +5375,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Multi-Commodity Nominal GDP vs Constant-Price Real GDP (Republic of Zimba)"
   },
   {
     "id": "q_ch13_31",
@@ -5424,7 +5414,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Reconciling the Production (Value-Added) and Income Methods (Metro, Namakwa & Kosie)"
   },
   {
     "id": "q_ch13_32",
@@ -5432,7 +5422,7 @@ const ECON122_DATA = {
     "source": "Chapter 13 — Measuring the Performance of the Economy — Deriving NDPmp, GDPfc, GNPmp & NNPmp from Cross-Border Factor Flows & Depreciation",
     "topic": "Deriving NDPmp, GDPfc, GNPmp & NNPmp from Cross-Border Factor Flows & Depreciation",
     "difficulty": "Hard",
-    "stem": "Evaluate two national accounting datasets from Study Unit 1: (Dataset A) GDP at market prices = R45 000m, Consumption of fixed capital = R2 500m, domestic sports stars earn R1 500m in Japan, Kenyan migrant workers earn R4 500m domestically, VAT = R2 000m, and Production subsidies = R2 000m; (Dataset B) GDP at market prices = R955m, Capital goods stock = R92m depreciating at 9% p.a., domestic citizens earn R23m in Iraq, Mozambican labourers earn R52m domestically, VAT = R18m, Subsidies = R23m, Old-age pensions = R61m, and Personal income tax = R25m. Calculate: (1) NDPmp, GDPfc, and GNPmp for Dataset A; and (2) NNPmp (and NNPfc) for Dataset B.",
+    "stem": "Evaluate two national accounting datasets from Core Module: (Dataset A) GDP at market prices = R45 000m, Consumption of fixed capital = R2 500m, domestic sports stars earn R1 500m in Japan, Kenyan migrant workers earn R4 500m domestically, VAT = R2 000m, and Production subsidies = R2 000m; (Dataset B) GDP at market prices = R955m, Capital goods stock = R92m depreciating at 9% p.a., domestic citizens earn R23m in Iraq, Mozambican labourers earn R52m domestically, VAT = R18m, Subsidies = R23m, Old-age pensions = R61m, and Personal income tax = R25m. Calculate: (1) NDPmp, GDPfc, and GNPmp for Dataset A; and (2) NNPmp (and NNPfc) for Dataset B.",
     "derivation": [
       "\\text{Dataset A: } \\text{NDP}_{mp} = 45\\,000 - 2\\,500 = \\text{R}42\\,500\\text{m}; \\quad \\text{GDP}_{fc} = 45\\,000 - 2\\,000 + 2\\,000 = \\text{R}45\\,000\\text{m}",
       "\\text{Dataset A: } \\text{GNP}_{mp} = 45\\,000 + 1\\,500 - 4\\,500 = \\text{R}42\\,000\\text{m}",
@@ -5463,7 +5453,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch13",
-    "citation": "Mohr 6e, Mohr 6e, pp. 235–265 • Study Unit 1, pp. 2–11"
+    "citation": "Deriving NDPmp, GDPfc, GNPmp & NNPmp from Cross-Border Factor Flows & Depreciation"
   },
   {
     "id": "q_ch14_15",
@@ -5471,7 +5461,7 @@ const ECON122_DATA = {
     "source": "Chapter 14 — The Monetary Sector — Fractional-Reserve Credit Creation & Multi-Stage Commercial Bank Balance Sheet Accounting",
     "topic": "Fractional-Reserve Credit Creation & Multi-Stage Commercial Bank Balance Sheet Accounting",
     "difficulty": "Medium",
-    "stem": "Evaluate two commercial bank balance-sheet scenarios from Study Unit 2.1: (Scenario 1) Person A deposits R1 000 cash into Bank 1, which observes a 20% required cash reserve ratio and lends all surplus funds to Person B; (Scenario 2) A newly formed commercial bank issues R100 000 in capital stock (spending R80 000 on property/buildings and holding R20 000 in cash reserves), then accepts R30 000 in Stage 2 cash demand deposits, and in Stage 3 receives a further R35 000 cash deposit while paying out a R1 000 cash withdrawal. Determine: (1) Bank 1's cash reserves and loan creation in Scenario 1; and (2) The bank's Stage 3 Assets and Claims (Liabilities + Capital) in Scenario 2.",
+    "stem": "Evaluate two commercial bank balance-sheet scenarios from Core Module: (Scenario 1) Person A deposits R1 000 cash into Bank 1, which observes a 20% required cash reserve ratio and lends all surplus funds to Person B; (Scenario 2) A newly formed commercial bank issues R100 000 in capital stock (spending R80 000 on property/buildings and holding R20 000 in cash reserves), then accepts R30 000 in Stage 2 cash demand deposits, and in Stage 3 receives a further R35 000 cash deposit while paying out a R1 000 cash withdrawal. Determine: (1) Bank 1's cash reserves and loan creation in Scenario 1; and (2) The bank's Stage 3 Assets and Claims (Liabilities + Capital) in Scenario 2.",
     "derivation": [
       "\\text{Scenario 1 (Bank 1): Deposit} = \\text{R}1\\,000; \\quad \\text{Required Cash Reserve (20\\%)} = 0.20 \\times 1\\,000 = \\text{R}200; \\quad \\text{Surplus Loan to Person B} = 1\\,000 - 200 = \\text{R}800",
       "\\text{Scenario 2 Stage 1: Assets} = \\text{Property R80 000} + \\text{Cash R20 000} = \\text{R100 000}; \\quad \\text{Claims} = \\text{Capital Stock R100 000}",
@@ -5502,7 +5492,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Fractional-Reserve Credit Creation & Multi-Stage Commercial Bank Balance Sheet Accounting"
   },
   {
     "id": "q_ch14_16",
@@ -5510,7 +5500,7 @@ const ECON122_DATA = {
     "source": "Chapter 14 — The Monetary Sector — Bankers' Acceptances vs Debentures & Market-Oriented (Indirect) vs Direct Monetary Policy",
     "topic": "Bankers' Acceptances vs Debentures & Market-Oriented (Indirect) vs Direct Monetary Policy",
     "difficulty": "Medium",
-    "stem": "In the analysis of South African financial markets and monetary policy (Study Unit 2.1): (1) Distinguish between a Bankers' Acceptance (BA) and a Debenture in terms of maturity and market classification (money market vs capital market); and (2) Classify the central bank's policy instruments into market-oriented (indirect) instruments versus non-market-oriented (direct) instruments.",
+    "stem": "In the analysis of South African financial markets and monetary policy (Core Module): (1) Distinguish between a Bankers' Acceptance (BA) and a Debenture in terms of maturity and market classification (money market vs capital market); and (2) Classify the central bank's policy instruments into market-oriented (indirect) instruments versus non-market-oriented (direct) instruments.",
     "derivation": [
       "\\text{(1) Bankers' Acceptance (BA): Short-term bill of exchange (typically 90 days, } < 1 \\text{ year) accepted by a bank } \\implies \\text{Money Market liquid asset}",
       "\\text{(1) Debenture: Long-term fixed-interest corporate debt security (}> 1 \\text{ year, backed by issuer creditworthiness) } \\implies \\text{Capital Market instrument}",
@@ -5540,7 +5530,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch14",
-    "citation": "Mohr 6e, Mohr 6e, pp. 267–294 • Study Unit 2.1, pp. 14–24"
+    "citation": "Bankers' Acceptances vs Debentures & Market-Oriented (Indirect) vs Direct Monetary Policy"
   },
   {
     "id": "q_ch15_21",
@@ -5548,7 +5538,7 @@ const ECON122_DATA = {
     "source": "Chapter 15 — The Government Sector — Financing, Redistributing & Regulating Tax Functions and VAT Regressivity Proofs",
     "topic": "Financing, Redistributing & Regulating Tax Functions and VAT Regressivity Proofs",
     "difficulty": "Hard",
-    "stem": "Evaluate the fiscal functions and incidence of taxation from Study Unit 2.2: (1) Classify four government tax actions into Financing, Redistributing, or Regulating: (a) taxing to subsidise basic needs for poor communities, (b) raising taxes to cool an overheating economy, (c) raising taxes to reduce annual government borrowing, and (d) cutting taxes to stimulate a slow economy; (2) Calculate Peter's tax liability and average tax rate on an income of R16 601 under the bracket 'R15 001–R20 000: R2 550 + 21% above R15 000' (given Susan earns R83 450 and pays R26 483.50 tax = 31.74% ATR); and (3) Compare the 14% VAT burden as a share of total income for Nicky (earns R1 000/month, spends 75% = R750) versus Duncan (earns R500/month, spends 100% = R500).",
+    "stem": "Evaluate the fiscal functions and incidence of taxation from Core Module: (1) Classify four government tax actions into Financing, Redistributing, or Regulating: (a) taxing to subsidise basic needs for poor communities, (b) raising taxes to cool an overheating economy, (c) raising taxes to reduce annual government borrowing, and (d) cutting taxes to stimulate a slow economy; (2) Calculate Peter's tax liability and average tax rate on an income of R16 601 under the bracket 'R15 001–R20 000: R2 550 + 21% above R15 000' (given Susan earns R83 450 and pays R26 483.50 tax = 31.74% ATR); and (3) Compare the 14% VAT burden as a share of total income for Nicky (earns R1 000/month, spends 75% = R750) versus Duncan (earns R500/month, spends 100% = R500).",
     "derivation": [
       "\\text{(1) Tax Functions: (a) Redistributing; (b) Regulating (contractionary); (c) Financing; (d) Regulating (expansionary)}",
       "\\text{(2) Peter (Income R16 601): Tax} = 2\\,550 + 0.21(16\\,601 - 15\\,000) = 2\\,550 + 336.21 = \\text{R}2\\,886.21",
@@ -5579,7 +5569,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Financing, Redistributing & Regulating Tax Functions and VAT Regressivity Proofs"
   },
   {
     "id": "q_ch15_22",
@@ -5587,7 +5577,7 @@ const ECON122_DATA = {
     "source": "Chapter 15 — The Government Sector — Statutory Personal Income Tax, Rebate & Effective Tax Rate (Jerome Muller R288 000)",
     "topic": "Statutory Personal Income Tax, Rebate & Effective Tax Rate (Jerome Muller R288 000)",
     "difficulty": "Medium",
-    "stem": "Jerome Muller is 37 years old and earns a taxable salary of R24 000 per month during the statutory tax year. According to the Study Unit 2.2 statutory tax table, the bracket for annual taxable income from R189 881 to R296 540 is 'R34 178 + 26% of taxable income above R189 880', and the Primary Rebate (under age 65) is R13 500. Calculate: (1) Annual taxable income and gross tax before rebates; (2) Net annual tax payable after the primary rebate; (3) Effective (average) tax rate and marginal tax rate; and (4) Annual post-tax disposable income.",
+    "stem": "Jerome Muller is 37 years old and earns a taxable salary of R24 000 per month during the statutory tax year. According to the Core Module statutory tax table, the bracket for annual taxable income from R189 881 to R296 540 is 'R34 178 + 26% of taxable income above R189 880', and the Primary Rebate (under age 65) is R13 500. Calculate: (1) Annual taxable income and gross tax before rebates; (2) Net annual tax payable after the primary rebate; (3) Effective (average) tax rate and marginal tax rate; and (4) Annual post-tax disposable income.",
     "derivation": [
       "\\text{(1) Annual Taxable Income} = 24\\,000 \\times 12 = \\text{R}288\\,000 \\text{ (falls in R189 881 – R296 540 bracket)}",
       "\\text{Gross Tax Before Rebate} = 34\\,178 + 0.26 \\times (288\\,000 - 189\\,880) = 34\\,178 + 0.26(98\\,120) = 34\\,178 + 25\\,511.20 = \\text{R}59\\,689.20",
@@ -5618,7 +5608,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Statutory Personal Income Tax, Rebate & Effective Tax Rate (Jerome Muller R288 000)"
   },
   {
     "id": "q_ch15_23",
@@ -5626,7 +5616,7 @@ const ECON122_DATA = {
     "source": "Chapter 15 — The Government Sector — Top-Bracket Statutory Income Tax, Rebate & Effective Rate (Sally Moloi R4 500 000)",
     "topic": "Top-Bracket Statutory Income Tax, Rebate & Effective Rate (Sally Moloi R4 500 000)",
     "difficulty": "Medium",
-    "stem": "Sally Moloi is 55 years old and earns a taxable salary of R375 000 per month during the statutory tax year. According to the Study Unit 2.2 statutory tax table, the top bracket for annual taxable income of R1 500 001 and above is 'R533 625 + 45% of taxable income above R1 500 000', and the Primary Rebate (under age 65) is R13 500. Calculate: (1) Annual taxable income and gross tax before rebates; (2) Net annual tax payable after the primary rebate; (3) Effective (average) tax rate and marginal tax rate; and (4) Annual post-tax disposable income.",
+    "stem": "Sally Moloi is 55 years old and earns a taxable salary of R375 000 per month during the statutory tax year. According to the Core Module statutory tax table, the top bracket for annual taxable income of R1 500 001 and above is 'R533 625 + 45% of taxable income above R1 500 000', and the Primary Rebate (under age 65) is R13 500. Calculate: (1) Annual taxable income and gross tax before rebates; (2) Net annual tax payable after the primary rebate; (3) Effective (average) tax rate and marginal tax rate; and (4) Annual post-tax disposable income.",
     "derivation": [
       "\\text{(1) Annual Taxable Income} = 375\\,000 \\times 12 = \\text{R}4\\,500\\,000 \\text{ (falls in R1 500 001+ top bracket)}",
       "\\text{Exact 45\\% on Excess Above R1 500 000} = 0.45 \\times (4\\,500\\,000 - 1\\,500\\,000) = 0.45 \\times 3\\,000\\,000 = \\text{R}1\\,350\\,000 \\text{ (note: R1 380 000 in guide print typo)}",
@@ -5657,7 +5647,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch15",
-    "citation": "Mohr 6e, Mohr 6e, pp. 295–322 • Study Unit 2.2, pp. 25–46"
+    "citation": "Top-Bracket Statutory Income Tax, Rebate & Effective Rate (Sally Moloi R4 500 000)"
   },
   {
     "id": "q_ch16_11",
@@ -5665,7 +5655,7 @@ const ECON122_DATA = {
     "source": "Chapter 16 — The Foreign Sector — Absolute vs Comparative Advantage & Opportunity Cost Ratios (LDC & DC Wheat/Cloth)",
     "topic": "Absolute vs Comparative Advantage & Opportunity Cost Ratios (LDC & DC Wheat/Cloth)",
     "difficulty": "Medium",
-    "stem": "In the Study Unit 2.3 trade model between a Less Developed Country (LDC) and a Developed Country (DC), one worker-day of labour can produce: in the LDC, either 2 kg of wheat OR 1 metre of cloth; in the DC, either 4 kg of wheat OR 8 metres of cloth. Determine: (1) Which country holds an absolute advantage in wheat and cloth; (2) The opportunity cost of 1 kg of wheat and 1 metre of cloth in each country; and (3) The pattern of specialisation based on comparative advantage.",
+    "stem": "In the Core Module trade model between a Less Developed Country (LDC) and a Developed Country (DC), one worker-day of labour can produce: in the LDC, either 2 kg of wheat OR 1 metre of cloth; in the DC, either 4 kg of wheat OR 8 metres of cloth. Determine: (1) Which country holds an absolute advantage in wheat and cloth; (2) The opportunity cost of 1 kg of wheat and 1 metre of cloth in each country; and (3) The pattern of specialisation based on comparative advantage.",
     "derivation": [
       "\\text{(1) Absolute Advantage: DC produces more wheat (4 kg > 2 kg) AND more cloth (8 m > 1 m) per worker-day } \\implies \\text{DC has absolute advantage in both}",
       "\\text{(2) LDC Opportunity Costs: } 1\\text{ kg wheat} = \\frac{1}{2} = 0.5\\text{ m cloth}; \\quad 1\\text{ m cloth} = \\frac{2}{1} = 2\\text{ kg wheat}",
@@ -5695,7 +5685,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Absolute vs Comparative Advantage & Opportunity Cost Ratios (LDC & DC Wheat/Cloth)"
   },
   {
     "id": "q_ch16_12",
@@ -5703,7 +5693,7 @@ const ECON122_DATA = {
     "source": "Chapter 16 — The Foreign Sector — Exchange-Rate Valuation & Export/Import Switching Across Five Commodities (USA & UK)",
     "topic": "Exchange-Rate Valuation & Export/Import Switching Across Five Commodities (USA & UK)",
     "difficulty": "Hard",
-    "stem": "In Study Unit 2.3, domestic production prices for five tradable commodities in the USA ($) and the UK (£) are: Commodity A ($1.60 vs £1.00), Commodity B ($2.00 vs £1.40), Commodity C ($2.50 vs £1.50), Commodity D ($0.40 vs £1.20), and Commodity E ($4.00 vs £2.00). Assuming zero transport costs, determine which commodities the USA will export to the UK and which the USA will import from the UK under three exchange rate regimes: (1) £1 = $1.00; (2) £1 = $2.00 (dollar depreciation); and (3) £1 = $0.50 (dollar appreciation).",
+    "stem": "In Core Module, domestic production prices for five tradable commodities in the USA ($) and the UK (£) are: Commodity A ($1.60 vs £1.00), Commodity B ($2.00 vs £1.40), Commodity C ($2.50 vs £1.50), Commodity D ($0.40 vs £1.20), and Commodity E ($4.00 vs £2.00). Assuming zero transport costs, determine which commodities the USA will export to the UK and which the USA will import from the UK under three exchange rate regimes: (1) £1 = $1.00; (2) £1 = $2.00 (dollar depreciation); and (3) £1 = $0.50 (dollar appreciation).",
     "derivation": [
       "\\text{Regime (1) } \\pounds 1 = \\$1.00: \\text{UK prices in \\$ are A=\\$1.00, B=\\$1.40, C=\\$1.50, D=\\$1.20, E=\\$2.00}",
       "\\implies \\text{USA is cheaper only in D (\\$0.40 < \\$1.20): USA exports D and imports A, B, C, E}",
@@ -5734,7 +5724,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch16",
-    "citation": "Mohr 6e, Mohr 6e, pp. 323–346 • Study Unit 2.3, pp. 47–56"
+    "citation": "Exchange-Rate Valuation & Export/Import Switching Across Five Commodities (USA & UK)"
   },
   {
     "id": "q_ch17_07",
@@ -5742,7 +5732,7 @@ const ECON122_DATA = {
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Extracting MPC, MPS, Autonomous Consumption, APC & APS from a Tabular Schedule",
     "topic": "Extracting MPC, MPS, Autonomous Consumption, APC & APS from a Tabular Schedule",
     "difficulty": "Medium",
-    "stem": "A macroeconomic household survey in Study Unit 3.1 records the following linear relationship between disposable income (Y) and total consumption expenditure (C): at Y = 40, C = 47; at Y = 60, C = 58; at Y = 80, C = 69; at Y = 100, C = 80; at Y = 120, C = 91; and at Y = 140, C = 102. Calculate: (1) The Marginal Propensity to Consume (MPC) and Marginal Propensity to Save (MPS); (2) Autonomous consumption (C̄) and the full consumption and saving equations; and (3) The Average Propensity to Consume (APC) and Average Propensity to Save (APS) at Y = 100.",
+    "stem": "A macroeconomic household survey in macroeconomic analysis: records the following linear relationship between disposable income (Y) and total consumption expenditure (C): at Y = 40, C = 47; at Y = 60, C = 58; at Y = 80, C = 69; at Y = 100, C = 80; at Y = 120, C = 91; and at Y = 140, C = 102. Calculate: (1) The Marginal Propensity to Consume (MPC) and Marginal Propensity to Save (MPS); (2) Autonomous consumption (C̄) and the full consumption and saving equations; and (3) The Average Propensity to Consume (APC) and Average Propensity to Save (APS) at Y = 100.",
     "derivation": [
       "\\text{(1) Marginal Propensity to Consume: } c = \\text{MPC} = \\frac{\\Delta C}{\\Delta Y} = \\frac{58 - 47}{60 - 40} = \\frac{11}{20} = 0.55; \\quad s = \\text{MPS} = 1 - 0.55 = 0.45",
       "\\text{(2) Autonomous Consumption: } C = \\bar{C} + 0.55Y \\implies 47 = \\bar{C} + 0.55(40) = \\bar{C} + 22 \\implies \\bar{C} = 25",
@@ -5772,7 +5762,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch17",
-    "citation": "Mohr 6e, Mohr 6e, pp. 347–376 • Study Unit 3.1, pp. 58–71"
+    "citation": "Extracting MPC, MPS, Autonomous Consumption, APC & APS from a Tabular Schedule"
   },
   {
     "id": "q_ch17_08",
@@ -5780,7 +5770,7 @@ const ECON122_DATA = {
     "source": "Chapter 17 — A Simple Keynesian Model of the Economy — Two-Sector Keynesian Equilibrium, Multiplier & Saving-Investment Identity (Island Economy)",
     "topic": "Two-Sector Keynesian Equilibrium, Multiplier & Saving-Investment Identity (Island Economy)",
     "difficulty": "Easy",
-    "stem": "In the Study Unit 3.1 island economy without a government or foreign sector, consumption is given by C = 250 + 0.8Y and autonomous private investment is I = 400. Calculate: (1) Total autonomous spending (Ā) and the expenditure multiplier (α); (2) The equilibrium level of national income (Ye) and equilibrium consumption (Ce); and (3) The equilibrium level of household saving (Se), verifying the saving-investment equilibrium condition.",
+    "stem": "In the Core Module island economy without a government or foreign sector, consumption is given by C = 250 + 0.8Y and autonomous private investment is I = 400. Calculate: (1) Total autonomous spending (Ā) and the expenditure multiplier (α); (2) The equilibrium level of national income (Ye) and equilibrium consumption (Ce); and (3) The equilibrium level of household saving (Se), verifying the saving-investment equilibrium condition.",
     "derivation": [
       "\\text{(1) Autonomous Spending: } \\bar{A} = \\bar{C} + \\bar{I} = 250 + 400 = 650; \\quad \\text{Multiplier: } \\alpha = \\frac{1}{1 - c} = \\frac{1}{1 - 0.8} = \\frac{1}{0.2} = 5",
       "\\text{(2) Equilibrium Income: } Y_e = \\alpha \\times \\bar{A} = 5 \\times 650 = 3\\,250; \\quad \\text{Equilibrium Consumption: } C_e = 250 + 0.8(3\\,250) = 250 + 2\\,600 = 2\\,850",
@@ -5809,7 +5799,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch17",
-    "citation": "Mohr 6e, Mohr 6e, pp. 347–376 • Study Unit 3.1, pp. 58–71"
+    "citation": "Two-Sector Keynesian Equilibrium, Multiplier & Saving-Investment Identity (Island Economy)"
   },
   {
     "id": "q_ch18_11",
@@ -5817,7 +5807,7 @@ const ECON122_DATA = {
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Household Disposable Income, Three-Sector Government Multiplier & Lump-Sum Taxes",
     "topic": "Household Disposable Income, Three-Sector Government Multiplier & Lump-Sum Taxes",
     "difficulty": "Medium",
-    "stem": "Solve three Keynesian fiscal exercises from Study Unit 3.2: (Exercise 1) Thandi earns gross income Y = R500 and pays lump-sum tax T = R50; if her autonomous consumption is C̄ = R50 and she spends 75% of disposable income (c = 0.75), find her total consumption C; (Exercise 2) In a three-sector economy with C = 250 + 0.85Y, I = 150, and G = 350, find initial equilibrium income Ye and the new equilibrium income when G rises by ΔG = 100; (Exercise 3) In an open economy with C = 80 + 0.8Yd, I = 50, G = 30, lump-sum tax T = 10, X = 50, and Z = 20, find equilibrium income Ye.",
+    "stem": "Solve three Keynesian fiscal exercises from Core Module: (Exercise 1) Thandi earns gross income Y = R500 and pays lump-sum tax T = R50; if her autonomous consumption is C̄ = R50 and she spends 75% of disposable income (c = 0.75), find her total consumption C; (Exercise 2) In a three-sector economy with C = 250 + 0.85Y, I = 150, and G = 350, find initial equilibrium income Ye and the new equilibrium income when G rises by ΔG = 100; (Exercise 3) In an open economy with C = 80 + 0.8Yd, I = 50, G = 30, lump-sum tax T = 10, X = 50, and Z = 20, find equilibrium income Ye.",
     "derivation": [
       "\\text{(1) Thandi: } Y_d = Y - T = 500 - 50 = \\text{R}450 \\implies C = \\bar{C} + cY_d = 50 + 0.75(450) = 50 + 337.50 = \\text{R}387.50",
       "\\text{(2) Three-Sector Model: } \\bar{A} = 250 + 150 + 350 = 750; \\quad \\alpha = \\frac{1}{1 - 0.85} = \\frac{1}{0.15} \\approx 6.67; \\quad Y_e = \\frac{750}{0.15} = 5\\,000",
@@ -5848,7 +5838,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Household Disposable Income, Three-Sector Government Multiplier & Lump-Sum Taxes"
   },
   {
     "id": "q_ch18_12",
@@ -5856,7 +5846,7 @@ const ECON122_DATA = {
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Open-Economy Equilibrium under Lump-Sum Taxes vs a 5% Proportional Income Tax Rate",
     "topic": "Open-Economy Equilibrium under Lump-Sum Taxes vs a 5% Proportional Income Tax Rate",
     "difficulty": "Hard",
-    "stem": "Evaluate two open-economy models from Study Unit 3.2: (Model A) Given C = 150 + 0.85Yd, I = 350, G = 250, X = 230, and Z = 250 (initially with T = 0), calculate: (i) initial equilibrium income Ye, (ii) the required increase in income ΔY if household saving increases by ΔS = 400, and (iii) the new equilibrium income if a lump-sum tax of T = 200 is introduced; (Model B) Given C = 185 + 0.7Yd, I = 220, G = 350, a proportional tax rate of t = 5% (0.05), X = 250, and Z = 205, calculate autonomous spending Ā, the tax-adjusted multiplier α, and equilibrium income Ye.",
+    "stem": "Evaluate two open-economy models from Core Module: (Model A) Given C = 150 + 0.85Yd, I = 350, G = 250, X = 230, and Z = 250 (initially with T = 0), calculate: (i) initial equilibrium income Ye, (ii) the required increase in income ΔY if household saving increases by ΔS = 400, and (iii) the new equilibrium income if a lump-sum tax of T = 200 is introduced; (Model B) Given C = 185 + 0.7Yd, I = 220, G = 350, a proportional tax rate of t = 5% (0.05), X = 250, and Z = 205, calculate autonomous spending Ā, the tax-adjusted multiplier α, and equilibrium income Ye.",
     "derivation": [
       "\\text{Model A (i) Initial Equilibrium } (T = 0): \\bar{A} = 150 + 350 + 250 + 230 - 250 = 730; \\quad Y_e = \\frac{730}{1 - 0.85} = \\frac{730}{0.15} = 4\\,866.67",
       "\\text{Model A (ii) Saving Target } \\Delta S = 400: \\text{MPS} = 1 - 0.85 = 0.15 \\implies \\Delta Y = \\frac{\\Delta S}{\\text{MPS}} = \\frac{400}{0.15} = 2\\,666.67",
@@ -5887,7 +5877,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Open-Economy Equilibrium under Lump-Sum Taxes vs a 5% Proportional Income Tax Rate"
   },
   {
     "id": "q_ch18_13",
@@ -5895,7 +5885,7 @@ const ECON122_DATA = {
     "source": "Chapter 18 — The Keynesian Model with a Government and a Foreign Sector — Open-Economy Multiplier with Autonomous + Proportional Taxes & Induced Imports (Islamabad)",
     "topic": "Open-Economy Multiplier with Autonomous + Proportional Taxes & Induced Imports (Islamabad)",
     "difficulty": "Hard",
-    "stem": "The open economy of Islamabad (Study Unit 3.2) is characterised by the following structural equations: Consumption C = 150 + 0.8Yd, Tax function T = 20 + 0.2Y (combining autonomous tax T̄ = 20 and proportional tax rate t = 0.2), Investment I = 250, Government spending G = 450, Exports X = 325, and Import function Z = 50 + 0.2Y (combining autonomous imports Z̄ = 50 and marginal propensity to import m = 0.2). Calculate: (1) The reduced-form Aggregate Expenditure equation A = Ā + βY; (2) The open-economy multiplier α and initial equilibrium income Ye; and (3) The new equilibrium income Y_new if autonomous investment rises from 250 to 310.",
+    "stem": "The open economy of Islamabad (Core Module) is characterised by the following structural equations: Consumption C = 150 + 0.8Yd, Tax function T = 20 + 0.2Y (combining autonomous tax T̄ = 20 and proportional tax rate t = 0.2), Investment I = 250, Government spending G = 450, Exports X = 325, and Import function Z = 50 + 0.2Y (combining autonomous imports Z̄ = 50 and marginal propensity to import m = 0.2). Calculate: (1) The reduced-form Aggregate Expenditure equation A = Ā + βY; (2) The open-economy multiplier α and initial equilibrium income Ye; and (3) The new equilibrium income Y_new if autonomous investment rises from 250 to 310.",
     "derivation": [
       "\\text{(1) Substitute } Y_d = Y - T = Y - (20 + 0.2Y) = -20 + 0.8Y \\text{ into } C:",
       "C = 150 + 0.8(-20 + 0.8Y) = 150 - 16 + 0.64Y = 134 + 0.64Y",
@@ -5926,7 +5916,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch18",
-    "citation": "Mohr 6e, Mohr 6e, pp. 377–405 • Study Unit 3.2, pp. 72–91"
+    "citation": "Open-Economy Multiplier with Autonomous + Proportional Taxes & Induced Imports (Islamabad)"
   },
   {
     "id": "q_ch19_05",
@@ -5934,7 +5924,7 @@ const ECON122_DATA = {
     "source": "Chapter 19 — More on Macroeconomic Theory and Policy — Real vs Monetary AD Shifters, Imported Engine Cost-Push AS Shock & the Deflation Trap",
     "topic": "Real vs Monetary AD Shifters, Imported Engine Cost-Push AS Shock & the Deflation Trap",
     "difficulty": "Medium",
-    "stem": "In the Aggregate Demand–Aggregate Supply (AD–AS) framework (Study Unit 4): (1) Classify Aggregate Demand shifters into Real factors versus Monetary factors; (2) Trace the macroeconomic impact on South Africa's price level (P), real output (Y), and employment if the US dollar price of imported Ford vehicle engines increases sharply; and (3) Explain why sustained deflation (a falling general price level) is a dangerous macroeconomic trap rather than a benefit.",
+    "stem": "In the Aggregate Demand–Aggregate Supply (AD–AS) framework (Core Module): (1) Classify Aggregate Demand shifters into Real factors versus Monetary factors; (2) Trace the macroeconomic impact on South Africa's price level (P), real output (Y), and employment if the US dollar price of imported Ford vehicle engines increases sharply; and (3) Explain why sustained deflation (a falling general price level) is a dangerous macroeconomic trap rather than a benefit.",
     "derivation": [
       "\\text{(1) AD Shifters: Real factors} = \\text{Fiscal policy } (G, T), \\text{Autonomous consumption } (\\bar{C}), \\text{Autonomous investment } (\\bar{I}), \\text{Net exports } (X - Z); \\quad \\text{Monetary factors} = \\text{Repo rate } (i) \\text{ and Money supply } (M)",
       "\\text{(2) Imported Intermediate Input Shock (Ford Engines): Production cost rises } \\implies \\text{AS shifts Upward/Leftward from } AS_0 \\text{ to } AS_1",
@@ -5964,7 +5954,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch19",
-    "citation": "Mohr 6e, Mohr 6e, pp. 407–436 • Study Units 2.2 & 4.1, pp. 29, 97–98"
+    "citation": "Real vs Monetary AD Shifters, Imported Engine Cost-Push AS Shock & the Deflation Trap"
   },
   {
     "id": "q_ch20_20",
@@ -5972,7 +5962,7 @@ const ECON122_DATA = {
     "source": "Chapter 20 — Inflation — CPI vs Implicit GDP Deflator Inflation Series & the Structuralist / Conflict Approaches",
     "topic": "CPI vs Implicit GDP Deflator Inflation Series & the Structuralist / Conflict Approaches",
     "difficulty": "Hard",
-    "stem": "Analyse the inflation series and theoretical frameworks in Study Unit 4.2: (1) Given a four-period CPI series (Period 1 = 92.2, Period 2 = 105.7, Period 3 = 102.3, Period 4 = 106.9), calculate the Period 4 headline CPI inflation rate; (2) Given Nominal GDP (Period 1 = R232 234m, Period 2 = R297 899m, Period 3 = R327 071m) and Real GDP (Period 1 = R110 551m, Period 2 = R126 169m, Period 3 = R123 326m), calculate the Implicit GDP Deflator for all three periods and the Period 2 and Period 3 inflation rates, diagnosing Period 3's macroeconomic condition; and (3) Distinguish the Structuralist approach (underlying, initiating, and propagating factors) and the Conflict approach to inflation.",
+    "stem": "Analyse the inflation series and theoretical frameworks in macroeconomic analysis: (1) Given a four-period CPI series (Period 1 = 92.2, Period 2 = 105.7, Period 3 = 102.3, Period 4 = 106.9), calculate the Period 4 headline CPI inflation rate; (2) Given Nominal GDP (Period 1 = R232 234m, Period 2 = R297 899m, Period 3 = R327 071m) and Real GDP (Period 1 = R110 551m, Period 2 = R126 169m, Period 3 = R123 326m), calculate the Implicit GDP Deflator for all three periods and the Period 2 and Period 3 inflation rates, diagnosing Period 3's macroeconomic condition; and (3) Distinguish the Structuralist approach (underlying, initiating, and propagating factors) and the Conflict approach to inflation.",
     "derivation": [
       "\\text{(1) Period 4 CPI Inflation: } \\pi_4 = \\frac{106.9 - 102.3}{102.3} \\times 100 = \\frac{4.6}{102.3} \\times 100 = 4.497\\% \\approx 4.5\\%",
       "\\text{(2) Implicit GDP Deflators } \\left(\\frac{\\text{Nominal}}{\\text{Real}} \\times 100\\right): \\text{Def}_1 = \\frac{232\\,234}{110\\,551} \\times 100 = 210.07; \\quad \\text{Def}_2 = \\frac{297\\,899}{126\\,169} \\times 100 = 236.11; \\quad \\text{Def}_3 = \\frac{327\\,071}{123\\,326} \\times 100 = 265.21",
@@ -5984,7 +5974,7 @@ const ECON122_DATA = {
       {
         "text": "(1) Period 4 CPI inflation is 4.5%; (2) Deflators are 210.07, 236.11, and 265.21 (inflation = 12.40% and 12.32%, with stagflation in Period 3); (3) Structuralist links underlying/initiating/propagating factors while Conflict cites competing claims.",
         "isCorrect": true,
-        "refutation": "Correct! CPI rises by (106.9 - 102.3)/102.3 = 4.5%; the GDP Deflator rises from 210.07 to 236.11 (+12.40%) to 265.21 (+12.32%) while Real GDP contracts in Period 3 (stagflation); and the Structuralist/Conflict definitions match Mohr & Study Unit 4.2."
+        "refutation": "Correct! CPI rises by (106.9 - 102.3)/102.3 = 4.5%; the GDP Deflator rises from 210.07 to 236.11 (+12.40%) to 265.21 (+12.32%) while Real GDP contracts in Period 3 (stagflation); and the Structuralist/Conflict definitions match macroeconomic principles."
       },
       {
         "text": "(1) Period 4 CPI inflation is 4.6%; (2) Deflators are 47.60, 42.35, and 37.71 (inflation = -11.03% and -10.96%, showing deflation in Period 3); (3) Both Structuralist and Conflict approaches attribute inflation solely to central bank money growth.",
@@ -6003,7 +5993,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch20",
-    "citation": "Mohr 6e, Mohr 6e, pp. 437–466 • Study Unit 4, pp. 93–101"
+    "citation": "CPI vs Implicit GDP Deflator Inflation Series & the Structuralist / Conflict Approaches"
   },
   {
     "id": "q_ch21_15",
@@ -6011,7 +6001,7 @@ const ECON122_DATA = {
     "source": "Chapter 21 — Unemployment, Poverty and Inequality — Estonia Unemployment Rate, Classifying Five Unemployment Scenarios & the Eclectic Approach",
     "topic": "Estonia Unemployment Rate, Classifying Five Unemployment Scenarios & the Eclectic Approach",
     "difficulty": "Medium",
-    "stem": "Evaluate the labour market exercises in Study Unit 5: (1) In Estonia, 7 500 people are unemployed out of an economically active population (labour force) of 250 000; calculate the strict unemployment rate; (2) Classify five cases: (a) Duncan quits his job at Pick n Pay to look for a better-paying job; (b) Jan is retrenched from a gold mine due to a permanent fall in gold demand and lacks skills for other industries; (c) Thandi completes her BCom degree and is searching for her first graduate position; (d) Robert is laid off from his construction job during a general economic recession; and (e) an economy simultaneously experiences a shortage of managers and an oversupply of unskilled labourers; and (3) Define the Eclectic Approach and Incomes Policy in the Phillips-curve debate.",
+    "stem": "Evaluate the labour market exercises in macroeconomic analysis: (1) In Estonia, 7 500 people are unemployed out of an economically active population (labour force) of 250 000; calculate the strict unemployment rate; (2) Classify five cases: (a) Duncan quits his job at Pick n Pay to look for a better-paying job; (b) Jan is retrenched from a gold mine due to a permanent fall in gold demand and lacks skills for other industries; (c) Thandi completes her BCom degree and is searching for her first graduate position; (d) Robert is laid off from his construction job during a general economic recession; and (e) an economy simultaneously experiences a shortage of managers and an oversupply of unskilled labourers; and (3) Define the Eclectic Approach and Incomes Policy in the Phillips-curve debate.",
     "derivation": [
       "\\text{(1) Estonia Unemployment Rate: } u = \\frac{\\text{Unemployed}}{\\text{Economically Active Population}} \\times 100 = \\frac{7\\,500}{250\\,000} \\times 100 = 3.0\\%",
       "\\text{(2) Scenario Classifications: (a) Duncan = Frictional; (b) Jan = Structural; (c) Thandi = Frictional; (d) Robert = Cyclical; (e) Skill mismatch = Structural}",
@@ -6040,7 +6030,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch21",
-    "citation": "Mohr 6e, Mohr 6e, pp. 467–484 • Study Unit 5, pp. 102–107"
+    "citation": "Estonia Unemployment Rate, Classifying Five Unemployment Scenarios & the Eclectic Approach"
   },
   {
     "id": "q_ch22_06",
@@ -6048,7 +6038,7 @@ const ECON122_DATA = {
     "source": "Chapter 22 — Economic Growth and Business Cycles — Inclusive Economic Growth, Structural Growth Constraints in South Africa & Business Cycle Elements",
     "topic": "Inclusive Economic Growth, Structural Growth Constraints in South Africa & Business Cycle Elements",
     "difficulty": "Medium",
-    "stem": "In the analysis of economic growth and business cycles in Study Unit 6 (Chapter 22): (1) Define 'inclusive economic growth' and explain why headline real GDP growth alone is insufficient for socioeconomic transformation; (2) Identify the primary structural causes of low economic growth in South Africa highlighted in the curriculum; and (3) State the four sequential elements of a complete business cycle between two successive troughs.",
+    "stem": "In the analysis of economic growth and business cycles in macroeconomic analysis: (Chapter 22): (1) Define 'inclusive economic growth' and explain why headline real GDP growth alone is insufficient for socioeconomic transformation; (2) Identify the primary structural causes of low economic growth in South Africa highlighted in the curriculum; and (3) State the four sequential elements of a complete business cycle between two successive troughs.",
     "derivation": [
       "\\text{(1) Inclusive Economic Growth: Sustained real output expansion that is broadly shared across the population, generating productive employment and reducing poverty and inequality}",
       "\\text{(2) Structural Causes of Low Growth in SA: Severe skills shortages / mismatch, inadequate infrastructure and electricity supply constraints, low domestic saving and investment rates, high concentration/barriers, and policy uncertainty}",
@@ -6077,7 +6067,7 @@ const ECON122_DATA = {
       }
     ],
     "chapter": "ch22",
-    "citation": "Mohr 6e, Mohr 6e, pp. 485–512 • Study Unit 6, pp. 109–114"
+    "citation": "Inclusive Economic Growth, Structural Growth Constraints in South Africa & Business Cycle Elements"
   }
 ],
   pastPapers: [

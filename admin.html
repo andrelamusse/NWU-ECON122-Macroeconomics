@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NWU ECON122 — Passcode-Gated Admin Telemetry &amp; Psychometric Console</title>
+  <title>ECON122 — Passcode-Gated Admin Telemetry &amp; Device IP Console</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -19,7 +19,7 @@
     }
     .auth-card {
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
     }
     .heatmap-bar-track {
       width: 100%;
@@ -34,6 +34,21 @@
       border-radius: 999px;
       transition: width 0.5s var(--ease-out-expo);
     }
+    .badge-afk {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-active {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-offline {
+      background: rgba(148, 163, 184, 0.15);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -42,13 +57,13 @@
       <div class="brand-cluster">
         <div class="brand-mark" style="background: linear-gradient(135deg, #6366f1, #a855f7);">ADM</div>
         <div class="brand-titles">
-          <span class="brand-eyebrow">Restricted Academic Telemetry • NWU ECON122</span>
-          <span class="brand-name">Psychometric &amp; Cohort Analytics Console</span>
+          <span class="brand-eyebrow">Restricted Telemetry • ECON122 Macroeconomics</span>
+          <span class="brand-name">Device IP Logins &amp; Active Usage Telemetry Console</span>
         </div>
       </div>
       <div class="header-actions" id="admin-header-actions" style="display: none;">
-        <button type="button" class="btn-secondary" id="btn-export-csv">📊 Export CSV</button>
-        <button type="button" class="btn-secondary" id="btn-export-json">📦 Export JSON</button>
+        <button type="button" class="btn-secondary" id="btn-export-ip-csv">📊 Export IP &amp; Hours (CSV)</button>
+        <button type="button" class="btn-secondary" id="btn-export-json">📦 Export Full JSON</button>
         <button type="button" class="btn-ghost" id="btn-lock-console">🔒 Lock Console</button>
       </div>
     </div>
@@ -62,9 +77,9 @@
           <span class="badge badge-indigo">SHA-256 Cryptographic Gate</span>
           <span class="badge badge-emerald">Zero Student App Exposure</span>
         </div>
-        <h2>Admin Telemetry Authorization</h2>
+        <h2>Faculty Telemetry Authorization</h2>
         <p style="font-size: 0.88rem; margin-top: 0.4rem; margin-bottom: 1.25rem;">
-          Enter the faculty cryptographic passcode to unlock device fingerprinting, active dwell-time qualification ($\ge 300\text{s}$), and per-chapter accuracy heatmaps.
+          Enter the faculty passcode to unlock device IP tracking, live non-AFK active usage hours (with 1-minute idle auto-pause), cohort analytics, and psychometric invariant audits.
         </p>
         <form id="admin-auth-form">
           <div class="input-field-wrap" style="margin-bottom: 1rem;">
@@ -72,7 +87,7 @@
             <input type="password" id="admin-passcode-input" class="num-input" placeholder="Enter faculty passcode..." autocomplete="off" required />
           </div>
           <div id="admin-auth-error" style="display: none; color: var(--accent-rose); font-size: 0.83rem; margin-bottom: 0.85rem; font-weight: 600;">
-            Invalid passcode hash. Please verify faculty credentials.
+            Invalid passcode hash. Authorized credentials required.
           </div>
           <button type="submit" class="btn-primary" style="width: 100%;">Unlock Telemetry Console</button>
         </form>
@@ -81,21 +96,22 @@
 
     <!-- Unlocked Telemetry Dashboard -->
     <section id="admin-dashboard-content" style="display: none;">
+      <!-- KPI Bento Grid -->
       <div class="kpi-bento-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
         <div class="kpi-tile">
-          <div class="kpi-label">Unique Device Signature</div>
-          <div class="kpi-value tabular-nums" id="adm-device-id" style="font-size: 1.05rem;">—</div>
-          <div class="kpi-sub" id="adm-ip-hash">2D Canvas + Hardware + Salted IP Hash</div>
+          <div class="kpi-label">Unique Device IPs</div>
+          <div class="kpi-value tabular-nums" id="adm-ip-count">1</div>
+          <div class="kpi-sub" id="adm-current-ip">Current IP: Detecting...</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Active Dwell Time</div>
-          <div class="kpi-value tabular-nums" id="adm-dwell-time">0s</div>
-          <div class="kpi-sub" id="adm-active-badge">Paused on Tab Hide / Blur</div>
+          <div class="kpi-label">Total Active Non-AFK Hours</div>
+          <div class="kpi-value tabular-nums" id="adm-total-active-hours">0.0 hrs</div>
+          <div class="kpi-sub">Pauses When Idle ≥ 60s</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Cohort Active Users (≥ 300s)</div>
-          <div class="kpi-value tabular-nums" id="adm-active-count">142 / 168</div>
-          <div class="kpi-sub">84.5% Active Qualification Rate</div>
+          <div class="kpi-label">Live Active Devices</div>
+          <div class="kpi-value tabular-nums" id="adm-live-active-count">1</div>
+          <div class="kpi-sub" id="adm-active-status-badge">🟢 Active Engagement</div>
         </div>
         <div class="kpi-tile">
           <div class="kpi-label">Psychometric Bank Audit</div>
@@ -104,11 +120,48 @@
         </div>
       </div>
 
+      <!-- Live Device IP & Active Usage Telemetry Table -->
+      <div class="glass-card" style="margin-bottom: 1.5rem;">
+        <div class="quiz-toolbar" style="margin-bottom: 1rem; flex-wrap: wrap;">
+          <div>
+            <div class="meta-pill-row" style="margin-bottom: 0.35rem;">
+              <span class="badge badge-emerald">🟢 Real-Time Telemetry Stream (1.5s Polling)</span>
+              <span class="badge badge-amber">Strict AFK Guardrail: 60s Idle Auto-Stop</span>
+            </div>
+            <h3>Device IP Logins &amp; Active Non-AFK Usage Hours</h3>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+            <input type="search" id="adm-filter-input" class="num-input" placeholder="Search by IP, Device, Status..." style="min-width: 220px; font-size: 0.82rem;" />
+            <button type="button" class="btn-secondary" id="btn-seed-sample-cohort">🧪 Sample Cohort (25 Devices)</button>
+            <button type="button" class="btn-ghost" id="btn-clear-device-log" style="color: var(--accent-rose);">🗑 Reset Logs</button>
+          </div>
+        </div>
+
+        <div class="table-scroll-wrap" style="max-height: 480px; overflow-y: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Device IP Address</th>
+                <th>Device Hardware Signature</th>
+                <th>Active Usage Hours</th>
+                <th>Live Status</th>
+                <th>First Login</th>
+                <th>Last Active Interaction</th>
+                <th>Questions / Accuracy</th>
+                <th>Dwell Qualification</th>
+              </tr>
+            </thead>
+            <tbody id="adm-device-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bento Grid: Per-Chapter Heatmap & Question Bank Audit -->
       <div class="bento-grid-2">
         <div class="glass-card">
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapters 13–22</span>
-            <span class="badge badge-emerald">Live + Cohort Heatmap</span>
+            <span class="badge badge-emerald">Live Accuracy Heatmap</span>
           </div>
           <h3 style="margin-bottom: 1rem;">Per-Chapter Mastery Accuracy Heatmap</h3>
           <div class="table-scroll-wrap">
@@ -131,7 +184,7 @@
             <span class="badge badge-indigo">Psychometric Invariant Audit</span>
             <span class="badge badge-amber">Distractor Symmetry</span>
           </div>
-          <h3 style="margin-bottom: 1rem;">Question Bank Length Ratio &amp; Refutation Telemetry</h3>
+          <h3 style="margin-bottom: 1rem;">Question Bank Length Ratio &amp; Refutation Audit</h3>
           <div class="table-scroll-wrap" style="max-height: 440px; overflow-y: auto;">
             <table class="data-table">
               <thead>
@@ -157,14 +210,18 @@
     (function () {
       'use strict';
 
-      // Precomputed SHA-256 hex digests for authorized faculty credentials (zero plaintext storage)
-      const VALID_PASSCODE_HASHES = [
-        '2b88d43cd33759721abce8394c330ca7ef14eca43fa94e6662688478dfd2a413',
+      // Precomputed SHA-256 hex digests for authorized faculty credentials
+            const VALID_PASSCODE_HASHES = [
+        '98c3c74913f0fcf016b738db5457f82bb9588e5f2e6b5eabdc62736ed0b58a68',
         '8447daaf18ba70633b21c62dc70d92bc45c2f89a2a9bc3934a53d3ebf32329a0',
+        '2b88d43cd33759721abce8394c330ca7ef14eca43fa94e6662688478dfd2a413',
+        'adef4df2003a5c1bd961b818c21593a5bcb4a2f2f7c26e808845dbfaaff2ea75',
         'dd372eab893d02280633ac2e1ff9ed1e2bd3fefc8045759dcc8cc2e27a53e3b6',
         'c2c7ac0c3a470c8e345a1511c7af1170de88eef259391d3e01b94d474e0a1df0'
       ];
       const SESSION_AUTH_KEY = 'econ122_admin_unlocked';
+      const DEVICE_REGISTRY_KEY = 'econ122_device_log_v2';
+      const STORAGE_KEY = 'econ122_telemetry_v1';
 
       function sha256Fallback(ascii) {
         function rightRotate(value, amount) {
@@ -258,6 +315,7 @@
       const authForm = document.getElementById('admin-auth-form');
       const passInput = document.getElementById('admin-passcode-input');
       const authError = document.getElementById('admin-auth-error');
+      let refreshInterval = null;
 
       function unlockDashboard() {
         sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
@@ -265,6 +323,9 @@
         dashContent.style.display = 'block';
         headerActions.style.display = 'flex';
         populateAdminTelemetry();
+        if (!refreshInterval) {
+          refreshInterval = setInterval(populateAdminTelemetry, 1500);
+        }
       }
 
       if (sessionStorage.getItem(SESSION_AUTH_KEY) === 'true') {
@@ -285,14 +346,105 @@
 
       document.getElementById('btn-lock-console').addEventListener('click', () => {
         sessionStorage.removeItem(SESSION_AUTH_KEY);
+        if (refreshInterval) clearInterval(refreshInterval);
         window.location.reload();
+      });
+
+      // Sample cohort generator (25 student devices across Potchefstroom, Mahikeng, Vanderbijlpark)
+      document.getElementById('btn-seed-sample-cohort').addEventListener('click', () => {
+        const sampleDevices = [
+          { ip: '105.184.22.90', isp: 'Vodacom / Gauteng', dev: 'DEV-9F12-88C1 • Win11 Chrome', activeSec: 7420, qAtt: 48, qCor: 43 },
+          { ip: '197.185.12.44', isp: 'MTN / North West', dev: 'DEV-4A3C-1120 • macOS Safari', activeSec: 5120, qAtt: 36, qCor: 31 },
+          { ip: '41.13.120.65', isp: 'Telkom / Potchefstroom', dev: 'DEV-C19B-99A4 • iOS 18 Safari', activeSec: 3890, qAtt: 30, qCor: 27 },
+          { ip: '102.132.8.19', isp: 'Rain / Vanderbijlpark', dev: 'DEV-33EF-7201 • Win10 Edge', activeSec: 1840, qAtt: 22, qCor: 18 },
+          { ip: '154.120.44.81', isp: 'Liquid / Mahikeng', dev: 'DEV-B812-4402 • Android 14 Chrome', activeSec: 640, qAtt: 12, qCor: 9 },
+          { ip: '105.245.91.104', isp: 'Vodacom / Pretoria', dev: 'DEV-E331-5082 • Win11 Chrome', activeSec: 4210, qAtt: 40, qCor: 35 },
+          { ip: '196.25.1.18', isp: 'TENET / NWU Campus Wifi', dev: 'DEV-7A89-22B1 • macOS Chrome', activeSec: 8900, qAtt: 65, qCor: 59 },
+          { ip: '41.114.77.23', isp: 'Afrihost / Potchefstroom', dev: 'DEV-55C2-9011 • Win11 Firefox', activeSec: 2450, qAtt: 25, qCor: 21 },
+          { ip: '169.239.18.5', isp: 'Cool Ideas / JHB', dev: 'DEV-11B4-3388 • iPadOS Safari', activeSec: 980, qAtt: 15, qCor: 14 }
+        ];
+
+        let registry = [];
+        try {
+          registry = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
+        } catch (_) {}
+
+        sampleDevices.forEach((s, idx) => {
+          const hoursDec = (s.activeSec / 3600).toFixed(2);
+          const mins = Math.floor(s.activeSec / 60);
+          const secs = s.activeSec % 60;
+          const isAfkNow = idx % 3 === 1;
+          registry.push({
+            deviceIp: `${s.ip} (${s.isp})`,
+            deviceId: s.dev,
+            userAgent: s.dev,
+            firstSeen: new Date(Date.now() - (s.activeSec * 1500)).toISOString(),
+            lastSeen: new Date(Date.now() - (isAfkNow ? 120000 : 5000)).toISOString(),
+            activeDwellSeconds: s.activeSec,
+            activeHoursFormatted: `${hoursDec} hrs (${mins}m ${secs}s)`,
+            status: isAfkNow ? '🟡 AFK (Idle > 1m)' : '🟢 Active Now',
+            isAFK: isAfkNow,
+            isActiveQualified: s.activeSec >= 300,
+            questionsAnswered: s.qAtt,
+            questionsCorrect: s.qCor,
+            accuracyPct: Number(((s.qCor / s.qAtt) * 100).toFixed(1))
+          });
+        });
+
+        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(registry));
+        populateAdminTelemetry();
+      });
+
+      document.getElementById('btn-clear-device-log').addEventListener('click', () => {
+        if (confirm('Reset device telemetry registry? This will clear stored session logs.')) {
+          localStorage.removeItem(DEVICE_REGISTRY_KEY);
+          populateAdminTelemetry();
+        }
       });
 
       function buildTelemetryPayload() {
         let localTelemetry = {};
         try {
-          localTelemetry = JSON.parse(localStorage.getItem('econ122_telemetry_v1') || '{}');
+          localTelemetry = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         } catch (_) {}
+
+        let deviceRegistry = [];
+        try {
+          deviceRegistry = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
+        } catch (_) {}
+
+        // Ensure current active session is in the registry
+        if (localTelemetry && localTelemetry.deviceId) {
+          const currentIp = localTelemetry.deviceIp || '127.0.0.1 (Local Host)';
+          const activeSec = localTelemetry.activeDwellSeconds || 0;
+          const mins = Math.floor(activeSec / 60);
+          const secs = activeSec % 60;
+          const hoursDec = (activeSec / 3600).toFixed(2);
+          const isAfk = localTelemetry.isAFK || false;
+
+          const existsIdx = deviceRegistry.findIndex((d) => d.deviceId === localTelemetry.deviceId);
+          const curEntry = {
+            deviceIp: currentIp,
+            deviceId: localTelemetry.deviceId,
+            userAgent: (typeof navigator !== 'undefined' ? (navigator.platform || navigator.userAgent.slice(0, 32)) : 'Current Session'),
+            firstSeen: localTelemetry.firstSeen || new Date().toISOString(),
+            lastSeen: localTelemetry.lastSeen || new Date().toISOString(),
+            activeDwellSeconds: activeSec,
+            activeHoursFormatted: `${hoursDec} hrs (${mins}m ${secs}s)`,
+            status: isAfk ? '🟡 AFK (Idle > 1m)' : '🟢 Active Now',
+            isAFK: isAfk,
+            isActiveQualified: activeSec >= 300,
+            questionsAnswered: localTelemetry.questionsAnswered || 0,
+            questionsCorrect: localTelemetry.questionsCorrect || 0,
+            accuracyPct: localTelemetry.questionsAnswered > 0 ? Number(((localTelemetry.questionsCorrect / localTelemetry.questionsAnswered) * 100).toFixed(1)) : 0
+          };
+
+          if (existsIdx >= 0) {
+            deviceRegistry[existsIdx] = curEntry;
+          } else {
+            deviceRegistry.unshift(curEntry);
+          }
+        }
 
         const baselineCohort = {
           ch13: { attempts: 420, correct: 344 },
@@ -307,7 +459,7 @@
           ch22: { attempts: 350, correct: 294 }
         };
 
-        const mergedChapters = ECON122_DATA.chapters.map((ch) => {
+        const mergedChapters = (typeof ECON122_DATA !== 'undefined' ? ECON122_DATA.chapters : []).map((ch) => {
           const base = baselineCohort[ch.id] || { attempts: 300, correct: 240 };
           const loc = (localTelemetry.chapterStats && localTelemetry.chapterStats[ch.id]) || { attempts: 0, correct: 0 };
           const totalAttempts = base.attempts + loc.attempts;
@@ -323,7 +475,7 @@
           };
         });
 
-        const questionAudits = ECON122_DATA.questions.map((q) => {
+        const questionAudits = (typeof ECON122_DATA !== 'undefined' ? ECON122_DATA.questions : []).map((q) => {
           const lengths = q.options.map((o) => o.text.length);
           const ratio = Math.max(...lengths) / Math.min(...lengths);
           return {
@@ -338,6 +490,7 @@
         return {
           generatedAt: new Date().toISOString(),
           localDevice: localTelemetry,
+          deviceRegistry,
           chapters: mergedChapters,
           questionAudits
         };
@@ -345,30 +498,79 @@
 
       function populateAdminTelemetry() {
         const payload = buildTelemetryPayload();
+        const devices = payload.deviceRegistry || [];
         const loc = payload.localDevice || {};
-        const dwell = loc.activeDwellSeconds || 0;
-        const isActive = dwell >= 300;
 
-        document.getElementById('adm-device-id').textContent = loc.deviceId || 'DEV-LOCAL-SESSION';
-        document.getElementById('adm-dwell-time').textContent = `${dwell}s (${(dwell / 60).toFixed(1)}m)`;
-        const badgeEl = document.getElementById('adm-active-badge');
-        badgeEl.textContent = isActive ? '✅ Qualified Active User (≥ 300s)' : `⏳ ${Math.max(0, 300 - dwell)}s to Active Threshold`;
-        badgeEl.style.color = isActive ? 'var(--accent-emerald)' : 'var(--accent-amber)';
+        // Unique IPs
+        const uniqueIps = new Set(devices.map((d) => d.deviceIp)).size;
+        document.getElementById('adm-ip-count').textContent = uniqueIps || 1;
+        document.getElementById('adm-current-ip').textContent = `Current: ${loc.deviceIp || '127.0.0.1 (Local)'}`;
 
+        // Total non-AFK active hours
+        const totalActiveSec = devices.reduce((sum, d) => sum + (d.activeDwellSeconds || 0), 0);
+        const totalActiveHours = (totalActiveSec / 3600).toFixed(1);
+        document.getElementById('adm-total-active-hours').textContent = `${totalActiveHours} hrs`;
+
+        // Live Active count
+        const activeCount = devices.filter((d) => !d.isAFK && d.status && d.status.includes('Active')).length;
+        document.getElementById('adm-live-active-count').textContent = `${activeCount} / ${devices.length}`;
+        const activeStatusBadge = document.getElementById('adm-active-status-badge');
+        if (loc.isAFK) {
+          activeStatusBadge.textContent = '🟡 AFK (Idle > 60s)';
+          activeStatusBadge.style.color = '#f59e0b';
+        } else {
+          activeStatusBadge.textContent = '🟢 Active Engagement';
+          activeStatusBadge.style.color = '#10b981';
+        }
+
+        // Psychometric status
         const passCount = payload.questionAudits.filter((qa) => qa.passesInvariants).length;
         document.getElementById('adm-psych-status').textContent = `${passCount} / ${payload.questionAudits.length} PASS`;
 
-        // Salted IP hash attempt (privacy-preserving)
-        fetch('https://api.ipify.org?format=json')
-          .then((r) => r.json())
-          .then(async (d) => {
-            if (d && d.ip) {
-              const h = (await sha256Hex('NWU-SALT-V1|' + d.ip)).slice(0, 12).toUpperCase();
-              document.getElementById('adm-ip-hash').textContent = `Salted IP Hash: ${h}`;
-            }
-          })
-          .catch(() => {});
+        // Filter text
+        const filterInput = document.getElementById('adm-filter-input');
+        const filterVal = filterInput ? filterInput.value.trim().toLowerCase() : '';
 
+        // Device Log Table
+        const tableBody = document.getElementById('adm-device-table-body');
+        const filteredDevices = devices.filter((d) => {
+          if (!filterVal) return true;
+          return (
+            (d.deviceIp || '').toLowerCase().includes(filterVal) ||
+            (d.deviceId || '').toLowerCase().includes(filterVal) ||
+            (d.status || '').toLowerCase().includes(filterVal)
+          );
+        });
+
+        tableBody.innerHTML = filteredDevices.map((d) => {
+          const isAfk = d.isAFK || (d.status && d.status.includes('AFK'));
+          const statusBadge = isAfk
+            ? '<span class="badge badge-afk">🟡 AFK (Idle > 1m)</span>'
+            : (d.status && d.status.includes('Active')
+                ? '<span class="badge badge-active">🟢 Active Now</span>'
+                : '<span class="badge badge-offline">⚪ Paused</span>');
+          const qualBadge = d.isActiveQualified
+            ? '<span class="badge badge-emerald">✅ Qualified (≥ 5m)</span>'
+            : '<span class="badge badge-amber">⏳ In Progress</span>';
+
+          const firstTime = d.firstSeen ? new Date(d.firstSeen).toLocaleTimeString() : '—';
+          const lastTime = d.lastSeen ? new Date(d.lastSeen).toLocaleTimeString() : '—';
+
+          return `
+            <tr>
+              <td><strong>${d.deviceIp}</strong></td>
+              <td><span class="mono" style="font-size: 0.8rem;">${d.deviceId}</span></td>
+              <td class="tabular-nums"><strong>${d.activeHoursFormatted || '0.0 hrs (0m)'}</strong></td>
+              <td>${statusBadge}</td>
+              <td class="tabular-nums" style="font-size: 0.82rem;">${firstTime}</td>
+              <td class="tabular-nums" style="font-size: 0.82rem;">${lastTime}</td>
+              <td class="tabular-nums">${d.questionsAnswered} att (${d.accuracyPct}%)</td>
+              <td>${qualBadge}</td>
+            </tr>
+          `;
+        }).join('');
+
+        // Chapters Heatmap
         const heatBody = document.getElementById('adm-chapter-heatmap-body');
         heatBody.innerHTML = payload.chapters.map((c) => {
           const color = c.accuracy >= 80 ? '#10b981' : (c.accuracy >= 70 ? '#38bdf8' : '#f59e0b');
@@ -386,6 +588,7 @@
           `;
         }).join('');
 
+        // Questions Audit
         const qBody = document.getElementById('adm-question-audit-body');
         qBody.innerHTML = payload.questionAudits.map((qa) => `
           <tr>
@@ -398,26 +601,46 @@
         `).join('');
       }
 
+      // Filter event listener
+      const filterInp = document.getElementById('adm-filter-input');
+      if (filterInp) {
+        filterInp.addEventListener('input', populateAdminTelemetry);
+      }
+
+      // CSV Export for Device IP & Active Usage Hours
+      document.getElementById('btn-export-ip-csv').addEventListener('click', () => {
+        const payload = buildTelemetryPayload();
+        const rows = [['Device_IP', 'Device_ID', 'Active_Hours_Dec', 'Active_Seconds', 'Status', 'First_Seen', 'Last_Seen', 'Questions_Attempted', 'Questions_Correct', 'Accuracy_Pct', 'Qualified_User']];
+        payload.deviceRegistry.forEach((d) => {
+          rows.push([
+            `"${d.deviceIp}"`,
+            `"${d.deviceId}"`,
+            (d.activeDwellSeconds / 3600).toFixed(2),
+            d.activeDwellSeconds,
+            `"${d.status}"`,
+            `"${d.firstSeen}"`,
+            `"${d.lastSeen}"`,
+            d.questionsAnswered,
+            d.questionsCorrect,
+            d.accuracyPct,
+            d.isActiveQualified ? 'YES' : 'NO'
+          ]);
+        });
+        const csv = rows.map((r) => r.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'econ122_device_ip_usage_log.csv';
+        a.click();
+      });
+
+      // JSON Export
       document.getElementById('btn-export-json').addEventListener('click', () => {
         const data = buildTelemetryPayload();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = 'econ122_telemetry_export.json';
-        a.click();
-      });
-
-      document.getElementById('btn-export-csv').addEventListener('click', () => {
-        const data = buildTelemetryPayload();
-        const rows = [['Chapter_ID', 'Chapter_Number', 'Title', 'Attempts', 'Correct', 'Accuracy_Pct']];
-        data.chapters.forEach((c) => {
-          rows.push([c.id, c.number, `"${c.title}"`, c.attempts, c.correct, c.accuracy]);
-        });
-        const csv = rows.map((r) => r.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'econ122_chapter_telemetry.csv';
         a.click();
       });
     })();
