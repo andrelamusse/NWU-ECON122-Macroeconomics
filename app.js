@@ -550,12 +550,13 @@
      -------------------------------------------------------------------------- */
   const TelemetryEngine = (function () {
     const STORAGE_KEY = 'econ122_telemetry_v1';
-    const DEVICE_REGISTRY_KEY = 'econ122_device_log_v2';
+    const SYNC_TOPIC = 'https://ntfy.sh/nwu_econ122_telemetry_prod_v1';
     let state = null;
     let isWindowActive = true;
     let lastClickTime = Date.now();
     let isTimerPaused = false;
     let detectedIp = null;
+    let lastBroadcastTime = 0;
 
     function simpleHash(str) {
       let h = 2166136261 >>> 0;
@@ -600,13 +601,13 @@
 
     async function fetchPublicIp() {
       if (typeof fetch === 'undefined') return;
-      const endpoints = [
+      const apis = [
         'https://api.ipify.org?format=json',
         'https://api64.ipify.org?format=json',
         'https://ipapi.co/json/',
         'https://api.db-ip.com/v2/free/myip'
       ];
-      for (const url of endpoints) {
+      for (const url of apis) {
         try {
           const res = await fetch(url, { cache: 'no-store' });
           if (!res.ok) continue;
@@ -617,6 +618,7 @@
             if (state) {
               state.deviceIp = detectedIp;
               saveState();
+              broadcastHeartbeat();
             }
             break;
           }
@@ -663,9 +665,7 @@
       const h = Math.floor(totalSec / 3600);
       const m = Math.floor((totalSec % 3600) / 60);
       const s = totalSec % 60;
-      if (h > 0) {
-        return `${h}h ${m}m ${s}s`;
-      }
+      if (h > 0) return `${h}h ${m}m ${s}s`;
       return `${m}m ${s}s`;
     }
 
@@ -679,45 +679,39 @@
           state.deviceIp = detectedIp;
         }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        syncRegistry();
       } catch (_) {}
     }
 
-    function syncRegistry() {
-      if (typeof localStorage === 'undefined' || !state) return;
+    async function broadcastHeartbeat() {
+      if (typeof fetch === 'undefined' || !state) return;
+      // Do not broadcast from admin panel
+      if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
+        return;
+      }
       try {
-        let list = [];
-        const raw = localStorage.getItem(DEVICE_REGISTRY_KEY);
-        if (raw) {
-          list = JSON.parse(raw);
-        }
-        if (!Array.isArray(list)) list = [];
-
-        const ip = state.deviceIp || detectedIp || '127.0.0.1';
-        const devId = state.deviceId || 'DEV-1';
-        const entry = {
-          deviceIp: ip,
-          deviceId: devId,
-          activeSeconds: state.activeSeconds,
-          activeTimeFormatted: formatTime(state.activeSeconds),
+        const payload = {
+          deviceId: state.deviceId,
+          deviceIp: state.deviceIp || detectedIp || '127.0.0.1',
+          activeSeconds: state.activeSeconds || 0,
+          activeTimeFormatted: formatTime(state.activeSeconds || 0),
           status: isTimerPaused ? 'Paused (Idle > 60s)' : 'Active',
-          isTimerPaused: isTimerPaused,
-          lastClick: state.lastClick || new Date().toISOString(),
-          lastSeen: state.lastSeen,
-          firstSeen: state.firstSeen
+          lastClick: state.lastClick || new Date(lastClickTime).toISOString(),
+          timestamp: Math.floor(Date.now() / 1000)
         };
-
-        const existingIdx = list.findIndex((x) => x.deviceId === devId || x.deviceIp === ip);
-        if (existingIdx >= 0) {
-          list[existingIdx] = entry;
-        } else {
-          list.unshift(entry);
-        }
-        localStorage.setItem(DEVICE_REGISTRY_KEY, JSON.stringify(list));
+        await fetch(SYNC_TOPIC, {
+          method: 'POST',
+          headers: { 'Title': 'DeviceHeartbeat' },
+          body: JSON.stringify(payload)
+        });
+        lastBroadcastTime = Date.now();
       } catch (_) {}
     }
 
     function recordClick() {
+      // Do not record admin panel clicks
+      if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
+        return;
+      }
       lastClickTime = Date.now();
       if (state) {
         state.lastClick = new Date().toISOString();
@@ -726,6 +720,7 @@
           state.isTimerPaused = false;
           state.status = 'Active';
           saveState();
+          broadcastHeartbeat();
         }
       }
     }
@@ -744,14 +739,20 @@
         }
       }
       saveState();
+      broadcastHeartbeat();
     }
 
     function startHeartbeat() {
+      // NEVER run tracking inside admin.html!
+      if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
+        return;
+      }
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
       loadState();
       fetchPublicIp();
 
-      // Listen strictly for clicks and key interactions on the site
+      // Listen strictly for clicks and key interactions on the actual web app
       const clickEvents = ['click', 'mousedown', 'pointerdown', 'touchstart', 'keydown'];
       clickEvents.forEach((evt) => {
         window.addEventListener(evt, recordClick, { passive: true });
@@ -765,6 +766,7 @@
             state.isTimerPaused = true;
             state.status = 'Paused (Background)';
             saveState();
+            broadcastHeartbeat();
           }
         } else {
           recordClick();
@@ -777,6 +779,7 @@
           state.isTimerPaused = true;
           state.status = 'Paused (Blurred)';
           saveState();
+          broadcastHeartbeat();
         }
       });
       window.addEventListener('focus', () => {
@@ -784,7 +787,7 @@
         recordClick();
       });
 
-      // 1-second interval: checks if clicked within last 60 seconds
+      // 1-second interval checks if student clicked within last 60 seconds
       setInterval(() => {
         if (!state) return;
         const idleSec = Math.floor((Date.now() - lastClickTime) / 1000);
@@ -803,14 +806,19 @@
           state.activeDwellSeconds = state.activeSeconds;
         }
 
-        // Save state live
         saveState();
+
+        // Broadcast to cloud relay every 3 seconds so admin sees it in real time
+        if (Date.now() - lastBroadcastTime >= 3000) {
+          broadcastHeartbeat();
+        }
       }, 1000);
 
       window.addEventListener('beforeunload', () => {
         if (state) {
           state.status = 'Offline';
           saveState();
+          broadcastHeartbeat();
         }
       });
     }

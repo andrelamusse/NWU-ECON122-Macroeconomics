@@ -62,7 +62,7 @@
       <div class="header-actions" id="admin-header-actions" style="display: none;">
         <button type="button" class="btn-primary" id="btn-manual-refresh">🔄 Refresh Data</button>
         <button type="button" class="btn-secondary" id="btn-export-csv">📊 Export CSV</button>
-        <button type="button" class="btn-ghost" id="btn-reset-timer" style="color: var(--accent-rose);">🗑 Reset Timer</button>
+        <button type="button" class="btn-ghost" id="btn-reset-timer" style="color: var(--accent-rose);">🗑 Clear Records</button>
         <button type="button" class="btn-ghost" id="btn-lock-console">🔒 Lock</button>
       </div>
     </div>
@@ -97,14 +97,14 @@
       <!-- Minimalist KPI Summary -->
       <div class="kpi-bento-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 1.25rem;">
         <div class="kpi-tile">
-          <div class="kpi-label">Device IPs Detected</div>
-          <div class="kpi-value tabular-nums" id="adm-ip-count">1</div>
-          <div class="kpi-sub" id="adm-ip-sub">Current IP: Detecting...</div>
+          <div class="kpi-label">Connected Student Devices</div>
+          <div class="kpi-value tabular-nums" id="adm-ip-count">0</div>
+          <div class="kpi-sub" id="adm-ip-sub">Syncing with live web app...</div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-label">Total Active Time (Clicked &lt; 60s)</div>
+          <div class="kpi-label">Total Active Time</div>
           <div class="kpi-value tabular-nums" id="adm-total-active-time" style="color: var(--accent-emerald);">0m 0s</div>
-          <div class="kpi-sub" id="adm-live-badge"><span class="live-pulse"></span>Live Tracking Active (Auto-Stops if Idle &ge; 60s)</div>
+          <div class="kpi-sub" id="adm-live-badge"><span class="live-pulse"></span>Live Tracking (Auto-Stops if Idle &ge; 60s)</div>
         </div>
       </div>
 
@@ -113,9 +113,9 @@
         <div class="quiz-toolbar" style="margin-bottom: 1rem; justify-content: space-between; align-items: center;">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
             <h3 style="margin: 0; font-size: 1.15rem;">Active Device IP Counter</h3>
-            <span class="badge badge-emerald" id="adm-poll-indicator"><span class="live-pulse"></span>Live: 1s Polling</span>
+            <span class="badge badge-emerald" id="adm-poll-indicator"><span class="live-pulse"></span>Live Cloud Polling: 1s</span>
           </div>
-          <button type="button" class="btn-secondary" id="btn-refresh-inline" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">🔄 Refresh Table</button>
+          <button type="button" class="btn-secondary" id="btn-refresh-inline" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">🔄 Refresh Now</button>
         </div>
 
         <div class="table-scroll-wrap">
@@ -128,15 +128,17 @@
                 <th style="min-width: 140px;">Last Click Action</th>
               </tr>
             </thead>
-            <tbody id="adm-device-table-body"></tbody>
+            <tbody id="adm-device-table-body">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem;">Connecting to live stream...</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
     </section>
   </main>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
   <script>
     (function () {
       'use strict';
@@ -150,8 +152,8 @@
         'c2c7ac0c3a470c8e345a1511c7af1170de88eef259391d3e01b94d474e0a1df0'
       ];
       const SESSION_AUTH_KEY = 'econ122_admin_unlocked';
-      const DEVICE_REGISTRY_KEY = 'econ122_device_log_v2';
       const STORAGE_KEY = 'econ122_telemetry_v1';
+      const SYNC_TOPIC = 'https://ntfy.sh/nwu_econ122_telemetry_prod_v1';
 
       function sha256Fallback(ascii) {
         function rightRotate(value, amount) {
@@ -245,31 +247,8 @@
       const authForm = document.getElementById('admin-auth-form');
       const passInput = document.getElementById('admin-passcode-input');
       const authError = document.getElementById('admin-auth-error');
-      let livePollTimer = null;
-      let externalIp = null;
-
-      // Parallel IP resolver
-      async function resolvePublicIp() {
-        const apis = [
-          'https://api.ipify.org?format=json',
-          'https://api64.ipify.org?format=json',
-          'https://ipapi.co/json/',
-          'https://api.db-ip.com/v2/free/myip'
-        ];
-        for (const url of apis) {
-          try {
-            const r = await fetch(url, { cache: 'no-store' });
-            if (!r.ok) continue;
-            const d = await r.json();
-            const ip = d.ip || d.ipAddress;
-            if (ip) {
-              externalIp = ip.trim();
-              break;
-            }
-          } catch (_) {}
-        }
-      }
-      resolvePublicIp();
+      let pollInterval = null;
+      let remoteDevices = {};
 
       function formatDuration(sec) {
         const h = Math.floor(sec / 3600);
@@ -279,14 +258,120 @@
         return `${m}m ${s}s`;
       }
 
+      async function fetchLiveDevices() {
+        try {
+          const res = await fetch(`${SYNC_TOPIC}/json?poll=1&since=2h`, { cache: 'no-store' });
+          if (res.ok) {
+            const raw = await res.text();
+            const lines = raw.trim().split('\n');
+            lines.forEach((l) => {
+              if (!l.trim()) return;
+              try {
+                const ev = JSON.parse(l);
+                const msg = typeof ev.message === 'string' ? JSON.parse(ev.message) : ev.message;
+                if (msg && msg.deviceId) {
+                  const existing = remoteDevices[msg.deviceId];
+                  if (!existing || (msg.timestamp && msg.timestamp >= (existing.timestamp || 0))) {
+                    remoteDevices[msg.deviceId] = msg;
+                  }
+                }
+              } catch (_) {}
+            });
+          }
+        } catch (_) {}
+
+        // Also merge local student storage if testing locally on same browser
+        try {
+          const loc = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          if (loc && loc.deviceId && !loc.deviceId.includes('admin')) {
+            const existing = remoteDevices[loc.deviceId];
+            const locTime = loc.lastSeen ? new Date(loc.lastSeen).getTime() / 1000 : 0;
+            if (!existing || locTime >= (existing.timestamp || 0)) {
+              remoteDevices[loc.deviceId] = {
+                deviceId: loc.deviceId,
+                deviceIp: loc.deviceIp || '127.0.0.1 (Local)',
+                activeSeconds: loc.activeSeconds || loc.activeDwellSeconds || 0,
+                status: loc.isTimerPaused ? 'Paused (Idle > 60s)' : (loc.status || 'Active'),
+                lastClick: loc.lastClick || loc.lastSeen || new Date().toISOString(),
+                timestamp: locTime
+              };
+            }
+          }
+        } catch (_) {}
+
+        renderTable();
+      }
+
+      function renderTable() {
+        const devList = Object.values(remoteDevices);
+
+        // Sort: active devices first, then highest active seconds
+        devList.sort((a, b) => {
+          const aAct = a.status && a.status.toLowerCase().includes('active');
+          const bAct = b.status && b.status.toLowerCase().includes('active');
+          if (aAct && !bAct) return -1;
+          if (!aAct && bAct) return 1;
+          return (b.activeSeconds || 0) - (a.activeSeconds || 0);
+        });
+
+        const countEl = document.getElementById('adm-ip-count');
+        const subEl = document.getElementById('adm-ip-sub');
+        const totalTimeEl = document.getElementById('adm-total-active-time');
+        const tbody = document.getElementById('adm-device-table-body');
+
+        countEl.textContent = devList.length;
+        if (devList.length === 0) {
+          subEl.textContent = 'Waiting for student devices to connect to web app...';
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2.5rem 1rem;">
+                No external devices detected yet. Open <a href="index.html" target="_blank" style="color: var(--accent-sky); text-decoration: underline;">index.html</a> on another device or tab to begin tracking!
+              </td>
+            </tr>
+          `;
+          totalTimeEl.textContent = '0m 0s';
+          return;
+        }
+
+        const activeCount = devList.filter((d) => d.status && d.status.toLowerCase().includes('active')).length;
+        subEl.textContent = `${activeCount} Active Now • ${devList.length - activeCount} Idle / Paused`;
+
+        const totalSec = devList.reduce((sum, d) => sum + (d.activeSeconds || 0), 0);
+        totalTimeEl.textContent = formatDuration(totalSec);
+
+        tbody.innerHTML = devList.map((d) => {
+          const isPaused = !d.status || d.status.toLowerCase().includes('paused') || d.status.toLowerCase().includes('idle');
+          const statusBadge = isPaused
+            ? '<span class="badge badge-paused">⏸ Paused (Idle &ge; 60s)</span>'
+            : '<span class="badge badge-active">🟢 Active (Clicking)</span>';
+
+          let lastClickAgo = 'Just now';
+          if (d.lastClick) {
+            const diffSec = Math.max(0, Math.floor((Date.now() - new Date(d.lastClick).getTime()) / 1000));
+            if (diffSec < 5) lastClickAgo = 'Just now';
+            else if (diffSec < 60) lastClickAgo = `${diffSec}s ago`;
+            else lastClickAgo = `${Math.floor(diffSec / 60)}m ago`;
+          }
+
+          return `
+            <tr>
+              <td><strong style="font-size: 1.05rem;">${d.deviceIp || '127.0.0.1'}</strong></td>
+              <td><strong class="tabular-nums" style="font-size: 1.15rem; color: var(--accent-emerald);">${formatDuration(d.activeSeconds || 0)}</strong></td>
+              <td>${statusBadge}</td>
+              <td class="tabular-nums">${lastClickAgo}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
       function unlockDashboard() {
         sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
         authGate.style.display = 'none';
         dashContent.style.display = 'block';
         headerActions.style.display = 'flex';
-        renderMonitor();
-        if (!livePollTimer) {
-          livePollTimer = setInterval(renderMonitor, 1000);
+        fetchLiveDevices();
+        if (!pollInterval) {
+          pollInterval = setInterval(fetchLiveDevices, 1500);
         }
       }
 
@@ -308,132 +393,45 @@
 
       document.getElementById('btn-lock-console').addEventListener('click', () => {
         sessionStorage.removeItem(SESSION_AUTH_KEY);
-        if (livePollTimer) clearInterval(livePollTimer);
+        if (pollInterval) clearInterval(pollInterval);
         window.location.reload();
       });
 
       document.getElementById('btn-manual-refresh').addEventListener('click', () => {
-        resolvePublicIp();
-        renderMonitor();
+        fetchLiveDevices();
       });
 
       document.getElementById('btn-refresh-inline').addEventListener('click', () => {
-        resolvePublicIp();
-        renderMonitor();
+        fetchLiveDevices();
       });
 
       document.getElementById('btn-reset-timer').addEventListener('click', () => {
-        if (confirm('Reset total active time counter and clear session records?')) {
+        if (confirm('Clear local records? (New student heartbeats will continue syncing)')) {
+          remoteDevices = {};
           localStorage.removeItem(STORAGE_KEY);
-          localStorage.removeItem(DEVICE_REGISTRY_KEY);
-          renderMonitor();
+          renderTable();
         }
       });
 
-      function renderMonitor() {
-        let localState = {};
-        try {
-          localState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        } catch (_) {}
-
-        let list = [];
-        try {
-          list = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
-        } catch (_) {}
-        if (!Array.isArray(list)) list = [];
-
-        // Determine current IP
-        let currentIp = externalIp || localState.deviceIp || '127.0.0.1';
-        if (currentIp.includes('Detecting') && externalIp) {
-          currentIp = externalIp;
-        }
-
-        const activeSec = localState.activeSeconds || localState.activeDwellSeconds || 0;
-        const isPaused = localState.isTimerPaused !== false && (localState.status && localState.status.includes('Paused'));
-
-        // Ensure active device is present in list
-        const devId = localState.deviceId || 'DEV-1';
-        const activeEntry = {
-          deviceIp: currentIp,
-          deviceId: devId,
-          activeSeconds: activeSec,
-          activeTimeFormatted: formatDuration(activeSec),
-          status: isPaused ? 'Paused (Idle > 60s)' : 'Active',
-          lastClick: localState.lastClick || new Date().toISOString()
-        };
-
-        const existingIdx = list.findIndex((x) => x.deviceId === devId || x.deviceIp === currentIp);
-        if (existingIdx >= 0) {
-          list[existingIdx] = activeEntry;
-        } else {
-          list.unshift(activeEntry);
-        }
-
-        // Summary metrics
-        const uniqueIps = new Set(list.map((x) => x.deviceIp)).size;
-        document.getElementById('adm-ip-count').textContent = uniqueIps || 1;
-        document.getElementById('adm-ip-sub').textContent = `Current Device IP: ${currentIp}`;
-
-        const totalSecondsAll = list.reduce((sum, x) => sum + (x.activeSeconds || 0), 0);
-        document.getElementById('adm-total-active-time').textContent = formatDuration(totalSecondsAll);
-
-        const liveBadge = document.getElementById('adm-live-badge');
-        if (isPaused) {
-          liveBadge.innerHTML = '⏸ Counter Paused (No click detected within 60s)';
-          liveBadge.style.color = '#f59e0b';
-        } else {
-          liveBadge.innerHTML = '<span class="live-pulse"></span>Timer Running (Click detected within last 60s)';
-          liveBadge.style.color = '#10b981';
-        }
-
-        // Table Rows
-        const tbody = document.getElementById('adm-device-table-body');
-        tbody.innerHTML = list.map((item) => {
-          const itemPaused = item.status && item.status.includes('Paused');
-          const statusBadge = itemPaused
-            ? '<span class="badge badge-paused">⏸ Paused (Idle &ge; 60s)</span>'
-            : '<span class="badge badge-active">🟢 Active Now</span>';
-
-          let lastClickAgo = 'Just now';
-          if (item.lastClick) {
-            const diffSec = Math.floor((Date.now() - new Date(item.lastClick).getTime()) / 1000);
-            if (diffSec < 5) lastClickAgo = 'Just now';
-            else if (diffSec < 60) lastClickAgo = `${diffSec}s ago`;
-            else lastClickAgo = `${Math.floor(diffSec / 60)}m ago`;
-          }
-
-          return `
-            <tr>
-              <td><strong style="font-size: 1.05rem;">${item.deviceIp}</strong></td>
-              <td><strong class="tabular-nums" style="font-size: 1.15rem; color: var(--accent-emerald);">${formatDuration(item.activeSeconds || 0)}</strong></td>
-              <td>${statusBadge}</td>
-              <td class="tabular-nums">${lastClickAgo}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
       // Export CSV
       document.getElementById('btn-export-csv').addEventListener('click', () => {
-        let list = [];
-        try {
-          list = JSON.parse(localStorage.getItem(DEVICE_REGISTRY_KEY) || '[]');
-        } catch (_) {}
-        const rows = [['Device_IP', 'Active_Seconds', 'Active_Time_Formatted', 'Status', 'Last_Click']];
-        list.forEach((item) => {
+        const devList = Object.values(remoteDevices);
+        const rows = [['Device_IP', 'Device_ID', 'Active_Seconds', 'Active_Time_Formatted', 'Status', 'Last_Click']];
+        devList.forEach((d) => {
           rows.push([
-            `"${item.deviceIp}"`,
-            item.activeSeconds || 0,
-            `"${formatDuration(item.activeSeconds || 0)}"`,
-            `"${item.status}"`,
-            `"${item.lastClick || ''}"`
+            `"${d.deviceIp || ''}"`,
+            `"${d.deviceId || ''}"`,
+            d.activeSeconds || 0,
+            `"${formatDuration(d.activeSeconds || 0)}"`,
+            `"${d.status || ''}"`,
+            `"${d.lastClick || ''}"`
           ]);
         });
         const csv = rows.map((r) => r.join(',')).join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'econ122_device_active_time.csv';
+        a.download = 'econ122_connected_devices.csv';
         a.click();
       });
     })();
