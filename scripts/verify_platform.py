@@ -152,6 +152,34 @@ assert(correctIdx >= 0 && correctIdx <= 3, 'Shuffled MCQ must have a valid corre
 ENGINE.ExtremeExamEngine.getState().mcqChoices[firstPart.id] = correctIdx;
 ENGINE.ExtremeExamEngine.checkCurrentPage(firstPage);
 assert.strictEqual(ENGINE.ExtremeExamEngine.getPageScore(firstPage).earned, 2, 'Selecting shuffled correct MCQ option must award 2 marks');
+
+// Regression Test A: Section C re-grading when updating working and clicking "Update Grade & Memo"
+const c1Page = DATA.extremeExam.pages.find(p => p.pageId === 'C1');
+const c1Part1 = c1Page.parts[0];
+ENGINE.ExtremeExamEngine.getState().textAnswers[c1Part1.id] = 'GDE = C + I + G';
+ENGINE.ExtremeExamEngine.checkCurrentPage(c1Page);
+assert.strictEqual(ENGINE.ExtremeExamEngine.getPartScore(c1Part1, true), 0.5, 'Initial partial working on C1_1 must award 0.5 marks');
+ENGINE.ExtremeExamEngine.getState().textAnswers[c1Part1.id] = 'GDE = C + I + G = 2 480 000 + 620 000 + 760 000 = R3,860,000 million';
+ENGINE.ExtremeExamEngine.checkCurrentPage(c1Page);
+assert.strictEqual(ENGINE.ExtremeExamEngine.getPartScore(c1Part1, true), 2, 'Updated complete working on C1_1 must re-evaluate and award full 2 marks');
+
+// Regression Test B: Section filter switching preserves mcqChoices and textAnswers
+ENGINE.ExtremeExamEngine.setSectionFilter('B');
+assert.strictEqual(ENGINE.ExtremeExamEngine.getFilteredPages().length, 10, 'Section B filter must return 10 pages');
+ENGINE.ExtremeExamEngine.setSectionFilter('C');
+assert.strictEqual(ENGINE.ExtremeExamEngine.getFilteredPages().length, 10, 'Section C filter must return 10 pages');
+ENGINE.ExtremeExamEngine.setSectionFilter('A');
+assert.strictEqual(ENGINE.ExtremeExamEngine.getFilteredPages().length, 97, 'Section A filter must return 97 pages');
+ENGINE.ExtremeExamEngine.setSectionFilter('ALL');
+assert.strictEqual(ENGINE.ExtremeExamEngine.getState().mcqChoices[firstPart.id], correctIdx, 'MCQ choice must persist across section filter switches');
+assert(ENGINE.ExtremeExamEngine.getState().textAnswers[c1Part1.id].includes('3,860,000'), 'Calculation text answer must persist across section filter switches');
+
+// Regression Test C: HTML escaping for inequalities (< and >) and C2 Annexure table
+const escapedIneq = ENGINE.escapeAttr('MSC > MPC & GNI < GDP </textarea>');
+assert.strictEqual(escapedIneq, 'MSC &gt; MPC &amp; GNI &lt; GDP &lt;/textarea&gt;', 'escapeAttr must safely escape <, >, and & for textareas');
+const c2Page = DATA.extremeExam.pages.find(p => p.pageId === 'C2');
+assert(c2Page && c2Page.sharedContextHtml.includes('ANNEXURE — SECTION C, QUESTION 2.1 and 2.2'), 'C2 sharedContextHtml must include the Annexure table structure');
+
 ENGINE.ExtremeExamEngine.resetExam();
 
 const suiteQIds = new Set();
@@ -318,6 +346,7 @@ def audit_html_css_and_dereferencing():
     assert "-webkit-backdrop-filter: blur(24px) saturate(180%)" in css, "Missing webkit frosted glassmorphism"
     assert "@media print" in css, "Missing @media print rules"
     assert ".symbol-toolbar-btn" in css and ".scope-checklist-item" in css, "Missing Exam Scope & Extreme Exam Prep styles"
+    assert "--bg-canvas-elevated" in css and "--bg-elevated" in css, "Missing elevated surface CSS variables"
     print("CSS_DESIGN_SYSTEM_PASS: Cupertino glassmorphism, Exam Scope & Extreme Exam Prep workbench styles, and @media print verified.")
 
 
@@ -383,6 +412,7 @@ def audit_headless_browser_dom():
     assert "chapter-schematic-frame" in dom and "Lorenz Curve" in dom, "Vault DOM did not render Chapter 13 SVG schematic"
     assert 'id="nav-scope"' in dom and 'id="view-scope"' in dom, "DOM missing Exam Scope navigation or view"
     assert "46 Official Exam Scope Topics" in dom and "scope-checklist-item" in dom, "Exam Scope DOM did not render 46 checklist items"
+    assert "1. The topic I need to spend the most time on:" in dom and "2. The topic I need to practise explaining or discussing:" in dom, "Exam Scope DOM missing official revision priority prompts"
     assert 'id="nav-extreme"' in dom and 'id="view-extreme"' in dom, "DOM missing Extreme Exam Prep navigation or view"
     assert "500 Marks Total • 117 Interactive Pages" in dom and 'id="extreme-active-page"' in dom, "Extreme Exam Prep DOM did not render active page"
     assert "svg" in dom and "E0 (Y* =" in dom, "2D Vector SVG Lab did not render equilibrium E0"

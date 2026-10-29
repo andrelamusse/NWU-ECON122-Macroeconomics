@@ -2988,23 +2988,41 @@
       <div class="glass-card" style="margin-top: 1.5rem;">
         <h3>📝 My Revision Priorities (Saved Automatically to Your Device)</h3>
         <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem; margin-bottom: 1rem;">
-          List the top 3 Calculation topics and top 3 Theory topics you need to revise most before the exam:
+          Reflect on your checklist progress and record your top 3 Calculation and Theory revision priorities before the exam:
         </p>
         <div class="bento-grid-2">
           <div>
-            <h4 style="margin-bottom: 0.6rem; color: var(--accent-sky);">Calculations Revision Priorities</h4>
-            <div style="display: grid; gap: 0.55rem;">
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_1" placeholder="1. e.g. Open-economy Keynesian multiplier with tax & imports..." value="${escapeAttr(state.priorities.calc_1)}" style="font-family: var(--font-sans);" />
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_2" placeholder="2. e.g. SARS personal income tax brackets & rebates..." value="${escapeAttr(state.priorities.calc_2)}" style="font-family: var(--font-sans);" />
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_3" placeholder="3. e.g. Comparative advantage opportunity cost ratios..." value="${escapeAttr(state.priorities.calc_3)}" style="font-family: var(--font-sans);" />
+            <h4 style="margin-bottom: 0.6rem; color: var(--accent-sky);">Calculations — My Revision Priorities</h4>
+            <div style="display: grid; gap: 0.65rem;">
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">1. The topic I need to spend the most time on:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_1" placeholder="e.g. Open-economy Keynesian multiplier with tax & imports..." value="${escapeAttr(state.priorities.calc_1)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">2. The topic I need to practise more:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_2" placeholder="e.g. SARS personal income tax brackets & rebates..." value="${escapeAttr(state.priorities.calc_2)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">3. The topic I feel most confident about:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_3" placeholder="e.g. Comparative advantage opportunity cost ratios..." value="${escapeAttr(state.priorities.calc_3)}" style="font-family: var(--font-sans);" />
+              </div>
             </div>
           </div>
           <div>
-            <h4 style="margin-bottom: 0.6rem; color: var(--accent-indigo);">Theory Revision Priorities</h4>
-            <div style="display: grid; gap: 0.55rem;">
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_1" placeholder="1. e.g. Negative externalities (MSC vs MPC) & Pigouvian tax graph..." value="${escapeAttr(state.priorities.theo_1)}" style="font-family: var(--font-sans);" />
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_2" placeholder="2. e.g. Demand-pull vs cost-push stagflation AD-AS graphs..." value="${escapeAttr(state.priorities.theo_2)}" style="font-family: var(--font-sans);" />
-              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_3" placeholder="3. e.g. Active vs passive money demand & SARB repo rate..." value="${escapeAttr(state.priorities.theo_3)}" style="font-family: var(--font-sans);" />
+            <h4 style="margin-bottom: 0.6rem; color: var(--accent-indigo);">Theory — My Revision Priorities</h4>
+            <div style="display: grid; gap: 0.65rem;">
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">1. The topic I need to spend the most time on:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_1" placeholder="e.g. Negative externalities (MSC vs MPC) & Pigouvian tax graph..." value="${escapeAttr(state.priorities.theo_1)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">2. The topic I need to practise explaining or discussing:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_2" placeholder="e.g. Demand-pull vs cost-push stagflation AD-AS graphs..." value="${escapeAttr(state.priorities.theo_2)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">3. The topic I feel most confident about:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_3" placeholder="e.g. Active vs passive money demand & SARB repo rate..." value="${escapeAttr(state.priorities.theo_3)}" style="font-family: var(--font-sans);" />
+              </div>
             </div>
           </div>
         </div>
@@ -3415,9 +3433,15 @@
       if (!sessionState) loadSessionState();
       sessionState.checkedPages[page.pageId] = true;
       (page.parts || []).forEach((pt) => {
-        if (pt.type === 'calculation' && !sessionState.calcRubricChecks[pt.id]) {
+        if (pt.type === 'calculation') {
           const userTxt = sessionState.textAnswers[pt.id] || '';
-          sessionState.calcRubricChecks[pt.id] = evaluateCalculationRubric(userTxt, pt.rubricSteps);
+          const autoChecks = evaluateCalculationRubric(userTxt, pt.rubricSteps);
+          const prevChecks = sessionState.calcRubricChecks[pt.id] || {};
+          const mergedChecks = {};
+          (pt.rubricSteps || []).forEach((st) => {
+            mergedChecks[st.id] = Boolean(prevChecks[st.id] || autoChecks[st.id]);
+          });
+          sessionState.calcRubricChecks[pt.id] = mergedChecks;
         }
       });
       saveSessionState();
@@ -3788,14 +3812,14 @@
             <span class="extreme-part-num">Question ${part.number}</span>
             <span class="extreme-part-marks">[${part.marks} marks]</span>
           </div>
-          <p class="extreme-part-stem">${part.prompt}</p>
+          <p class="extreme-part-stem">${renderInlineLatexText(part.prompt)}</p>
           <textarea
             class="extreme-textarea"
             id="extreme-input-${part.id}"
             data-text-part="${part.id}"
             rows="3"
             placeholder="Type your definition or theoretical explanation in your own words (graded by core economic keywords)..."
-          >${userTxt}</textarea>
+          >${escapeAttr(userTxt)}</textarea>
           ${memoHtml}
         </div>
       `;
@@ -3871,7 +3895,7 @@
           <span class="extreme-part-num">Question ${part.number}</span>
           <span class="extreme-part-marks">[${part.marks} marks]</span>
         </div>
-        <p class="extreme-part-stem">${part.prompt}</p>
+        <p class="extreme-part-stem">${renderInlineLatexText(part.prompt)}</p>
 
         <div class="symbol-toolbar" role="toolbar" aria-label="Math and Economic Symbol Toolbar for Question ${part.number}">
           <span class="symbol-toolbar-title">Insert Symbol:</span>
@@ -3884,7 +3908,7 @@
           data-text-part="${part.id}"
           rows="3"
           placeholder="Write your formula, substitution, and final answer here (click any symbol above to insert at cursor)..."
-        >${userTxt}</textarea>
+        >${escapeAttr(userTxt)}</textarea>
         ${memoHtml}
       </div>
     `;
@@ -4009,6 +4033,13 @@
   function bindExtremePageEvents(stage, page, pages, pageIdx) {
     const sState = ExtremeExamEngine.getState();
 
+    const scrollExtremeStageToTop = () => {
+      const card = document.getElementById('extreme-active-page') || document.getElementById('extreme-summary-view') || stage;
+      if (card && typeof card.scrollIntoView === 'function') {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
     // Page Jump select
     const pageSel = document.getElementById('extreme-page-select');
     if (pageSel) {
@@ -4018,6 +4049,7 @@
           ExtremeExamEngine.setCurrentPageIndex(target);
           AudioEngine.playClick();
           renderExtremeExamStage();
+          scrollExtremeStageToTop();
         }
       });
     }
@@ -4028,6 +4060,7 @@
         ExtremeExamEngine.setCurrentPageIndex(pageIdx - 1);
         AudioEngine.playClick();
         renderExtremeExamStage();
+        scrollExtremeStageToTop();
       }
     };
     const goNext = () => {
@@ -4035,10 +4068,12 @@
         ExtremeExamEngine.setCurrentPageIndex(pageIdx + 1);
         AudioEngine.playClick();
         renderExtremeExamStage();
+        scrollExtremeStageToTop();
       } else {
         ExtremeExamEngine.setSummaryView(true);
         AudioEngine.playSuccess();
         renderExtremeExamStage();
+        scrollExtremeStageToTop();
       }
     };
 
@@ -4072,6 +4107,7 @@
         sState.mcqChoices[partId] = optIdx;
         ExtremeExamEngine.saveSessionState();
         AudioEngine.playClick();
+        updateKpiBanner();
         renderExtremeExamStage();
       });
     });
@@ -4180,6 +4216,7 @@
     gradeTheoryKeywords,
     evaluateCalculationRubric,
     formatMark,
+    escapeAttr,
     ScopeEngine,
     ExtremeExamEngine
   };

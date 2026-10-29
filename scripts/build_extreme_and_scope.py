@@ -1592,6 +1592,31 @@ SECTION_C_PAGES = [
         "totalMarks": 15,
         "sharedContextHtml": """
         <p style="margin-bottom:0.65rem;color:var(--text-secondary);"><strong>Scenario:</strong> On 12 December 2025, Vaal Mining Ltd hosts its year-end gala and pays the event planner, <strong>Mosaic Events</strong>, R2 450 000 to organise it. Mosaic Events rents a hall for R180 000, hires 20 waiters at R4 500 each, and pays R25 000 interest on a business loan. Mosaic Events contracts <strong>Chef Lerato</strong> to cater for the evening at a fee of R1 360 000. Chef Lerato rents a commercial kitchen for R75 000 and pays wages of R140 000. She buys all her ingredients from <strong>FreshMart Wholesalers</strong> for R640 000. FreshMart pays R48 000 rent and R112 000 wages, and buys its fresh produce from <strong>Lekoa Farms</strong> for R230 000. Lekoa Farms pays wages of R86 000 and R14 000 interest on a tractor loan. Lekoa Farms does not buy any intermediate goods. <em>(Hint: profit is the balancing item.)</em></p>
+        <div class="table-scroll-wrap" style="margin-top:0.5rem;">
+          <div style="font-size:0.8rem;font-weight:700;color:var(--accent-sky);margin-bottom:0.35rem;">ANNEXURE — SECTION C, QUESTION 2.1 and 2.2 (Table Structure to Complete)</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Participant</th>
+                <th>Value of sales (R)</th>
+                <th>Intermediate purchases (R)</th>
+                <th>Value added (R)</th>
+                <th>Wages (R)</th>
+                <th>Rent (R)</th>
+                <th>Interest (R)</th>
+                <th>Profit (R)</th>
+                <th>Total income (R)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Lekoa Farms</td><td>?</td><td>?</td><td>?</td><td>86 000</td><td>–</td><td>14 000</td><td>?</td><td>?</td></tr>
+              <tr><td>FreshMart Wholesalers</td><td>?</td><td>?</td><td>?</td><td>112 000</td><td>48 000</td><td>–</td><td>?</td><td>?</td></tr>
+              <tr><td>Chef Lerato</td><td>?</td><td>?</td><td>?</td><td>140 000</td><td>75 000</td><td>–</td><td>?</td><td>?</td></tr>
+              <tr><td>Mosaic Events</td><td>?</td><td>?</td><td>?</td><td>20 &times; 4 500 = ?</td><td>180 000</td><td>25 000</td><td>?</td><td>?</td></tr>
+              <tr><td><strong>TOTAL</strong></td><td><strong>?</strong></td><td><strong>?</strong></td><td><strong>GDP (Prod.) = ?</strong></td><td><strong>?</strong></td><td><strong>?</strong></td><td><strong>?</strong></td><td><strong>?</strong></td><td><strong>GDP (Inc.) = ?</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
         """,
         "parts": [
             {
