@@ -624,9 +624,29 @@
               saveState();
               broadcastHeartbeat();
             }
-            break;
+            return;
           }
         } catch (_) {}
+      }
+      try {
+        const traceRes = await fetch('https://www.cloudflare.com/cdn-cgi/trace', { cache: 'no-store' });
+        if (traceRes.ok) {
+          const traceTxt = await traceRes.text();
+          const ipMatch = traceTxt.match(/^ip=(.+)$/m);
+          if (ipMatch && ipMatch[1]) {
+            detectedIp = ipMatch[1].trim();
+            if (state) {
+              state.deviceIp = detectedIp;
+              saveState();
+              broadcastHeartbeat();
+            }
+            return;
+          }
+        }
+      } catch (_) {}
+      if (state && (!state.deviceIp || state.deviceIp.includes('Detecting'))) {
+        state.deviceIp = 'Unresolved';
+        saveState();
       }
     }
 
@@ -649,8 +669,8 @@
           lastClick: null,
           activeSeconds: 0,
           activeDwellSeconds: 0,
-          isTimerPaused: false,
-          status: 'Active',
+          isTimerPaused: true,
+          status: 'Paused (Idle > 60s)',
           questionsAnswered: 0,
           questionsCorrect: 0,
           mistakeIds: [],
@@ -659,7 +679,7 @@
         };
         saveState();
       }
-      if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local'))) {
+      if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local') || state.deviceIp === 'Unresolved')) {
         state.deviceIp = detectedIp;
       }
       return state;
@@ -679,7 +699,7 @@
         state.lastSeen = new Date().toISOString();
         state.activeDwellSeconds = state.activeSeconds;
         state.activeTimeFormatted = formatTime(state.activeSeconds);
-        if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local'))) {
+        if (detectedIp && (!state.deviceIp || state.deviceIp.includes('Detecting') || state.deviceIp.includes('Local') || state.deviceIp === 'Unresolved')) {
           state.deviceIp = detectedIp;
         }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -701,9 +721,11 @@
       pendingBroadcast = false;
       lastBroadcastTime = Date.now();
       try {
+        const rawIp = state.deviceIp || detectedIp || 'Unresolved';
+        const cleanIp = rawIp.includes('Detecting') ? 'Unresolved' : rawIp;
         const payload = {
           deviceId: state.deviceId,
-          deviceIp: state.deviceIp || detectedIp || 'Unresolved',
+          deviceIp: cleanIp,
           activeSeconds: parseNumSafe(state.activeSeconds, 0),
           activeTimeFormatted: formatTime(parseNumSafe(state.activeSeconds, 0)),
           status: statusOverride || (isTimerPaused ? 'Paused (Idle > 60s)' : 'Active'),
@@ -748,6 +770,11 @@
           state.pauseReason = null;
           saveState();
           broadcastHeartbeat();
+        } else {
+          saveState();
+          if (isWindowActive && Date.now() - lastBroadcastTime >= 15000) {
+            pendingBroadcast = true;
+          }
         }
       }
     }
@@ -825,9 +852,9 @@
           saveState();
         }
 
-        // Quota-aware sync (ntfy.sh allows ~250 messages/day per IP): transitions are sent
-        // immediately above; otherwise refresh every 60 s while active, every 10 min while paused.
-        const cadenceMs = isTimerPaused ? 600000 : 60000;
+        // Quota-aware sync: transitions are sent immediately; while active, refresh every 25 s
+        // so the 60 s idle window on the monitor never expires mid-session; every 10 min while paused.
+        const cadenceMs = isTimerPaused ? 600000 : 25000;
         const sinceLast = Date.now() - lastBroadcastTime;
         if (sinceLast >= cadenceMs || (pendingBroadcast && sinceLast >= 10000)) {
           broadcastHeartbeat();
@@ -863,6 +890,46 @@
     });
   }
 
+  /* Safe offline LaTeX-to-HTML fallback when CDN KaTeX is blocked or unavailable */
+  function latexToFallbackHtml(tex) {
+    let s = escapeAttr(String(tex || ''));
+    s = s
+      .replace(/\\text\{([^{}]*)\}/g, '$1')
+      .replace(/\\mathrm\{([^{}]*)\}/g, '$1')
+      .replace(/\\textbf\{([^{}]*)\}/g, '<strong>$1</strong>')
+      .replace(/\\bar\{\\imath\}/g, '<span style="text-decoration:overline">i</span>')
+      .replace(/\\bar\{([^{}]*)\}/g, '<span style="text-decoration:overline">$1</span>')
+      .replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1) &divide; ($2)')
+      .replace(/\\times\s*/g, ' &times; ')
+      .replace(/\\div\s*/g, ' &divide; ')
+      .replace(/\\pm\s*/g, ' &plusmn; ')
+      .replace(/\\approx\s*/g, ' &approx; ')
+      .replace(/\\geq\s*/g, ' &ge; ')
+      .replace(/\\leq\s*/g, ' &le; ')
+      .replace(/\\neq\s*/g, ' &ne; ')
+      .replace(/\\rightarrow\s*|\\to\s*/g, ' &rarr; ')
+      .replace(/\\Rightarrow\s*/g, ' &rArr; ')
+      .replace(/\\Delta\s*/g, '&Delta;')
+      .replace(/\\alpha\s*/g, '&alpha;')
+      .replace(/\\beta\s*/g, '&beta;')
+      .replace(/\\pi\s*/g, '&pi;')
+      .replace(/\\mu\s*/g, '&mu;')
+      .replace(/\\sigma\s*/g, '&sigma;')
+      .replace(/\\surd\s*/g, '&radic;')
+      .replace(/\\wedge\s*/g, '^')
+      .replace(/\\sim\s*/g, '~')
+      .replace(/\\backslash\s*/g, '\\')
+      .replace(/\\([%$#&_{}])/g, '$1')
+      .replace(/\{,\}/g, ',')
+      .replace(/_\{([^{}]*)\}/g, '<sub>$1</sub>')
+      .replace(/_([A-Za-z0-9])/g, '<sub>$1</sub>')
+      .replace(/\^\{([^{}]*)\}/g, '<sup>$1</sup>')
+      .replace(/\^([0-9])/g, '<sup>$1</sup>')
+      .replace(/\\[,;]\s*/g, ' ')
+      .replace(/\{\}/g, '');
+    return `<span class="math-fallback">${s}</span>`;
+  }
+
   function renderMathInElement(el, tex, displayMode = false) {
     if (!el) return;
     const lines = Array.isArray(tex) ? tex : [String(tex || '')];
@@ -874,20 +941,24 @@
         return;
       } catch (_) {}
     }
-    el.textContent = lines.join(' | ');
+    el.innerHTML = lines
+      .map((line) => latexToFallbackHtml(line))
+      .join('<div style="height:0.35rem;"></div>');
   }
 
   function renderInlineLatexText(str) {
     if (!str) return '';
-    if (typeof window === 'undefined' || !window.katex) return str;
     return String(str).replace(/\$([^$]+)\$/g, (_, math) => {
-      try {
-        return window.katex.renderToString(math, { throwOnError: false, displayMode: false });
-      } catch (_) {
-        return math;
+      if (typeof window !== 'undefined' && window.katex) {
+        try {
+          return window.katex.renderToString(math, { throwOnError: false, displayMode: false });
+        } catch (_) {}
       }
+      return latexToFallbackHtml(math);
     });
   }
+
+  let hideFloatingTooltip = function () {};
 
   /* Anchored tooltips for any element carrying data-tip (symbol toolbar decoders, keyword pills).
      Positioned with Floating UI when available; a simple above/below fallback otherwise. */
@@ -902,7 +973,10 @@
     let anchor = null;
 
     const place = () => {
-      if (!anchor) return;
+      if (!anchor || !anchor.isConnected) {
+        hide();
+        return;
+      }
       const FUI = window.FloatingUIDOM;
       if (FUI && typeof FUI.computePosition === 'function') {
         FUI.computePosition(anchor, tip, {
@@ -910,6 +984,10 @@
           strategy: 'fixed',
           middleware: [FUI.offset(8), FUI.flip({ padding: 8 }), FUI.shift({ padding: 8 })]
         }).then(({ x, y, placement }) => {
+          if (!anchor || !anchor.isConnected) {
+            hide();
+            return;
+          }
           tip.style.left = `${x}px`;
           tip.style.top = `${y}px`;
           tip.setAttribute('data-placement', placement);
@@ -933,19 +1011,26 @@
       tip.hidden = false;
       tip.classList.remove('is-visible');
       place();
-      requestAnimationFrame(() => tip.classList.add('is-visible'));
+      requestAnimationFrame(() => {
+        if (anchor === el && el.isConnected) tip.classList.add('is-visible');
+      });
     };
     const hide = () => {
       anchor = null;
       tip.classList.remove('is-visible');
       tip.hidden = true;
     };
+    hideFloatingTooltip = hide;
 
     document.addEventListener('pointerover', (e) => {
       const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
       if (el && el !== anchor) show(el);
       else if (!el && anchor) hide();
     });
+    document.addEventListener('pointerdown', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('.svg-drag-handle') : null;
+      if (el) hide();
+    }, { passive: true });
     document.addEventListener('focusin', (e) => {
       const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
       if (el) show(el);
@@ -968,32 +1053,34 @@
     );
   }
 
-  /* Universal Plain-English Variable Decoder catalog (used across Vault, Labs, Solvers, Scope, Exam & Cheat Sheet) */
+  /* Universal Plain-English Variable Decoder catalog (used across Vault, Labs, Solvers, Scope, Exam & Cheat Sheet).
+     Single-letter symbols (C vs c, I vs i, Y, G, X, Z, t, m) are matched case-sensitively via exactMatch so
+     uppercase 'C' (Consumption) never collides with lowercase 'c' (MPC) and 'I' never collides with 'i' (Repo). */
   const GLOBAL_VARIABLE_DECODER = [
-    { symbol: 'Y', match: /\bY\b|Y_0|Y_f|Y_d|GDP|output|income/i, name: 'Total National Income / Output', meaning: 'Total value of final goods and services produced and earned in the economy.' },
-    { symbol: 'C', match: /\bC\b|\\bar\{C\}|C̄|consumption/i, name: 'Household Consumption Spending', meaning: 'Spending by households on final goods and services: C = C̄ + cYd.' },
-    { symbol: 'I', match: /\bI\b|\\bar\{I\}|Ī|investment|capital/i, name: 'Gross Capital Investment', meaning: 'Spending by firms on new machinery, factories, equipment, and inventories.' },
-    { symbol: 'G', match: /\bG\b|\\bar\{G\}|Ḡ|government|fiscal/i, name: 'Government Spending', meaning: 'Public spending on goods, services, and infrastructure (injects demand into the economy).' },
-    { symbol: 'X', match: /\bX\b|\\bar\{X\}|exports/i, name: 'Exports', meaning: 'Locally produced goods and services sold to foreign buyers (injection of spending).' },
-    { symbol: 'Z', match: /\bZ\b|\\bar\{Z\}|imports/i, name: 'Imports', meaning: 'Foreign-produced goods and services bought by domestic residents (leakage from domestic spending).' },
-    { symbol: 'Ā', match: /\\bar\{A\}|Ā|A_bar|autonomous/i, name: 'Total Autonomous Spending', meaning: 'Baseline spending independent of income (C̄ + Ī + Ḡ + X̄ − Z̄) that sets the vertical intercept.' },
-    { symbol: 'α', match: /\\alpha|α|multiplier/i, name: 'Keynesian Expenditure Multiplier', meaning: 'How many rands of total income (ΔY) are generated by R1 of new autonomous spending (ΔĀ).' },
-    { symbol: 'c (MPC)', match: /\bc\b|MPC|propensity to consume/i, name: 'Marginal Propensity to Consume', meaning: 'Fraction of each extra R1 of disposable income spent on domestic consumption (0 < c < 1).' },
-    { symbol: 't', match: /\bt\b|tax rate|proportional tax/i, name: 'Proportional Income Tax Rate', meaning: 'Fraction of national income collected by government in taxes (T = tY), reducing the multiplier slope.' },
-    { symbol: 'm (MPI)', match: /\bm\b|MPI|propensity to import/i, name: 'Marginal Propensity to Import', meaning: 'Fraction of each extra R1 of income spent on foreign imports (leakage abroad).' },
-    { symbol: 'Yd', match: /Y_d|Yd|disposable/i, name: 'Disposable Income', meaning: 'After-tax household income available to spend or save: Yd = Y − T = (1 − t)Y.' },
+    { symbol: 'Y', exactMatch: /\bY\b|Y_0|Y_f|Y_d|Y₀|Y₁|Y\*/, match: /\bGDP\b|national output|national income|total income|equilibrium income/i, name: 'Total National Income / Output', meaning: 'Total value of final goods and services produced and earned in the economy.' },
+    { symbol: 'C', exactMatch: /\bC\b|\\bar\{C\}|C̄|C_0|C₀/, match: /consumption/i, name: 'Household Consumption Spending', meaning: 'Spending by households on final goods and services: C = C̄ + cYd.' },
+    { symbol: 'I', exactMatch: /(?:[=+−\-]\s*\bI\b|\bI\s*[=+−\-]|\\bar\{I\}|Ī|I_0|I₀)/, match: /investment|capital formation|gross capital/i, name: 'Gross Capital Investment', meaning: 'Spending by firms on new machinery, factories, equipment, and inventories.' },
+    { symbol: 'G', exactMatch: /\bG\b|\\bar\{G\}|Ḡ|G_0|G₀|ΔG/, match: /government spending|fiscal policy|public spending/i, name: 'Government Spending', meaning: 'Public spending on goods, services, and infrastructure (injects demand into the economy).' },
+    { symbol: 'X', exactMatch: /\bX\b|\\bar\{X\}|X̄|X_0|X₀/, match: /exports/i, name: 'Exports', meaning: 'Locally produced goods and services sold to foreign buyers (injection of spending).' },
+    { symbol: 'Z', exactMatch: /\bZ\b|\\bar\{Z\}|Z̄|Z_0|Z₀/, match: /imports/i, name: 'Imports', meaning: 'Foreign-produced goods and services bought by domestic residents (leakage from domestic spending).' },
+    { symbol: 'Ā', exactMatch: /\\bar\{A\}|Ā|A_bar/, match: /autonomous spending/i, name: 'Total Autonomous Spending', meaning: 'Baseline spending independent of income (C̄ + Ī + Ḡ + X̄ − Z̄) that sets the vertical intercept.' },
+    { symbol: 'α', exactMatch: /\\alpha|α/, match: /multiplier/i, name: 'Keynesian Expenditure Multiplier', meaning: 'How many rands of total income (ΔY) are generated by R1 of new autonomous spending (ΔĀ).' },
+    { symbol: 'c (MPC)', exactMatch: /\bc\b(?![A-Za-z])/, match: /\bMPC\b|propensity to consume/i, name: 'Marginal Propensity to Consume', meaning: 'Fraction of each extra R1 of disposable income spent on domestic consumption (0 < c < 1).' },
+    { symbol: 't', exactMatch: /(?:1\s*[-−]\s*t\b|\bt\s*Y\b|\bt\s*=)/, match: /tax rate|proportional tax|income tax/i, name: 'Proportional Income Tax Rate', meaning: 'Fraction of national income collected by government in taxes (T = tY), reducing the multiplier slope.' },
+    { symbol: 'm (MPI)', exactMatch: /(?:[+−\-]\s*m\b|\bm\s*Y\b|\bm\s*=)/, match: /\bMPI\b|propensity to import|induced import/i, name: 'Marginal Propensity to Import', meaning: 'Fraction of each extra R1 of income spent on foreign imports (leakage abroad).' },
+    { symbol: 'Yd', exactMatch: /Y_d|Yd|Y_\{d\}/, match: /disposable income/i, name: 'Disposable Income', meaning: 'After-tax household income available to spend or save: Yd = Y − T = (1 − t)Y.' },
     { symbol: 'GDPmp', match: /GDP_?\{?mp\}?|GDP@MP|market prices/i, name: 'GDP at Market Prices', meaning: 'Total domestic production valued at final retail prices paid by buyers (including VAT/taxes on products).' },
     { symbol: 'GDPbp', match: /GDP_?\{?bp\}?|GDP@BP|basic prices/i, name: 'GDP at Basic Prices', meaning: 'GDPmp minus taxes on products plus subsidies on products.' },
     { symbol: 'GDPfc', match: /GDP_?\{?fc\}?|GDP@FC|factor cost/i, name: 'GDP at Factor Cost', meaning: 'True cost paid to factors of production (wages, rent, interest, profit) after removing all indirect taxes and adding subsidies.' },
     { symbol: 'GDE', match: /\bGDE\b|domestic expenditure/i, name: 'Gross Domestic Expenditure', meaning: 'Total spending inside the country’s borders (C + I + G), regardless of whether goods were imported.' },
     { symbol: 'GNI', match: /\bGNI\b|\bGNP\b|national income/i, name: 'Gross National Income', meaning: 'Income earned by permanent residents: GDP plus factor income received from abroad minus factor income paid abroad.' },
-    { symbol: 'M1 / M2 / M3', match: /\bM_?[123]\b|money supply|monetary aggregate|deposit/i, name: 'SARB Monetary Aggregates', meaning: 'M1 = cash + cheque/demand deposits; M2 = M1 + short/medium deposits; M3 = M2 + long-term deposits.' },
-    { symbol: 'i₀ (Repo)', match: /\bi\b|repo|interest rate/i, name: 'SARB Accommodation / Repo Interest Rate', meaning: 'Benchmark policy rate at which the central bank provides liquidity to commercial banks; money supply adjusts to demand at i₀.' },
-    { symbol: 'MSC / MPC / MEC', match: /MSC|MEC|externality|pigouvian/i, name: 'Marginal Social, Private & External Cost', meaning: 'MSC = MPC + MEC. When pollution imposes external cost (MEC > 0), unregulated markets overproduce (Q₁ > Q₂).' },
-    { symbol: 'CPI / π', match: /CPI|\\pi|deflator|inflation/i, name: 'Price Index & Inflation Rate', meaning: 'Percentage rate of change in the general price level (CPI basket or GDP Deflator = Nominal/Real × 100).' },
+    { symbol: 'M1 / M2 / M3', match: /\bM_?[123]\b|money supply|monetary aggregate|demand deposit/i, name: 'SARB Monetary Aggregates', meaning: 'M1 = cash + cheque/demand deposits; M2 = M1 + short/medium deposits; M3 = M2 + long-term deposits.' },
+    { symbol: 'i₀ (Repo)', exactMatch: /\bi_0\b|\bi₀\b|L_2\(i\)|L₂\(i\)/, match: /\brepo\b|interest rate|accommodation policy/i, name: 'SARB Accommodation / Repo Interest Rate', meaning: 'Benchmark policy rate at which the central bank provides liquidity to commercial banks; money supply adjusts to demand at i₀.' },
+    { symbol: 'MSC / MPC / MEC', match: /\bMSC\b|\bMEC\b|externality|pigouvian/i, name: 'Marginal Social, Private & External Cost', meaning: 'MSC = MPC + MEC. When pollution imposes external cost (MEC > 0), unregulated markets overproduce (Q₁ > Q₂).' },
+    { symbol: 'CPI / π', match: /\bCPI\b|\bPPI\b|\\pi|deflator|inflation/i, name: 'Price Index & Inflation Rate', meaning: 'Percentage rate of change in the general price level (CPI basket or GDP Deflator = Nominal/Real × 100).' },
     { symbol: 'u / LF / LFPR', match: /unemployment|LFPR|labour force|discouraged/i, name: 'Unemployment Rate & Labour Force', meaning: 'u = (Unemployed ÷ Labour Force) × 100; LFPR = (Labour Force ÷ Working-Age Population) × 100.' },
     { symbol: 'Gini', match: /Gini|Lorenz|inequality|Area_A/i, name: 'Gini Inequality Coefficient', meaning: 'Area A ÷ (Area A + Area B) between the 45° equality line and the Lorenz curve (0 = perfect equality, 1 = total inequality).' },
-    { symbol: 'TOT', match: /TOT|Terms of Trade|export price/i, name: 'Terms of Trade Index', meaning: '(Export Price Index ÷ Import Price Index) × 100 — measures purchasing power of a unit of exports in terms of imports.' },
+    { symbol: 'TOT', match: /\bTOT\b|Terms of Trade|export price/i, name: 'Terms of Trade Index', meaning: '(Export Price Index ÷ Import Price Index) × 100 — measures purchasing power of a unit of exports in terms of imports.' },
     { symbol: 'AD / AS', match: /\bAD\b|\bAS\b|aggregate demand|aggregate supply/i, name: 'Aggregate Demand & Aggregate Supply', meaning: 'AD = total planned spending across the economy; AS = total output firms supply at each general price level (P).' },
     { symbol: 'E (R/$)', match: /exchange rate|depreciat|appreciat|R\/\$|forex/i, name: 'Rand / Dollar Exchange Rate', meaning: 'Price of 1 US Dollar in South African Rand (higher E = Rand depreciation; lower E = Rand appreciation).' }
   ];
@@ -1013,8 +1100,12 @@
       const ch = ECON122_DATA.chapters.find((c) => c.id === chapterId);
       if (ch && ch.beginnerGuide && Array.isArray(ch.beginnerGuide.variables)) {
         ch.beginnerGuide.variables.forEach((v) => {
-          const baseSym = String(v.symbol).split(/[(/\s]/)[0].replace(/[^A-Za-z0-9αΔπμσ]/g, '');
-          if (txt.includes(v.symbol) || (baseSym.length >= 2 && new RegExp(baseSym, 'i').test(txt))) {
+          const rawSym = String(v.symbol).trim();
+          const baseSym = rawSym.split(/[(/\s]/)[0].replace(/[^A-Za-z0-9αΔπμσ]/g, '');
+          const exactTokenHit = rawSym.length >= 2
+            ? txt.includes(rawSym)
+            : (baseSym.length === 1 && new RegExp(`\\b${baseSym}\\b`).test(txt));
+          if (exactTokenHit || (baseSym.length >= 2 && new RegExp(`\\b${baseSym}\\b`, 'i').test(txt))) {
             addVar(v);
           }
         });
@@ -1022,7 +1113,9 @@
     }
 
     GLOBAL_VARIABLE_DECODER.forEach((g) => {
-      if (g.match.test(txt)) addVar(g);
+      if ((g.exactMatch && g.exactMatch.test(txt)) || (g.match && g.match.test(txt))) {
+        addVar(g);
+      }
     });
 
     if (results.length < 2 && typeof ECON122_DATA !== 'undefined' && Array.isArray(ECON122_DATA.chapters)) {
@@ -1119,6 +1212,7 @@
     const sections = document.querySelectorAll('.view-section');
 
     function switchView(viewKey) {
+      hideFloatingTooltip();
       navButtons.forEach((btn) => {
         btn.classList.toggle('active', btn.getAttribute('data-view') === viewKey);
       });
@@ -2175,10 +2269,14 @@
       svgEl.querySelectorAll('.svg-drag-handle').forEach((handle) => {
         handle.addEventListener('pointerdown', (e) => {
           e.preventDefault();
+          hideFloatingTooltip();
           const role = handle.getAttribute('data-drag-role') || 'eq';
           const onMove = (ev) => {
-            const rect = svgEl.getBoundingClientRect();
+            const liveSvg = canvasEl.querySelector('#lab-interactive-svg');
+            if (!liveSvg) return;
+            const rect = liveSvg.getBoundingClientRect();
             if (!rect.width || !rect.height) return;
+            hideFloatingTooltip();
             const sx = ((ev.clientX - rect.left) / rect.width) * W;
             const sy = ((ev.clientY - rect.top) / rect.height) * H;
             const normX = Math.max(0, Math.min(1, (sx - padL) / (W - padL - padR)));
@@ -2213,9 +2311,11 @@
           const onUp = () => {
             window.removeEventListener('pointermove', onMove);
             window.removeEventListener('pointerup', onUp);
+            window.removeEventListener('pointercancel', onUp);
           };
           window.addEventListener('pointermove', onMove);
           window.addEventListener('pointerup', onUp);
+          window.addEventListener('pointercancel', onUp);
         });
       });
     }
@@ -2798,6 +2898,10 @@
 
         const fbMount = document.getElementById('quiz-feedback-mount');
         if (fbMount) {
+          const qDecodedVars = decodeVariablesForText(
+            `${q.stem || ''} ${Array.isArray(q.derivation) ? q.derivation.join(' ') : (q.derivation || '')} ${q.topic || ''}`,
+            q.chapter || q.chapterId || 'ch13'
+          );
           fbMount.innerHTML = `
             <div class="feedback-panel">
               <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
@@ -2810,7 +2914,8 @@
                 <button type="button" class="btn-primary" id="btn-quiz-next-fb">${nextLabel}</button>
               </div>
               <div class="katex-box" id="quiz-derivation-katex" style="margin: 0.75rem 0;"></div>
-              <div>${refutationsHtml}</div>
+              ${renderDecoderPillsHtml(qDecodedVars, 'Plain-English Variable Decoder:')}
+              <div style="margin-top: 0.65rem;">${refutationsHtml}</div>
             </div>
           `;
           renderMathInElement(document.getElementById('quiz-derivation-katex'), q.derivation, true);
@@ -2879,7 +2984,9 @@
       .map((qid) => ECON122_DATA.questions.find((q) => q.id === qid))
       .filter(Boolean);
 
-    const writtenHtml = (pp.writtenSections || []).map((w, idx) => `
+    const writtenHtml = (pp.writtenSections || []).map((w, idx) => {
+      const wVars = decodeVariablesForText(`${w.number || ''} ${w.prompt || ''} ${w.memo || ''}`, 'ch13');
+      return `
       <div class="pitfall-accordion ${idx === 0 ? 'open' : ''}">
         <button type="button" class="pitfall-trigger">
           <span>📝 ${w.number}: ${w.prompt}</span>
@@ -2889,10 +2996,12 @@
           <div class="law-pane">
             <div style="font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.35rem;">✅ Complete Analytical Derivation &amp; Step-by-Step Solution</div>
             <div>${renderInlineLatexText(w.memo)}</div>
+            ${renderDecoderPillsHtml(wVars, 'Plain-English Variable Decoder:')}
           </div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     const totalSuiteQ = linkedQuestions.length;
     linkedQuestions.forEach((q) => {
@@ -2990,10 +3099,15 @@
         const hasNext = qIdx < totalSuiteQ - 1;
         const fb = document.getElementById(`pp-fb-${qIdx}`);
         if (fb) {
+          const ppDecodedVars = decodeVariablesForText(
+            `${q.stem || ''} ${Array.isArray(q.derivation) ? q.derivation.join(' ') : (q.derivation || '')} ${q.topic || ''}`,
+            q.chapter || q.chapterId || 'ch13'
+          );
           fb.innerHTML = `
             <div class="feedback-panel">
               <div class="katex-box" id="pp-katex-${qIdx}" style="margin-bottom: 0.65rem;"></div>
-              <div class="refutation-item ${chosen.isCorrect ? 'is-correct' : 'is-wrong'}">
+              ${renderDecoderPillsHtml(ppDecodedVars, 'Plain-English Variable Decoder:')}
+              <div class="refutation-item ${chosen.isCorrect ? 'is-correct' : 'is-wrong'}" style="margin-top: 0.6rem;">
                 <strong>Analytical Explanation:</strong> ${renderInlineLatexText(chosen.refutation)}
               </div>
               <div class="quiz-nav-footer" style="margin-top: 0.9rem; padding-top: 0.75rem;">
@@ -3935,7 +4049,7 @@
           const head = word.slice(0, -1);
           out += (head ? `\\mathrm{${head}}` : '') + `\\bar{${word.slice(-1)}}`;
           j++;
-        } else if (word.length === 1) {
+        } else if (word.length === 1 || /^[a-z][A-Z]$/.test(word)) {
           out += /^[0-9]$/.test(chars[j] || '') && word === 'R' ? '\\mathrm{R}' : word;
         } else {
           out += `\\mathrm{${word}}`;
@@ -3965,11 +4079,24 @@
         i = j;
         continue;
       }
-      if (ch === '@') {
+      if (ch === '@' || (ch === '_' && isWordChar(prevKind) && /[A-Za-z0-9]/.test(chars[i + 1] || ''))) {
         let j = i + 1;
-        while (j < chars.length && /[A-Za-z]/.test(chars[j])) j++;
+        while (j < chars.length && /[A-Za-z0-9]/.test(chars[j])) j++;
         const sub = chars.slice(i + 1, j).join('');
-        out += sub ? `_{\\mathrm{${sub}}}` : '@';
+        if (sub) {
+          out += /^[0-9]+$/.test(sub) ? `_{${sub}}` : `_{\\mathrm{${sub}}}`;
+        } else {
+          out += ch === '@' ? '@' : '\\_';
+        }
+        prevKind = 'word';
+        i = j;
+        continue;
+      }
+      if (ch === '^' && isWordChar(prevKind) && /[0-9]/.test(chars[i + 1] || '')) {
+        let j = i + 1;
+        while (j < chars.length && /[0-9]/.test(chars[j])) j++;
+        const sup = chars.slice(i + 1, j).join('');
+        out += `^{${sup}}`;
         prevKind = 'word';
         i = j;
         continue;
@@ -3999,18 +4126,23 @@
   function renderWorkingPreview(previewEl, text) {
     if (!previewEl) return;
     const lines = workingToLatex(text);
-    if (lines.length === 0 || typeof window === 'undefined' || !window.katex) {
+    if (lines.length === 0) {
       previewEl.hidden = true;
       previewEl.innerHTML = '';
       return;
     }
     previewEl.hidden = false;
     previewEl.innerHTML = `<span class="calc-preview-label">Preview</span>` + lines.map((l) => {
-      let html;
-      try {
-        html = window.katex.renderToString(l, { throwOnError: false, displayMode: false, strict: 'ignore' });
-      } catch (_) {
-        html = escapeAttr(l);
+      let html = '';
+      if (typeof window !== 'undefined' && window.katex) {
+        try {
+          html = window.katex.renderToString(l, { throwOnError: false, displayMode: false, strict: 'ignore' });
+        } catch (_) {
+          html = '';
+        }
+      }
+      if (!html) {
+        html = latexToFallbackHtml(l);
       }
       return `<div class="calc-preview-line">${html}</div>`;
     }).join('');
@@ -5005,6 +5137,8 @@
     stemGradingToken,
     gradingStemsOf,
     workingToLatex,
+    latexToFallbackHtml,
+    renderWorkingPreview,
     evaluateCalculationRubric,
     formatMark,
     escapeAttr,

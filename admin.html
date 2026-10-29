@@ -330,10 +330,41 @@
         }
       }
 
+      function ingestLocalRecords() {
+        try {
+          const loc = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          const records = [];
+          if (loc && typeof loc.deviceId === 'string') records.push(loc);
+          if (loc && loc.devices && typeof loc.devices === 'object') {
+            Object.values(loc.devices).forEach((r) => {
+              if (r && typeof r.deviceId === 'string') records.push(r);
+            });
+          }
+          records.forEach((rec) => {
+            ingest({
+              deviceId: rec.deviceId,
+              deviceIp: rec.deviceIp || 'Unresolved',
+              activeSeconds: toNum(rec.activeSeconds !== undefined ? rec.activeSeconds : rec.activeTimeSeconds, 0),
+              status: rec.isTimerPaused ? 'Paused (Idle > 60s)' : (rec.status || 'Active'),
+              lastClick: rec.lastClick || null,
+              timestamp: rec.lastSeen ? Math.floor(new Date(rec.lastSeen).getTime() / 1000) : toNum(rec.timestamp, Math.floor(Date.now() / 1000))
+            });
+          });
+        } catch (_) {}
+      }
+
       async function fetchLiveDevices() {
+        ingestLocalRecords();
+        renderTable();
+
+        const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = ctrl ? setTimeout(() => ctrl.abort(), 3500) : null;
         try {
           const since = lastMessageId || '12h';
-          const res = await fetch(`${SYNC_TOPIC}/json?poll=1&since=${encodeURIComponent(since)}`, { cache: 'no-store' });
+          const res = await fetch(`${SYNC_TOPIC}/json?poll=1&since=${encodeURIComponent(since)}`, {
+            cache: 'no-store',
+            signal: ctrl ? ctrl.signal : undefined
+          });
           if (res.ok) {
             const raw = await res.text();
             raw.split('\n').forEach((l) => {
@@ -353,23 +384,11 @@
           }
         } catch (_) {
           lastSyncOk = false;
+        } finally {
+          if (timer) clearTimeout(timer);
         }
 
-        // Same-browser testing: merge the student app's local record (never the admin's own).
-        try {
-          const loc = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-          if (loc && typeof loc.deviceId === 'string') {
-            ingest({
-              deviceId: loc.deviceId,
-              deviceIp: loc.deviceIp || 'Unresolved',
-              activeSeconds: toNum(loc.activeSeconds, 0),
-              status: loc.isTimerPaused ? 'Paused (Idle > 60s)' : (loc.status || 'Active'),
-              lastClick: loc.lastClick || null,
-              timestamp: loc.lastSeen ? Math.floor(new Date(loc.lastSeen).getTime() / 1000) : 0
-            });
-          }
-        } catch (_) {}
-
+        ingestLocalRecords();
         renderTable();
       }
 
@@ -394,8 +413,12 @@
             : `<span class="live-pulse"></span>Synced ${lastSyncOk ? new Date(lastSyncOk).toLocaleTimeString() : '…'}`;
         }
 
-        const uniqueIps = new Set(devList.map((x) => x.d.deviceIp).filter((ip) => ip && ip !== 'Unresolved'));
-        countEl.textContent = uniqueIps.size;
+        const uniqueIps = new Set(
+          devList
+            .map((x) => x.d.deviceIp)
+            .filter((ip) => ip && ip !== 'Unresolved' && ip !== 'Detecting IP...' && ip !== 'Local / Offline')
+        );
+        countEl.textContent = uniqueIps.size > 0 ? uniqueIps.size : devList.length;
         if (devList.length === 0) {
           subEl.textContent = '0 devices';
           tbody.innerHTML = `

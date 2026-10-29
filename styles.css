@@ -2238,6 +2238,8 @@ input[type="range"] {
 /* Interactive 2D SVG Lab Drag Handle */
 .svg-drag-handle {
   cursor: grab;
+  touch-action: none;
+  user-select: none;
   transition: r 0.18s var(--ease-out-expo), stroke-width 0.18s var(--ease-out-expo);
   filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
 }

@@ -219,12 +219,20 @@ for (const p of DATA.extremeExam.pages) for (const pt of p.parts) if (Array.isAr
 }
 assert(parityParts >= 40, `Expected >= 40 keyword-graded parts, found ${parityParts}`);
 
-// Live typeset preview: plain-text working -> KaTeX source
+// Live typeset preview: plain-text working -> KaTeX source & offline HTML fallback
 assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('\u03b1 = 1 \u00f7 (1 \u2212 c)')), ['\\alpha =1\\div (1-c)'], 'Preview must convert alpha, division and minus');
 assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('C\u0304 + \u012a')), ['\\bar{C}+\\bar{I}'], 'Preview must convert C-bar and I-bar');
 assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('Y\u2080 = 800\n\nGDP@MP')), ['Y_{0}=800', '\\mathrm{GDP}_{\\mathrm{MP}}'], 'Preview must convert subscripts, @-subscripts and skip blank lines');
+assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('Y_0 = C_0 + cY_d')), ['Y_{0}=C_{0}+cY_{\\mathrm{d}}'], 'Preview must convert ASCII subscripts like Y_0, C_0, Y_d');
 assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('')), [], 'Empty working must produce no preview lines');
 assert(ENGINE.workingToLatex('50% {}\\x^2_')[0].includes('\\%'), 'Preview must escape LaTeX special characters');
+const fbHtml = ENGINE.latexToFallbackHtml('\\alpha = \\frac{1}{1 - c(1 - t) + m}');
+assert(fbHtml.includes('&alpha;') && fbHtml.includes('&divide;') && fbHtml.includes('1 - c'), 'Offline math fallback must convert Greek symbols and fractions to readable HTML');
+
+// Case-sensitive variable decoding (C vs c, I vs i)
+const decodedGde = ENGINE.decodeVariablesForText('GDE = C + I + G', 'ch13').map(d => d.symbol);
+assert(decodedGde.includes('C') && decodedGde.includes('I') && decodedGde.includes('G'), 'GDE = C + I + G must decode uppercase C, I, G');
+assert(!decodedGde.includes('c (MPC)') && !decodedGde.includes('i\u2080 (Repo)'), 'Uppercase C and I must not false-match lowercase c (MPC) or i (Repo)');
 
 // Student / monitor isolation
 assert(!/<script[^>]+src=["'][^"']*app\.js/i.test(adminCode), 'admin.html must never load app.js');
