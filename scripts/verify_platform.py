@@ -61,6 +61,11 @@ const sandbox = {
 sandbox.globalThis = sandbox;
 
 vm.createContext(sandbox);
+// Mirror index.html script order: vendored MiniSearch (UMD) -> data.js -> app.js
+vm.runInContext(fs.readFileSync(path.join(root, 'vendor', 'minisearch.min.js'), 'utf8'), sandbox);
+sandbox.MiniSearch = sandbox.module.exports;
+sandbox.module = { exports: {} };
+assert.strictEqual(typeof sandbox.MiniSearch, 'function', 'vendor/minisearch.min.js must expose the MiniSearch constructor');
 vm.runInContext(dataCode + '\n;globalThis.ECON122_DATA = ECON122_DATA;', sandbox);
 vm.runInContext(appCode, sandbox);
 
@@ -105,11 +110,62 @@ sStats = ENGINE.ScopeEngine.getSummaryStats();
 assert.strictEqual(sStats.checkedCount, 2, 'Checked count must be 2 after checking calc_1_1 and setting theo_3_1 to well');
 assert.strictEqual(sStats.partialCount, 1, 'Partial count must be 1');
 const devKey = ENGINE.ScopeEngine.getDeviceStorageKey();
-assert(devKey.startsWith('econ122_scope_progress_DEV-'), `Device key must bind to Device ID: ${devKey}`);
+assert(devKey.startsWith('scope_progress_DEV-'), `Device key must bind to Device ID with scope_progress_ prefix: ${devKey}`);
 const storedScope = JSON.parse(localStorageMock.getItem(devKey));
 assert.strictEqual(storedScope.checked['calc_1_1'], true, 'Device-bound localStorage must persist calc_1_1');
 assert.strictEqual(storedScope.priorities['calc_1'], 'Master Keynesian multiplier', 'Device-bound localStorage must persist priorities');
+
+// Verify transparent legacy migration from econ122_scope_progress_${deviceId} -> scope_progress_${deviceId}
+const legacyKey = ENGINE.ScopeEngine.getLegacyStorageKey();
+assert(legacyKey.startsWith('econ122_scope_progress_DEV-'), `Legacy key must use econ122_scope_progress_ prefix: ${legacyKey}`);
+localStorageMock.removeItem(devKey);
+localStorageMock.setItem(legacyKey, JSON.stringify({
+  deviceId: sStats.deviceId,
+  checked: { calc_1_2: true, theo_4_1: true },
+  levels: { calc_1_2: 'well', theo_4_1: 'well', calc_2_1: 'partial' },
+  priorities: { calc_1: 'Legacy Migrated Priority', calc_2: '', calc_3: '', theo_1: '', theo_2: '', theo_3: '' },
+  updatedAt: '2026-01-01T00:00:00.000Z'
+}));
+const migratedState = ENGINE.ScopeEngine.loadScopeState();
+assert.strictEqual(migratedState.checked['calc_1_2'], true, 'Legacy migration must preserve checked items');
+assert.strictEqual(migratedState.levels['calc_2_1'], 'partial', 'Legacy migration must preserve partial preparation levels');
+assert.strictEqual(migratedState.priorities['calc_1'], 'Legacy Migrated Priority', 'Legacy migration must preserve priority notes');
+assert(localStorageMock.getItem(devKey) !== null, 'Legacy migration must immediately write to scope_progress_${deviceId}');
 ENGINE.ScopeEngine.resetAll();
+
+// Verify 100% Plain-English Variable Decoder coverage across all modules (Vault, Labs, Solvers, Scope, Exam, Cheat Sheet)
+assert(ENGINE.GLOBAL_VARIABLE_DECODER && ENGINE.GLOBAL_VARIABLE_DECODER.length >= 25, 'GLOBAL_VARIABLE_DECODER must have >= 25 entries');
+for (const ch of DATA.chapters) {
+  for (const f of (ch.formulas || [])) {
+    const decoded = ENGINE.decodeVariablesForText(`${f.latex || ''} ${f.meaning || ''} ${f.name || ''}`, ch.id);
+    assert(decoded && decoded.length >= 1, `Vault/CheatSheet formula ${f.name} in ${ch.id} must decode >= 1 variable`);
+  }
+}
+const labIds = ['keynesian', 'adas', 'money', 'externality', 'forex', 'lorenz'];
+for (const lid of labIds) {
+  const cfg = ENGINE.LAB_CONFIGS.find(c => c.id === lid);
+  assert(cfg && cfg.decoder && cfg.decoder.formula && cfg.decoder.whyItWorks && cfg.decoder.variables && cfg.decoder.variables.length >= 3, `Lab ${lid} must have a complete Plain-English Variable Decoder`);
+}
+const solverIds = ['keynesian_solver', 'nat_accounts_solver', 'sars_tax_solver', 'deflator_solver', 'labour_solver', 'money_solver'];
+for (const sid of solverIds) {
+  const dec = ENGINE.SOLVER_DECODERS[sid];
+  assert(dec && dec.formula && dec.whyItWorks && dec.variables && dec.variables.length >= 4, `Solver ${sid} must have a complete Plain-English Variable Decoder`);
+}
+for (const sec of DATA.examScope.sections) {
+  for (const grp of sec.groups) {
+    for (const item of grp.items) {
+      const dec = ENGINE.decodeVariablesForText(`${item.formula} ${item.topic} ${item.beginnerTip}`, grp.chapterId);
+      assert(dec && dec.length >= 1, `Scope item ${item.id} must decode >= 1 variable`);
+    }
+  }
+}
+for (const page of DATA.extremeExam.pages) {
+  for (const part of page.parts) {
+    const dec = ENGINE.decodeVariablesForText([part.stem, part.prompt, part.officialMemo, part.beginnerExplanation].filter(Boolean).join(' '), page.chapterId);
+    assert(dec && dec.length >= 1, `Extreme Exam part ${part.id} must decode >= 1 variable`);
+  }
+}
+
 
 // Verify Extreme Exam Prep (117 pages, 500 marks) & Grading Engines
 assert(DATA.extremeExam && Array.isArray(DATA.extremeExam.pages), 'ECON122_DATA.extremeExam must exist');
@@ -134,6 +190,47 @@ const kwFull = ENGINE.gradeTheoryKeywords(
 );
 assert.strictEqual(kwFull.autoMarks, 5, 'Full keyword match must score 5/5');
 assert.strictEqual(kwFull.missed.length, 0, 'Full keyword match must have 0 missed keywords');
+
+// Fuzzy + stemmed keyword grading (MiniSearch engine, identical native fallback)
+const fuzzyCases = [
+  ['unemploymant and inflashun trade off', ['inflation', 'unemployment', 'trade-off'], ['unemployment', 'trade-off']],
+  ['goods are overproduced and underpriced', ['over-produced', 'under-priced'], ['over-produced', 'under-priced']],
+  ['GDE=C+I+G and net exports X\u2212Z', ['C + I + G', 'X - Z'], ['C + I + G', 'X - Z']],
+  ['the economy grows with stable prices', ['economic growth', 'price stability'], ['economic growth', 'price stability']],
+  ['employment rose', ['unemployment'], []],
+  ['prices deflating', ['inflation'], []],
+  ['the MSC curve lies above the MPS', ['MSC', 'MPC'], ['MSC']],
+  ['', ['inflation'], []]
+];
+for (const [txt, kws, expected] of fuzzyCases) {
+  const ms = ENGINE.gradeTheoryKeywords(txt, kws, kws.length);
+  const nat = ENGINE.gradeTheoryKeywords(txt, kws, kws.length, { forceNative: true });
+  assert.deepStrictEqual(Array.from(ms.matched), expected, `Fuzzy grading of ${JSON.stringify(txt)}: got ${JSON.stringify(ms.matched)}`);
+  assert.deepStrictEqual(Array.from(nat.matched), expected, `Native fallback grading of ${JSON.stringify(txt)}: got ${JSON.stringify(nat.matched)}`);
+}
+assert.strictEqual(ENGINE.gradeTheoryKeywords('inflation', ['inflation'], 2).engine, 'minisearch', 'Keyword grading must run through the vendored MiniSearch engine when loaded');
+assert.strictEqual(ENGINE.gradeTheoryKeywords('0', ['inflation'], 0).maxMarks, 0, 'maxMarks of 0 must not fall back to 1');
+let parityParts = 0;
+for (const p of DATA.extremeExam.pages) for (const pt of p.parts) if (Array.isArray(pt.keywords)) {
+  parityParts++;
+  const ms = ENGINE.gradeTheoryKeywords(pt.officialMemo, pt.keywords, pt.marks);
+  const nat = ENGINE.gradeTheoryKeywords(pt.officialMemo, pt.keywords, pt.marks, { forceNative: true });
+  assert.deepStrictEqual(Array.from(ms.matched), Array.from(nat.matched), `MiniSearch/native parity broken on ${pt.id}`);
+}
+assert(parityParts >= 40, `Expected >= 40 keyword-graded parts, found ${parityParts}`);
+
+// Live typeset preview: plain-text working -> KaTeX source
+assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('\u03b1 = 1 \u00f7 (1 \u2212 c)')), ['\\alpha =1\\div (1-c)'], 'Preview must convert alpha, division and minus');
+assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('C\u0304 + \u012a')), ['\\bar{C}+\\bar{I}'], 'Preview must convert C-bar and I-bar');
+assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('Y\u2080 = 800\n\nGDP@MP')), ['Y_{0}=800', '\\mathrm{GDP}_{\\mathrm{MP}}'], 'Preview must convert subscripts, @-subscripts and skip blank lines');
+assert.deepStrictEqual(Array.from(ENGINE.workingToLatex('')), [], 'Empty working must produce no preview lines');
+assert(ENGINE.workingToLatex('50% {}\\x^2_')[0].includes('\\%'), 'Preview must escape LaTeX special characters');
+
+// Student / monitor isolation
+assert(!/<script[^>]+src=["'][^"']*app\.js/i.test(adminCode), 'admin.html must never load app.js');
+assert(!/minisearch|floating-ui/i.test(adminCode), 'admin.html must not load student-side vendor scripts');
+assert(/location\.href\.toLowerCase\(\)\.includes\('admin'\)/.test(appCode), 'Tracker must bail out when location.href contains admin');
+assert(!/parseFloat\([^)]*\)\s*\|\|/.test(appCode) && !/parseFloat\([^)]*\)\s*\|\|/.test(adminCode), 'parseFloat(x) || fallback breaks on 0; use Number.isFinite');
 
 // Test Section C Calculation Rubric Evaluator
 const c1_1 = DATA.extremeExam.pages.find(p => p.pageId === 'C1').parts[0];
@@ -333,6 +430,10 @@ def audit_html_css_and_dereferencing():
         raise AssertionError("SECURITY ISOLATION VIOLATION: index.html references admin.html!")
     print("ISOLATION_AUDIT_PASS: index.html has 0 references to admin.html.")
 
+    for vendor_src in re.findall(r'<script src="(vendor/[^"]+)"', idx_html):
+        assert os.path.exists(os.path.join(ROOT, *vendor_src.split("/"))), f"index.html references missing vendored file {vendor_src}"
+    assert "vendor/minisearch.min.js" in idx_html and "vendor/floating-ui.dom.umd.min.js" in idx_html, "index.html must load vendored MiniSearch and Floating UI"
+
     with open(ADMIN_HTML, "r", encoding="utf-8") as f:
         adm_html = f.read()
     assert "SHA-256" in adm_html and "econ122_telemetry_v1" in adm_html, "admin.html missing SHA-256 gate or telemetry key"
@@ -420,6 +521,7 @@ def audit_headless_browser_dom():
     assert 'id="btn-quiz-next"' in dom and 'id="btn-quiz-next-bottom"' in dom and "Next Question →" in dom, "Quiz engine missing Next Question navigation buttons"
     assert 'id="btn-quiz-prev"' in dom and 'id="btn-quiz-prev-bottom"' in dom and "← Previous Question" in dom, "Quiz engine missing Previous Question navigation buttons"
     assert ">undefined<" not in dom, "Rendered DOM contains literal undefined badge"
+    assert 'id="fx-tooltip"' in dom, "Floating UI tooltip layer did not mount (vendor scripts or initFloatingTooltips failed)"
 
     adm_url = f"file:///{ADMIN_HTML.replace(os.sep, '/')}"
     res_adm = subprocess.run(

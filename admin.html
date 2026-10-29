@@ -97,14 +97,14 @@
       <!-- Minimalist KPI Summary -->
       <div class="kpi-bento-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 1.25rem;">
         <div class="kpi-tile">
-          <div class="kpi-label">Connected Student Devices</div>
+          <div class="kpi-label">Unique Device IPs</div>
           <div class="kpi-value tabular-nums" id="adm-ip-count">0</div>
-          <div class="kpi-sub" id="adm-ip-sub">Syncing with live web app...</div>
+          <div class="kpi-sub" id="adm-ip-sub">Syncing…</div>
         </div>
         <div class="kpi-tile">
           <div class="kpi-label">Total Active Time</div>
           <div class="kpi-value tabular-nums" id="adm-total-active-time" style="color: var(--accent-emerald);">0m 0s</div>
-          <div class="kpi-sub" id="adm-live-badge"><span class="live-pulse"></span>Live Tracking (Auto-Stops if Idle &ge; 60s)</div>
+          <div class="kpi-sub" id="adm-live-badge">Counts only while a click happened &lt; 60s ago</div>
         </div>
       </div>
 
@@ -113,7 +113,7 @@
         <div class="quiz-toolbar" style="margin-bottom: 1rem; justify-content: space-between; align-items: center;">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
             <h3 style="margin: 0; font-size: 1.15rem;">Active Device IP Counter</h3>
-            <span class="badge badge-emerald" id="adm-poll-indicator"><span class="live-pulse"></span>Live Cloud Polling: 1s</span>
+            <span class="badge badge-emerald" id="adm-poll-indicator"><span class="live-pulse"></span>Connecting…</span>
           </div>
           <button type="button" class="btn-secondary" id="btn-refresh-inline" style="padding: 0.4rem 0.85rem; font-size: 0.82rem;">🔄 Refresh Now</button>
         </div>
@@ -122,15 +122,16 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th style="min-width: 180px;">Device IP Address</th>
-                <th style="min-width: 180px;">Total Active Time</th>
-                <th style="min-width: 170px;">Status</th>
-                <th style="min-width: 140px;">Last Click Action</th>
+                <th style="min-width: 150px;">Device IP</th>
+                <th style="min-width: 130px;">Device ID</th>
+                <th style="min-width: 140px;">Total Active Time</th>
+                <th style="min-width: 150px;">Status</th>
+                <th style="min-width: 170px;">Last Click</th>
               </tr>
             </thead>
             <tbody id="adm-device-table-body">
               <tr>
-                <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2rem;">Connecting to live stream...</td>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">Connecting…</td>
               </tr>
             </tbody>
           </table>
@@ -247,55 +248,125 @@
       const authForm = document.getElementById('admin-auth-form');
       const passInput = document.getElementById('admin-passcode-input');
       const authError = document.getElementById('admin-auth-error');
+      const RESET_WATERMARK_KEY = 'econ122_admin_reset_at';
+      const POLL_MS = 10000;          // ntfy.sh rate-limits requests per IP; 10 s polling stays well inside it
+      const STALE_AFTER_SEC = 150;     // students heartbeat every 60 s while active
+      const IDLE_CUTOFF_SEC = 60;
       let pollInterval = null;
+      let tickInterval = null;
       let remoteDevices = {};
+      let lastMessageId = null;
+      let lastSyncOk = null;
+
+      function esc(v) {
+        return String(v === null || v === undefined ? '' : v)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function toNum(raw, fallback) {
+        const v = typeof raw === 'number' ? raw : parseFloat(raw);
+        return Number.isFinite(v) ? v : fallback;
+      }
+
+      function resetWatermark() {
+        return toNum(localStorage.getItem(RESET_WATERMARK_KEY), 0);
+      }
 
       function formatDuration(sec) {
-        const h = Math.floor(sec / 3600);
-        const m = Math.floor((sec % 3600) / 60);
-        const s = sec % 60;
+        const s0 = Math.max(0, Math.floor(toNum(sec, 0)));
+        const h = Math.floor(s0 / 3600);
+        const m = Math.floor((s0 % 3600) / 60);
+        const s = s0 % 60;
         if (h > 0) return `${h}h ${m}m ${s}s`;
         return `${m}m ${s}s`;
       }
 
+      // Live view of one device: Active only if it reported Active, the report is fresh, and the
+      // last click is < 60 s old. Active time is extrapolated 1 s at a time from the last report,
+      // but never past the moment the 60 s idle cutoff would have paused the student's clock.
+      function liveView(d, nowMs) {
+        const tsMs = toNum(d.timestamp, 0) * 1000;
+        const clickMs = d.lastClick ? new Date(d.lastClick).getTime() : NaN;
+        const ageSec = tsMs > 0 ? (nowMs - tsMs) / 1000 : Infinity;
+        const reportedActive = String(d.status || '').toLowerCase() === 'active';
+        const clickFresh = Number.isFinite(clickMs) && (nowMs - clickMs) / 1000 < IDLE_CUTOFF_SEC;
+        const isActive = reportedActive && ageSec <= STALE_AFTER_SEC && clickFresh;
+        let seconds = Math.max(0, Math.floor(toNum(d.activeSeconds, 0)));
+        if (reportedActive && tsMs > 0 && Number.isFinite(clickMs)) {
+          const stopMs = Math.min(nowMs, clickMs + IDLE_CUTOFF_SEC * 1000);
+          seconds += Math.max(0, Math.floor((stopMs - tsMs) / 1000));
+        }
+        return { isActive, seconds, clickMs };
+      }
+
+      function ingest(msg, serverTimeSec) {
+        if (!msg || typeof msg !== 'object' || typeof msg.deviceId !== 'string') return;
+        const clientTs = toNum(msg.timestamp, 0);
+        const serverTs = toNum(serverTimeSec, 0);
+        const ts = serverTs > 0 ? serverTs : clientTs;
+        let lastClick = typeof msg.lastClick === 'string' ? msg.lastClick : null;
+        if (lastClick && serverTs > 0 && clientTs > 0) {
+          // Re-base the click onto the relay's clock: same "seconds before send" offset.
+          const clickMs = new Date(lastClick).getTime();
+          if (Number.isFinite(clickMs)) {
+            lastClick = new Date(serverTs * 1000 - (clientTs * 1000 - clickMs)).toISOString();
+          }
+        }
+        if (ts * 1000 < resetWatermark()) return;
+        const existing = remoteDevices[msg.deviceId];
+        if (!existing || ts >= toNum(existing.timestamp, 0)) {
+          remoteDevices[msg.deviceId] = {
+            deviceId: msg.deviceId.slice(0, 64),
+            deviceIp: typeof msg.deviceIp === 'string' ? msg.deviceIp.slice(0, 64) : '',
+            activeSeconds: Math.max(0, toNum(msg.activeSeconds, 0)),
+            status: typeof msg.status === 'string' ? msg.status.slice(0, 40) : '',
+            lastClick,
+            timestamp: ts
+          };
+        }
+      }
+
       async function fetchLiveDevices() {
         try {
-          const res = await fetch(`${SYNC_TOPIC}/json?poll=1&since=2h`, { cache: 'no-store' });
+          const since = lastMessageId || '12h';
+          const res = await fetch(`${SYNC_TOPIC}/json?poll=1&since=${encodeURIComponent(since)}`, { cache: 'no-store' });
           if (res.ok) {
             const raw = await res.text();
-            const lines = raw.trim().split('\n');
-            lines.forEach((l) => {
+            raw.split('\n').forEach((l) => {
               if (!l.trim()) return;
               try {
                 const ev = JSON.parse(l);
-                const msg = typeof ev.message === 'string' ? JSON.parse(ev.message) : ev.message;
-                if (msg && msg.deviceId) {
-                  const existing = remoteDevices[msg.deviceId];
-                  if (!existing || (msg.timestamp && msg.timestamp >= (existing.timestamp || 0))) {
-                    remoteDevices[msg.deviceId] = msg;
-                  }
+                if (ev && ev.event === 'message') {
+                  if (ev.id) lastMessageId = ev.id;
+                  const msg = typeof ev.message === 'string' ? JSON.parse(ev.message) : ev.message;
+                  ingest(msg, ev.time);
                 }
               } catch (_) {}
             });
+            lastSyncOk = Date.now();
+          } else {
+            lastSyncOk = false;
           }
-        } catch (_) {}
+        } catch (_) {
+          lastSyncOk = false;
+        }
 
-        // Also merge local student storage if testing locally on same browser
+        // Same-browser testing: merge the student app's local record (never the admin's own).
         try {
           const loc = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-          if (loc && loc.deviceId && !loc.deviceId.includes('admin')) {
-            const existing = remoteDevices[loc.deviceId];
-            const locTime = loc.lastSeen ? new Date(loc.lastSeen).getTime() / 1000 : 0;
-            if (!existing || locTime >= (existing.timestamp || 0)) {
-              remoteDevices[loc.deviceId] = {
-                deviceId: loc.deviceId,
-                deviceIp: loc.deviceIp || '127.0.0.1 (Local)',
-                activeSeconds: loc.activeSeconds || loc.activeDwellSeconds || 0,
-                status: loc.isTimerPaused ? 'Paused (Idle > 60s)' : (loc.status || 'Active'),
-                lastClick: loc.lastClick || loc.lastSeen || new Date().toISOString(),
-                timestamp: locTime
-              };
-            }
+          if (loc && typeof loc.deviceId === 'string') {
+            ingest({
+              deviceId: loc.deviceId,
+              deviceIp: loc.deviceIp || 'Unresolved',
+              activeSeconds: toNum(loc.activeSeconds, 0),
+              status: loc.isTimerPaused ? 'Paused (Idle > 60s)' : (loc.status || 'Active'),
+              lastClick: loc.lastClick || null,
+              timestamp: loc.lastSeen ? Math.floor(new Date(loc.lastSeen).getTime() / 1000) : 0
+            });
           }
         } catch (_) {}
 
@@ -303,62 +374,64 @@
       }
 
       function renderTable() {
-        const devList = Object.values(remoteDevices);
+        const nowMs = Date.now();
+        const devList = Object.values(remoteDevices).map((d) => ({ d, v: liveView(d, nowMs) }));
 
-        // Sort: active devices first, then highest active seconds
         devList.sort((a, b) => {
-          const aAct = a.status && a.status.toLowerCase().includes('active');
-          const bAct = b.status && b.status.toLowerCase().includes('active');
-          if (aAct && !bAct) return -1;
-          if (!aAct && bAct) return 1;
-          return (b.activeSeconds || 0) - (a.activeSeconds || 0);
+          if (a.v.isActive !== b.v.isActive) return a.v.isActive ? -1 : 1;
+          return b.v.seconds - a.v.seconds;
         });
 
         const countEl = document.getElementById('adm-ip-count');
         const subEl = document.getElementById('adm-ip-sub');
         const totalTimeEl = document.getElementById('adm-total-active-time');
         const tbody = document.getElementById('adm-device-table-body');
+        const pollEl = document.getElementById('adm-poll-indicator');
 
-        countEl.textContent = devList.length;
+        if (pollEl) {
+          pollEl.innerHTML = lastSyncOk === false
+            ? 'Relay unreachable — retrying'
+            : `<span class="live-pulse"></span>Synced ${lastSyncOk ? new Date(lastSyncOk).toLocaleTimeString() : '…'}`;
+        }
+
+        const uniqueIps = new Set(devList.map((x) => x.d.deviceIp).filter((ip) => ip && ip !== 'Unresolved'));
+        countEl.textContent = uniqueIps.size;
         if (devList.length === 0) {
-          subEl.textContent = 'Waiting for student devices to connect to web app...';
+          subEl.textContent = '0 devices';
           tbody.innerHTML = `
             <tr>
-              <td colspan="4" style="text-align: center; color: var(--text-secondary); padding: 2.5rem 1rem;">
-                No external devices detected yet. Open <a href="index.html" target="_blank" style="color: var(--accent-sky); text-decoration: underline;">index.html</a> on another device or tab to begin tracking!
-              </td>
+              <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2.5rem 1rem;">No devices yet.</td>
             </tr>
           `;
           totalTimeEl.textContent = '0m 0s';
           return;
         }
 
-        const activeCount = devList.filter((d) => d.status && d.status.toLowerCase().includes('active')).length;
-        subEl.textContent = `${activeCount} Active Now • ${devList.length - activeCount} Idle / Paused`;
+        const activeCount = devList.filter((x) => x.v.isActive).length;
+        subEl.textContent = `${devList.length} device${devList.length === 1 ? '' : 's'} • ${activeCount} active now`;
 
-        const totalSec = devList.reduce((sum, d) => sum + (d.activeSeconds || 0), 0);
+        const totalSec = devList.reduce((sum, x) => sum + x.v.seconds, 0);
         totalTimeEl.textContent = formatDuration(totalSec);
 
-        tbody.innerHTML = devList.map((d) => {
-          const isPaused = !d.status || d.status.toLowerCase().includes('paused') || d.status.toLowerCase().includes('idle');
-          const statusBadge = isPaused
-            ? '<span class="badge badge-paused">⏸ Paused (Idle &ge; 60s)</span>'
-            : '<span class="badge badge-active">🟢 Active (Clicking)</span>';
+        tbody.innerHTML = devList.map(({ d, v }) => {
+          const statusBadge = v.isActive
+            ? '<span class="badge badge-active">Active</span>'
+            : '<span class="badge badge-paused">Paused (Idle &gt; 60s)</span>';
 
-          let lastClickAgo = 'Just now';
-          if (d.lastClick) {
-            const diffSec = Math.max(0, Math.floor((Date.now() - new Date(d.lastClick).getTime()) / 1000));
-            if (diffSec < 5) lastClickAgo = 'Just now';
-            else if (diffSec < 60) lastClickAgo = `${diffSec}s ago`;
-            else lastClickAgo = `${Math.floor(diffSec / 60)}m ago`;
+          let lastClickCell = '—';
+          if (Number.isFinite(v.clickMs)) {
+            const diffSec = Math.max(0, Math.floor((nowMs - v.clickMs) / 1000));
+            const ago = diffSec < 60 ? `${diffSec}s ago` : (diffSec < 3600 ? `${Math.floor(diffSec / 60)}m ago` : `${Math.floor(diffSec / 3600)}h ago`);
+            lastClickCell = `${esc(new Date(v.clickMs).toLocaleString())}<div style="font-size: 0.75rem; color: var(--text-muted);">${esc(ago)}</div>`;
           }
 
           return `
             <tr>
-              <td><strong style="font-size: 1.05rem;">${d.deviceIp || '127.0.0.1'}</strong></td>
-              <td><strong class="tabular-nums" style="font-size: 1.15rem; color: var(--accent-emerald);">${formatDuration(d.activeSeconds || 0)}</strong></td>
+              <td><strong style="font-size: 1.02rem;">${esc(d.deviceIp || 'Unresolved')}</strong></td>
+              <td><code style="font-family: var(--font-mono); font-size: 0.8rem;">${esc(d.deviceId)}</code></td>
+              <td><strong class="tabular-nums" style="font-size: 1.1rem; color: var(--accent-emerald);">${formatDuration(v.seconds)}</strong></td>
               <td>${statusBadge}</td>
-              <td class="tabular-nums">${lastClickAgo}</td>
+              <td class="tabular-nums">${lastClickCell}</td>
             </tr>
           `;
         }).join('');
@@ -370,9 +443,8 @@
         dashContent.style.display = 'block';
         headerActions.style.display = 'flex';
         fetchLiveDevices();
-        if (!pollInterval) {
-          pollInterval = setInterval(fetchLiveDevices, 1500);
-        }
+        if (!pollInterval) pollInterval = setInterval(fetchLiveDevices, POLL_MS);
+        if (!tickInterval) tickInterval = setInterval(renderTable, 1000);
       }
 
       if (sessionStorage.getItem(SESSION_AUTH_KEY) === 'true') {
@@ -394,6 +466,7 @@
       document.getElementById('btn-lock-console').addEventListener('click', () => {
         sessionStorage.removeItem(SESSION_AUTH_KEY);
         if (pollInterval) clearInterval(pollInterval);
+        if (tickInterval) clearInterval(tickInterval);
         window.location.reload();
       });
 
@@ -406,25 +479,27 @@
       });
 
       document.getElementById('btn-reset-timer').addEventListener('click', () => {
-        if (confirm('Clear local records? (New student heartbeats will continue syncing)')) {
+        if (confirm('Clear all device records? Devices reappear when they next send a heartbeat.')) {
+          localStorage.setItem(RESET_WATERMARK_KEY, String(Date.now()));
           remoteDevices = {};
-          localStorage.removeItem(STORAGE_KEY);
           renderTable();
         }
       });
 
       // Export CSV
       document.getElementById('btn-export-csv').addEventListener('click', () => {
-        const devList = Object.values(remoteDevices);
-        const rows = [['Device_IP', 'Device_ID', 'Active_Seconds', 'Active_Time_Formatted', 'Status', 'Last_Click']];
-        devList.forEach((d) => {
+        const nowMs = Date.now();
+        const csvCell = (v) => `"${String(v === null || v === undefined ? '' : v).replace(/"/g, '""')}"`;
+        const rows = [['Device_IP', 'Device_ID', 'Active_Seconds', 'Active_Time', 'Status', 'Last_Click']];
+        Object.values(remoteDevices).forEach((d) => {
+          const v = liveView(d, nowMs);
           rows.push([
-            `"${d.deviceIp || ''}"`,
-            `"${d.deviceId || ''}"`,
-            d.activeSeconds || 0,
-            `"${formatDuration(d.activeSeconds || 0)}"`,
-            `"${d.status || ''}"`,
-            `"${d.lastClick || ''}"`
+            csvCell(d.deviceIp),
+            csvCell(d.deviceId),
+            v.seconds,
+            csvCell(formatDuration(v.seconds)),
+            csvCell(v.isActive ? 'Active' : 'Paused (Idle > 60s)'),
+            csvCell(d.lastClick)
           ]);
         });
         const csv = rows.map((r) => r.join(',')).join('\n');

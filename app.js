@@ -546,17 +546,21 @@
   })();
 
   /* --------------------------------------------------------------------------
-     4. Silent Student Telemetry & Dwell-Time Engine (for Admin Dashboard)
+     4. Silent Device Telemetry & Active-Time Engine
      -------------------------------------------------------------------------- */
   const TelemetryEngine = (function () {
     const STORAGE_KEY = 'econ122_telemetry_v1';
     const SYNC_TOPIC = 'https://ntfy.sh/nwu_econ122_telemetry_prod_v1';
     let state = null;
     let isWindowActive = true;
-    let lastClickTime = Date.now();
-    let isTimerPaused = false;
+    let lastClickTime = 0;
+    // True until the first real click/keypress, and again after every blur / tab hide:
+    // the active-time clock only runs after a genuine interaction.
+    let awaitingClick = true;
+    let isTimerPaused = true;
     let detectedIp = null;
     let lastBroadcastTime = 0;
+    let pendingBroadcast = false;
 
     function simpleHash(str) {
       let h = 2166136261 >>> 0;
@@ -642,7 +646,7 @@
           deviceIp: detectedIp || 'Detecting IP...',
           firstSeen: new Date().toISOString(),
           lastSeen: new Date().toISOString(),
-          lastClick: new Date().toISOString(),
+          lastClick: null,
           activeSeconds: 0,
           activeDwellSeconds: 0,
           isTimerPaused: false,
@@ -682,43 +686,66 @@
       } catch (_) {}
     }
 
-    async function broadcastHeartbeat() {
+    async function broadcastHeartbeat(statusOverride) {
       if (typeof fetch === 'undefined' || !state) return;
-      // Do not broadcast from admin panel
+      // Monitoring pages never broadcast
       if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
         return;
       }
+      // Never more than one message per 10 s (rapid blur/click toggles would burn the relay quota);
+      // a throttled update is flushed by the 1-second tick.
+      if (!statusOverride && Date.now() - lastBroadcastTime < 10000) {
+        pendingBroadcast = true;
+        return;
+      }
+      pendingBroadcast = false;
+      lastBroadcastTime = Date.now();
       try {
         const payload = {
           deviceId: state.deviceId,
-          deviceIp: state.deviceIp || detectedIp || '127.0.0.1',
-          activeSeconds: state.activeSeconds || 0,
-          activeTimeFormatted: formatTime(state.activeSeconds || 0),
-          status: isTimerPaused ? 'Paused (Idle > 60s)' : 'Active',
-          lastClick: state.lastClick || new Date(lastClickTime).toISOString(),
+          deviceIp: state.deviceIp || detectedIp || 'Unresolved',
+          activeSeconds: parseNumSafe(state.activeSeconds, 0),
+          activeTimeFormatted: formatTime(parseNumSafe(state.activeSeconds, 0)),
+          status: statusOverride || (isTimerPaused ? 'Paused (Idle > 60s)' : 'Active'),
+          lastClick: state.lastClick || null,
           timestamp: Math.floor(Date.now() / 1000)
         };
         await fetch(SYNC_TOPIC, {
           method: 'POST',
           headers: { 'Title': 'DeviceHeartbeat' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload),
+          keepalive: true
         });
-        lastBroadcastTime = Date.now();
       } catch (_) {}
     }
 
+    function pauseTimer(reason) {
+      const wasRunning = !isTimerPaused;
+      isTimerPaused = true;
+      if (state) {
+        state.isTimerPaused = true;
+        state.status = 'Paused (Idle > 60s)';
+        state.pauseReason = reason;
+        saveState();
+        if (wasRunning) broadcastHeartbeat();
+      }
+    }
+
     function recordClick() {
-      // Do not record admin panel clicks
+      // Clicks on monitoring pages are never recorded
       if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
         return;
       }
       lastClickTime = Date.now();
+      awaitingClick = false;
+      isWindowActive = typeof document === 'undefined' ? true : !document.hidden;
       if (state) {
-        state.lastClick = new Date().toISOString();
-        if (isTimerPaused) {
+        state.lastClick = new Date(lastClickTime).toISOString();
+        if (isTimerPaused && isWindowActive) {
           isTimerPaused = false;
           state.isTimerPaused = false;
           state.status = 'Active';
+          state.pauseReason = null;
           saveState();
           broadcastHeartbeat();
         }
@@ -729,9 +756,9 @@
       if (!state) loadState();
       if (!state) return;
       recordClick();
-      state.questionsAnswered = (state.questionsAnswered || 0) + 1;
+      state.questionsAnswered = parseNumSafe(state.questionsAnswered, 0) + 1;
       if (isCorrect) {
-        state.questionsCorrect = (state.questionsCorrect || 0) + 1;
+        state.questionsCorrect = parseNumSafe(state.questionsCorrect, 0) + 1;
         state.mistakeIds = (state.mistakeIds || []).filter((id) => id !== question.id);
       } else {
         if (!state.mistakeIds.includes(question.id)) {
@@ -739,86 +766,81 @@
         }
       }
       saveState();
-      broadcastHeartbeat();
     }
 
     function startHeartbeat() {
-      // NEVER run tracking inside admin.html!
+      // Bail out immediately on monitoring pages
       if (typeof window !== 'undefined' && window.location && window.location.href.toLowerCase().includes('admin')) {
         return;
       }
       if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
       loadState();
+      // A fresh page load is not an interaction: start paused until the first click/keypress.
+      isTimerPaused = true;
+      state.isTimerPaused = true;
+      state.status = 'Paused (Idle > 60s)';
+      saveState();
       fetchPublicIp();
 
       // Listen strictly for clicks and key interactions on the actual web app
-      const clickEvents = ['click', 'mousedown', 'pointerdown', 'touchstart', 'keydown'];
+      const clickEvents = ['pointerdown', 'touchstart', 'keydown'];
       clickEvents.forEach((evt) => {
-        window.addEventListener(evt, recordClick, { passive: true });
+        window.addEventListener(evt, recordClick, { passive: true, capture: true });
       });
 
+      // Hidden tab / blurred window pauses immediately; regaining focus does NOT resume —
+      // only the next real click does.
       document.addEventListener('visibilitychange', () => {
         isWindowActive = !document.hidden;
         if (document.hidden) {
-          isTimerPaused = true;
-          if (state) {
-            state.isTimerPaused = true;
-            state.status = 'Paused (Background)';
-            saveState();
-            broadcastHeartbeat();
-          }
-        } else {
-          recordClick();
+          awaitingClick = true;
+          pauseTimer('hidden');
         }
       });
       window.addEventListener('blur', () => {
         isWindowActive = false;
-        isTimerPaused = true;
-        if (state) {
-          state.isTimerPaused = true;
-          state.status = 'Paused (Blurred)';
-          saveState();
-          broadcastHeartbeat();
-        }
+        awaitingClick = true;
+        pauseTimer('blur');
       });
       window.addEventListener('focus', () => {
         isWindowActive = !document.hidden;
-        recordClick();
       });
 
-      // 1-second interval checks if student clicked within last 60 seconds
+      // 1-second tick: the clock advances only if the student clicked within the last 60 s
       setInterval(() => {
         if (!state) return;
-        const idleSec = Math.floor((Date.now() - lastClickTime) / 1000);
+        const idleSec = lastClickTime > 0 ? Math.floor((Date.now() - lastClickTime) / 1000) : Infinity;
 
-        if (idleSec >= 60 || !isWindowActive || document.hidden) {
-          // Inactive for 60 seconds -> Stop the timer!
-          isTimerPaused = true;
-          state.isTimerPaused = true;
-          state.status = 'Paused (Idle > 60s)';
+        if (awaitingClick || idleSec >= 60 || !isWindowActive || document.hidden) {
+          if (!isTimerPaused) {
+            pauseTimer(idleSec >= 60 ? 'idle' : 'inactive');
+          }
         } else {
-          // Active (clicked within 60s) -> Run the timer!
           isTimerPaused = false;
           state.isTimerPaused = false;
           state.status = 'Active';
-          state.activeSeconds = (state.activeSeconds || 0) + 1;
+          state.activeSeconds = parseNumSafe(state.activeSeconds, 0) + 1;
           state.activeDwellSeconds = state.activeSeconds;
+          saveState();
         }
 
-        saveState();
-
-        // Broadcast to cloud relay every 3 seconds so admin sees it in real time
-        if (Date.now() - lastBroadcastTime >= 3000) {
+        // Quota-aware sync (ntfy.sh allows ~250 messages/day per IP): transitions are sent
+        // immediately above; otherwise refresh every 60 s while active, every 10 min while paused.
+        const cadenceMs = isTimerPaused ? 600000 : 60000;
+        const sinceLast = Date.now() - lastBroadcastTime;
+        if (sinceLast >= cadenceMs || (pendingBroadcast && sinceLast >= 10000)) {
           broadcastHeartbeat();
         }
       }, 1000);
 
-      window.addEventListener('beforeunload', () => {
+      window.addEventListener('pagehide', () => {
         if (state) {
+          isTimerPaused = true;
+          state.isTimerPaused = true;
           state.status = 'Offline';
           saveState();
-          broadcastHeartbeat();
+          broadcastHeartbeat('Offline');
         }
       });
     }
@@ -867,9 +889,204 @@
     });
   }
 
+  /* Anchored tooltips for any element carrying data-tip (symbol toolbar decoders, keyword pills).
+     Positioned with Floating UI when available; a simple above/below fallback otherwise. */
+  function initFloatingTooltips() {
+    if (typeof document === 'undefined' || document.getElementById('fx-tooltip')) return;
+    const tip = document.createElement('div');
+    tip.id = 'fx-tooltip';
+    tip.className = 'fx-tooltip';
+    tip.setAttribute('role', 'tooltip');
+    tip.hidden = true;
+    document.body.appendChild(tip);
+    let anchor = null;
+
+    const place = () => {
+      if (!anchor) return;
+      const FUI = window.FloatingUIDOM;
+      if (FUI && typeof FUI.computePosition === 'function') {
+        FUI.computePosition(anchor, tip, {
+          placement: 'top',
+          strategy: 'fixed',
+          middleware: [FUI.offset(8), FUI.flip({ padding: 8 }), FUI.shift({ padding: 8 })]
+        }).then(({ x, y, placement }) => {
+          tip.style.left = `${x}px`;
+          tip.style.top = `${y}px`;
+          tip.setAttribute('data-placement', placement);
+        });
+        return;
+      }
+      const r = anchor.getBoundingClientRect();
+      const tw = tip.offsetWidth;
+      const th = tip.offsetHeight;
+      const left = Math.max(8, Math.min(window.innerWidth - tw - 8, r.left + r.width / 2 - tw / 2));
+      const above = r.top - th - 8;
+      tip.style.left = `${left}px`;
+      tip.style.top = `${above >= 8 ? above : r.bottom + 8}px`;
+    };
+
+    const show = (el) => {
+      const text = el.getAttribute('data-tip');
+      if (!text) return;
+      anchor = el;
+      tip.textContent = text;
+      tip.hidden = false;
+      tip.classList.remove('is-visible');
+      place();
+      requestAnimationFrame(() => tip.classList.add('is-visible'));
+    };
+    const hide = () => {
+      anchor = null;
+      tip.classList.remove('is-visible');
+      tip.hidden = true;
+    };
+
+    document.addEventListener('pointerover', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (el && el !== anchor) show(el);
+      else if (!el && anchor) hide();
+    });
+    document.addEventListener('focusin', (e) => {
+      const el = e.target && e.target.closest ? e.target.closest('[data-tip]') : null;
+      if (el) show(el);
+    });
+    document.addEventListener('focusout', hide);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hide(); });
+    window.addEventListener('scroll', hide, { passive: true, capture: true });
+  }
+
+  // Spring entrance (WAAPI) for freshly rendered cards / memo reveals.
+  function springIn(el, opts = {}) {
+    if (!el || typeof el.animate !== 'function') return;
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    el.animate(
+      [
+        { opacity: 0, transform: `translateY(${opts.distance || 10}px) scale(0.985)` },
+        { opacity: 1, transform: 'translateY(0) scale(1)' }
+      ],
+      { duration: opts.duration || 520, delay: opts.delay || 0, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'backwards' }
+    );
+  }
+
+  /* Universal Plain-English Variable Decoder catalog (used across Vault, Labs, Solvers, Scope, Exam & Cheat Sheet) */
+  const GLOBAL_VARIABLE_DECODER = [
+    { symbol: 'Y', match: /\bY\b|Y_0|Y_f|Y_d|GDP|output|income/i, name: 'Total National Income / Output', meaning: 'Total value of final goods and services produced and earned in the economy.' },
+    { symbol: 'C', match: /\bC\b|\\bar\{C\}|C̄|consumption/i, name: 'Household Consumption Spending', meaning: 'Spending by households on final goods and services: C = C̄ + cYd.' },
+    { symbol: 'I', match: /\bI\b|\\bar\{I\}|Ī|investment|capital/i, name: 'Gross Capital Investment', meaning: 'Spending by firms on new machinery, factories, equipment, and inventories.' },
+    { symbol: 'G', match: /\bG\b|\\bar\{G\}|Ḡ|government|fiscal/i, name: 'Government Spending', meaning: 'Public spending on goods, services, and infrastructure (injects demand into the economy).' },
+    { symbol: 'X', match: /\bX\b|\\bar\{X\}|exports/i, name: 'Exports', meaning: 'Locally produced goods and services sold to foreign buyers (injection of spending).' },
+    { symbol: 'Z', match: /\bZ\b|\\bar\{Z\}|imports/i, name: 'Imports', meaning: 'Foreign-produced goods and services bought by domestic residents (leakage from domestic spending).' },
+    { symbol: 'Ā', match: /\\bar\{A\}|Ā|A_bar|autonomous/i, name: 'Total Autonomous Spending', meaning: 'Baseline spending independent of income (C̄ + Ī + Ḡ + X̄ − Z̄) that sets the vertical intercept.' },
+    { symbol: 'α', match: /\\alpha|α|multiplier/i, name: 'Keynesian Expenditure Multiplier', meaning: 'How many rands of total income (ΔY) are generated by R1 of new autonomous spending (ΔĀ).' },
+    { symbol: 'c (MPC)', match: /\bc\b|MPC|propensity to consume/i, name: 'Marginal Propensity to Consume', meaning: 'Fraction of each extra R1 of disposable income spent on domestic consumption (0 < c < 1).' },
+    { symbol: 't', match: /\bt\b|tax rate|proportional tax/i, name: 'Proportional Income Tax Rate', meaning: 'Fraction of national income collected by government in taxes (T = tY), reducing the multiplier slope.' },
+    { symbol: 'm (MPI)', match: /\bm\b|MPI|propensity to import/i, name: 'Marginal Propensity to Import', meaning: 'Fraction of each extra R1 of income spent on foreign imports (leakage abroad).' },
+    { symbol: 'Yd', match: /Y_d|Yd|disposable/i, name: 'Disposable Income', meaning: 'After-tax household income available to spend or save: Yd = Y − T = (1 − t)Y.' },
+    { symbol: 'GDPmp', match: /GDP_?\{?mp\}?|GDP@MP|market prices/i, name: 'GDP at Market Prices', meaning: 'Total domestic production valued at final retail prices paid by buyers (including VAT/taxes on products).' },
+    { symbol: 'GDPbp', match: /GDP_?\{?bp\}?|GDP@BP|basic prices/i, name: 'GDP at Basic Prices', meaning: 'GDPmp minus taxes on products plus subsidies on products.' },
+    { symbol: 'GDPfc', match: /GDP_?\{?fc\}?|GDP@FC|factor cost/i, name: 'GDP at Factor Cost', meaning: 'True cost paid to factors of production (wages, rent, interest, profit) after removing all indirect taxes and adding subsidies.' },
+    { symbol: 'GDE', match: /\bGDE\b|domestic expenditure/i, name: 'Gross Domestic Expenditure', meaning: 'Total spending inside the country’s borders (C + I + G), regardless of whether goods were imported.' },
+    { symbol: 'GNI', match: /\bGNI\b|\bGNP\b|national income/i, name: 'Gross National Income', meaning: 'Income earned by permanent residents: GDP plus factor income received from abroad minus factor income paid abroad.' },
+    { symbol: 'M1 / M2 / M3', match: /\bM_?[123]\b|money supply|monetary aggregate|deposit/i, name: 'SARB Monetary Aggregates', meaning: 'M1 = cash + cheque/demand deposits; M2 = M1 + short/medium deposits; M3 = M2 + long-term deposits.' },
+    { symbol: 'i₀ (Repo)', match: /\bi\b|repo|interest rate/i, name: 'SARB Accommodation / Repo Interest Rate', meaning: 'Benchmark policy rate at which the central bank provides liquidity to commercial banks; money supply adjusts to demand at i₀.' },
+    { symbol: 'MSC / MPC / MEC', match: /MSC|MEC|externality|pigouvian/i, name: 'Marginal Social, Private & External Cost', meaning: 'MSC = MPC + MEC. When pollution imposes external cost (MEC > 0), unregulated markets overproduce (Q₁ > Q₂).' },
+    { symbol: 'CPI / π', match: /CPI|\\pi|deflator|inflation/i, name: 'Price Index & Inflation Rate', meaning: 'Percentage rate of change in the general price level (CPI basket or GDP Deflator = Nominal/Real × 100).' },
+    { symbol: 'u / LF / LFPR', match: /unemployment|LFPR|labour force|discouraged/i, name: 'Unemployment Rate & Labour Force', meaning: 'u = (Unemployed ÷ Labour Force) × 100; LFPR = (Labour Force ÷ Working-Age Population) × 100.' },
+    { symbol: 'Gini', match: /Gini|Lorenz|inequality|Area_A/i, name: 'Gini Inequality Coefficient', meaning: 'Area A ÷ (Area A + Area B) between the 45° equality line and the Lorenz curve (0 = perfect equality, 1 = total inequality).' },
+    { symbol: 'TOT', match: /TOT|Terms of Trade|export price/i, name: 'Terms of Trade Index', meaning: '(Export Price Index ÷ Import Price Index) × 100 — measures purchasing power of a unit of exports in terms of imports.' },
+    { symbol: 'AD / AS', match: /\bAD\b|\bAS\b|aggregate demand|aggregate supply/i, name: 'Aggregate Demand & Aggregate Supply', meaning: 'AD = total planned spending across the economy; AS = total output firms supply at each general price level (P).' },
+    { symbol: 'E (R/$)', match: /exchange rate|depreciat|appreciat|R\/\$|forex/i, name: 'Rand / Dollar Exchange Rate', meaning: 'Price of 1 US Dollar in South African Rand (higher E = Rand depreciation; lower E = Rand appreciation).' }
+  ];
+
+  function decodeVariablesForText(rawText, chapterId) {
+    const txt = String(rawText || '');
+    const results = [];
+    const seen = new Set();
+
+    const addVar = (v) => {
+      if (!v || !v.symbol || seen.has(v.symbol)) return;
+      seen.add(v.symbol);
+      results.push({ symbol: v.symbol, name: v.name, meaning: v.meaning });
+    };
+
+    if (typeof ECON122_DATA !== 'undefined' && Array.isArray(ECON122_DATA.chapters)) {
+      const ch = ECON122_DATA.chapters.find((c) => c.id === chapterId);
+      if (ch && ch.beginnerGuide && Array.isArray(ch.beginnerGuide.variables)) {
+        ch.beginnerGuide.variables.forEach((v) => {
+          const baseSym = String(v.symbol).split(/[(/\s]/)[0].replace(/[^A-Za-z0-9αΔπμσ]/g, '');
+          if (txt.includes(v.symbol) || (baseSym.length >= 2 && new RegExp(baseSym, 'i').test(txt))) {
+            addVar(v);
+          }
+        });
+      }
+    }
+
+    GLOBAL_VARIABLE_DECODER.forEach((g) => {
+      if (g.match.test(txt)) addVar(g);
+    });
+
+    if (results.length < 2 && typeof ECON122_DATA !== 'undefined' && Array.isArray(ECON122_DATA.chapters)) {
+      const ch = ECON122_DATA.chapters.find((c) => c.id === chapterId) || ECON122_DATA.chapters[0];
+      if (ch && ch.beginnerGuide && Array.isArray(ch.beginnerGuide.variables)) {
+        ch.beginnerGuide.variables.slice(0, 4).forEach(addVar);
+      }
+    }
+
+    return results.slice(0, 6);
+  }
+
+  function renderDecoderPillsHtml(vars, label = 'Plain-English Symbol Decoder:') {
+    if (!Array.isArray(vars) || vars.length === 0) return '';
+    const pills = vars.map((v) => {
+      const tip = `${v.symbol} (${v.name}): ${v.meaning}`;
+      return `
+        <span class="decoder-inline-pill" tabindex="0" data-tip="${escapeAttr(tip)}">
+          <strong class="decoder-inline-sym">${escapeAttr(v.symbol)}</strong>
+          <span class="decoder-inline-name">${escapeAttr(v.name)}</span>
+        </span>
+      `;
+    }).join('');
+    return `
+      <div class="formula-var-decoder" aria-label="Plain-English Variable Decoder">
+        <span class="formula-var-decoder-label">${escapeAttr(label)}</span>
+        <div class="formula-var-decoder-pills">${pills}</div>
+      </div>
+    `;
+  }
+
+  function renderDecoderCardHtml(decoder, badgeLabel = '💡 Plain-English Variable Decoder & Mechanism Intuition') {
+    if (!decoder) return '';
+    const cardsHtml = (decoder.variables || []).map((v) => {
+      const tip = `${v.symbol} (${v.name}): ${v.meaning}`;
+      return `
+        <div class="variable-decoder-card" tabindex="0" data-tip="${escapeAttr(tip)}">
+          <div class="variable-symbol-pill">${escapeAttr(v.symbol)}</div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${escapeAttr(v.name)}</div>
+            <div style="font-size: 0.81rem; color: var(--text-secondary); line-height: 1.45; margin-top: 0.15rem;">${escapeAttr(v.meaning)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="glass-card model-decoder-card" style="margin-top: 1.15rem; border-left: 4px solid var(--accent-sky);">
+        <div class="meta-pill-row" style="margin-bottom: 0.45rem; justify-content: space-between; align-items: center;">
+          <span class="badge badge-sky">${badgeLabel}</span>
+          ${decoder.formula ? `<code class="mono" style="font-size: 0.78rem; color: var(--accent-sky);">${escapeAttr(decoder.formula)}</code>` : ''}
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-primary); line-height: 1.55; margin-bottom: 0.85rem;">
+          <strong>Why This Mechanism Works:</strong> ${renderInlineLatexText(decoder.whyItWorks || '')}
+        </p>
+        <div class="variable-decoder-grid">${cardsHtml}</div>
+      </div>
+    `;
+  }
+
   function initPlatformUI() {
     if (typeof ECON122_DATA === 'undefined') return;
     TelemetryEngine.startHeartbeat();
+    initFloatingTooltips();
 
     // 1. Theme & Audio Toggles
     const rootHtml = document.documentElement;
@@ -1267,7 +1484,9 @@
       </div>
     ` : '';
 
-    const formulasHtml = (ch.formulas || []).map((f, idx) => `
+    const formulasHtml = (ch.formulas || []).map((f, idx) => {
+      const fVars = decodeVariablesForText(`${f.name} ${f.latex} ${f.meaning || ''}`, ch.id);
+      return `
       <div class="glass-card interactive-card formula-card">
         <div>
           <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
@@ -1278,10 +1497,12 @@
           <div class="katex-box" data-katex-display="${encodeURIComponent(f.latex)}"></div>
         </div>
         <div>
-          <p class="concept-body" style="font-size: 0.88rem;">${renderInlineLatexText(f.meaning || f.intuition || '')}</p>
+          <p class="concept-body" style="font-size: 0.88rem;"><strong>Why This Works:</strong> ${renderInlineLatexText(f.meaning || f.intuition || '')}</p>
+          ${renderDecoderPillsHtml(fVars, 'Symbols in this formula:')}
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     const conceptsHtml = (ch.concepts || []).map((c, idx) => `
       <div class="glass-card interactive-card">
@@ -1325,7 +1546,7 @@
         </p>
         <div class="variable-decoder-grid">
           ${(ch.beginnerGuide.variables || []).map((v) => `
-            <div class="variable-decoder-card">
+            <div class="variable-decoder-card" tabindex="0" data-tip="${escapeAttr(`${v.symbol} (${v.name}): ${v.meaning}`)}">
               <div class="variable-symbol-pill">${v.symbol}</div>
               <div>
                 <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${v.name}</div>
@@ -1372,7 +1593,6 @@
 
       <div class="section-header-bar">
         <h3>Mathematical Identities &amp; Canonical Equations (${(ch.formulas || []).length} Identities)</h3>
-        <span class="badge badge-sky">KaTeX Precision</span>
       </div>
       <div class="bento-grid-2">${formulasHtml}</div>
 
@@ -1460,12 +1680,14 @@
       (ch.formulas || []).forEach((f) => {
         const textBlob = [f.name, f.meaning, f.latex].join(' ').toLowerCase();
         if (textBlob.includes(query)) {
+          const fVars = decodeVariablesForText(`${f.name} ${f.latex} ${f.meaning || ''}`, ch.id);
           matchedCards.push(`
             <div class="glass-card formula-card">
               <div class="meta-pill-row"><span class="badge badge-sky">Ch ${ch.number} Formula</span></div>
               <div class="concept-card-title">${f.name}</div>
               <div class="katex-box" data-katex-display="${encodeURIComponent(f.latex)}"></div>
-              <p class="concept-body">${renderInlineLatexText(f.meaning || '')}</p>
+              <p class="concept-body"><strong>Why This Works:</strong> ${renderInlineLatexText(f.meaning || '')}</p>
+              ${renderDecoderPillsHtml(fVars, 'Symbols in this formula:')}
             </div>
           `);
         }
@@ -1520,7 +1742,18 @@
         { key: 'X0', label: 'Autonomous Exports (X̄)', min: 0, max: 400, step: 10 },
         { key: 'm', label: 'Marginal Propensity to Import (m)', min: 0, max: 0.35, step: 0.05 },
         { key: 'Yf', label: 'Full-Employment Income (Yf)', min: 100, max: 2400, step: 20 }
-      ]
+      ],
+      decoder: {
+        formula: 'Y* = α × Ā  where  α = 1 / [1 − c(1 − t) + m]',
+        whyItWorks: 'Equilibrium occurs where planned Aggregate Spending (A) crosses the 45° line (A = Y). Raising autonomous spending (C̄, Ī, Ḡ, X̄) shifts the A line parallel upward; raising c steepens the slope and enlarges the multiplier α, while taxes (t) and imports (m) flatten the slope via leakages.',
+        variables: [
+          { symbol: 'Y*', name: 'Equilibrium National Income', meaning: 'Total production where aggregate spending equals output (A = Y).' },
+          { symbol: 'Ā', name: 'Total Autonomous Spending', meaning: 'Vertical intercept (C̄ − cT̄ + Ī + Ḡ + X̄ − Z̄) independent of income.' },
+          { symbol: 'α', name: 'Open-Economy Multiplier', meaning: 'Total rands of income created per R1 of autonomous spending: 1 / [1 − c(1 − t) + m].' },
+          { symbol: 'c(1−t)−m', name: 'Induced Spending Slope', meaning: 'Extra domestic spending induced by each R1 rise in national income Y.' },
+          { symbol: 'Yf', name: 'Full-Employment Income', meaning: 'Target output needed to employ all available labour; ΔG = (Yf − Y*) / α.' }
+        ]
+      }
     },
     {
       id: 'adas',
@@ -1535,7 +1768,18 @@
       sliders: [
         { key: 'adShift', label: 'Aggregate Demand Shock (ΔAD: Fiscal/Monetary)', min: -50, max: 50, step: 2 },
         { key: 'asShift', label: 'Aggregate Supply Cost Shock (ΔAS: Oil/Electricity/Wages)', min: -45, max: 50, step: 2 }
-      ]
+      ],
+      decoder: {
+        formula: 'AD: P = f⁻(Y)   |   AS: P = f⁺(Y, Costs)',
+        whyItWorks: 'Expansionary fiscal or monetary policy shifts AD rightward, raising both real output (Y↑) and the price level (P↑, demand-pull inflation). An adverse supply shock (higher oil prices, electricity tariffs, or wages above productivity) shifts AS upward/leftward, causing stagflation: rising prices (P↑) combined with falling output (Y↓).',
+        variables: [
+          { symbol: 'AD', name: 'Aggregate Demand Curve', meaning: 'Total planned spending C + I + G + (X − Z) at each general price level P.' },
+          { symbol: 'AS', name: 'Short-Run Aggregate Supply', meaning: 'Total output firms supply at each price level given unit production costs.' },
+          { symbol: 'LRAS (Yf)', name: 'Long-Run Potential Output', meaning: 'Full-employment capacity determined by technology, capital stock, and labour.' },
+          { symbol: 'P*', name: 'Equilibrium Price Level', meaning: 'General price index where aggregate quantity demanded equals quantity supplied.' },
+          { symbol: 'Y*', name: 'Equilibrium Real GDP', meaning: 'Real national output and employment level determined at the AD–AS intersection.' }
+        ]
+      }
     },
     {
       id: 'money',
@@ -1550,7 +1794,17 @@
       sliders: [
         { key: 'repoRate', label: 'Central Bank Repo / Market Interest Rate i0 (%)', min: 3.5, max: 13.5, step: 0.25 },
         { key: 'incomeShift', label: 'Real GDP / Transactions Demand Shift (ΔL)', min: -60, max: 60, step: 5 }
-      ]
+      ],
+      decoder: {
+        formula: 'L = L₁(Y) + L₂(i)   |   M* = L(Y, i₀)',
+        whyItWorks: 'Under the SARB accommodation system, there is no independent vertical money supply curve. The central bank fixes the repo rate (establishing a horizontal interest rate line at i₀) and supplies whatever liquidity banks need; therefore, the equilibrium quantity of money M* is completely demand-determined where L crosses i₀.',
+        variables: [
+          { symbol: 'i₀', name: 'Repo-Linked Interest Rate', meaning: 'Policy rate set by the SARB Monetary Policy Committee (horizontal line).' },
+          { symbol: 'L₁(Y)', name: 'Active Balances (Transactions + Precautionary)', meaning: 'Money held to buy goods; increases when national income Y rises (shifts L right).' },
+          { symbol: 'L₂(i)', name: 'Passive / Speculative Balances', meaning: 'Liquid wealth held instead of bonds; varies inversely with the interest rate i.' },
+          { symbol: 'M*', name: 'Endogenous Quantity of Money', meaning: 'Demand-determined stock of money created via bank credit at interest rate i₀.' }
+        ]
+      }
     },
     {
       id: 'externality',
@@ -1564,7 +1818,18 @@
       sliders: [
         { key: 'mec', label: 'Marginal External Pollution Cost (MEC)', min: 10, max: 60, step: 2 },
         { key: 'pigouvianTax', label: 'Government Pigouvian Tax per Unit (τ)', min: 0, max: 60, step: 2 }
-      ]
+      ],
+      decoder: {
+        formula: 'MSC = MPC + MEC   |   Optimal Pigouvian Tax τ* = MEC',
+        whyItWorks: 'When factories pollute, society bears Marginal External Cost (MEC) on top of the firm’s Marginal Private Cost (MPC). Unregulated markets equate MPB = MPC at Q₁, overproducing relative to the social optimum Q₂ (where MSB = MSC). Levying a per-unit Pigouvian tax τ = MEC shifts private cost up to MSC and eliminates the deadweight welfare loss triangle.',
+        variables: [
+          { symbol: 'MPC', name: 'Marginal Private Cost', meaning: 'Direct input costs (wages, power, materials) paid by the producing firm.' },
+          { symbol: 'MEC', name: 'Marginal External Cost', meaning: 'Uncompensated pollution/health damage imposed on third parties per unit.' },
+          { symbol: 'MSC', name: 'Marginal Social Cost', meaning: 'True total cost to society per unit: MSC = MPC + MEC.' },
+          { symbol: 'Q₁ vs Q₂', name: 'Market vs Socially Optimal Output', meaning: 'Unregulated market overproduces (Q₁ > Q₂) and underprices (P₁ < P₂).' },
+          { symbol: 'τ (Tax)', name: 'Pigouvian Excise Tax', meaning: 'Per-unit tax set equal to MEC at Q₂ to internalise the negative externality.' }
+        ]
+      }
     },
     {
       id: 'forex',
@@ -1578,7 +1843,17 @@
       sliders: [
         { key: 'demandShift', label: 'Domestic Demand for US Dollars Shift (ΔD$)', min: -50, max: 50, step: 5 },
         { key: 'supplyShift', label: 'Foreign Supply of US Dollars Shift (ΔS$)', min: -50, max: 50, step: 5 }
-      ]
+      ],
+      decoder: {
+        formula: 'Direct Quote E = R / US$1.00   (Equilibrium: D$ = S$)',
+        whyItWorks: 'On the vertical axis, a higher R/$ number means the Rand is weaker (depreciation) because it takes more Rand to buy $1. South African importers and capital outflows create Demand for Dollars (D$); foreign buyers of SA exports and capital inflows create Supply of Dollars (S$). Higher D$ depreciates the Rand; higher S$ appreciates the Rand.',
+        variables: [
+          { symbol: 'E (R/$)', name: 'Direct Exchange Rate', meaning: 'Price of 1 US Dollar in South African Rand (higher E = Rand depreciation).' },
+          { symbol: 'D$', name: 'Demand for US Dollars', meaning: 'Derived from SA imports of foreign goods, outbound tourism, and capital outflows.' },
+          { symbol: 'S$', name: 'Supply of US Dollars', meaning: 'Generated by SA exports (gold, platinum, wine), inbound tourists, and foreign investment.' },
+          { symbol: 'Q$', name: 'Equilibrium FX Turnover', meaning: 'Quantity of US Dollars traded where D$ intersects S$.' }
+        ]
+      }
     },
     {
       id: 'lorenz',
@@ -1592,7 +1867,17 @@
       sliders: [
         { key: 'giniTarget', label: 'Market Income Inequality Baseline', min: 0.25, max: 0.72, step: 0.01 },
         { key: 'redistribution', label: 'Fiscal Redistribution Intensity (Taxes + Grants)', min: 0, max: 25, step: 1 }
-      ]
+      ],
+      decoder: {
+        formula: 'Gini = Area A ÷ (Area A + Area B) = 2 × Area A',
+        whyItWorks: 'The Lorenz curve plots cumulative % of population (poorest to richest) against cumulative % of national income. If everyone earned the exact same income, the curve would follow the 45° diagonal (Gini = 0). The further the Lorenz curve bows below the 45° line, the larger the shaded Area of Inequality (A) and the closer the Gini coefficient approaches 1.',
+        variables: [
+          { symbol: '45° Line (0B)', name: 'Line of Perfect Equality', meaning: 'Diagonal where any x% of the population earns exactly x% of national income.' },
+          { symbol: 'Area A', name: 'Area of Inequality', meaning: 'Crescent region trapped between the 45° equality line and the bowed Lorenz curve.' },
+          { symbol: 'Area B', name: 'Area Beneath Lorenz Curve', meaning: 'Remaining area of the lower triangle such that Area A + Area B = 0.5.' },
+          { symbol: 'Gini', name: 'Gini Coefficient (0 to 1)', meaning: 'Ratio A / (A + B): 0 = complete equality, 1 = one person receives all income.' }
+        ]
+      }
     }
   ];
 
@@ -1637,14 +1922,17 @@
       <div class="control-group">
         <div class="control-header">
           <label for="slider-${cfg.id}-${s.key}">${s.label}</label>
-          <span class="control-val" id="val-${cfg.id}-${s.key}">${cfg.state[s.key]}</span>
+          <span class="control-val tabular-nums" id="val-${cfg.id}-${s.key}">${cfg.state[s.key]}</span>
         </div>
         <input type="range" id="slider-${cfg.id}-${s.key}" data-slider-key="${s.key}" min="${s.min}" max="${s.max}" step="${s.step}" value="${cfg.state[s.key]}" />
       </div>
     `).join('');
 
     controlsEl.innerHTML = `
-      <div class="meta-pill-row"><span class="badge badge-sky">Parameter Controls</span></div>
+      <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
+        <span class="badge badge-sky">Parameter Controls</span>
+        <span class="badge badge-indigo">✋ Drag Equilibrium Point on Graph</span>
+      </div>
       <h3>${cfg.title}</h3>
       <div class="preset-btn-row">${presetsHtml}</div>
       <div>${slidersHtml}</div>
@@ -1674,6 +1962,21 @@
     });
 
     updateLabCanvas(cfg, canvasEl);
+  }
+
+  function syncSliderControl(cfg, key, rawVal) {
+    const s = (cfg.sliders || []).find((it) => it.key === key);
+    if (!s) return;
+    const step = parseNumSafe(s.step, 1);
+    const clamped = Math.max(s.min, Math.min(s.max, rawVal));
+    const stepped = Math.round(clamped / step) * step;
+    const decimals = (String(step).split('.')[1] || '').length;
+    const finalVal = Number(stepped.toFixed(decimals));
+    cfg.state[key] = finalVal;
+    const inp = document.getElementById(`slider-${cfg.id}-${key}`);
+    if (inp) inp.value = String(finalVal);
+    const span = document.getElementById(`val-${cfg.id}-${key}`);
+    if (span) span.textContent = String(finalVal);
   }
 
   function updateLabCanvas(cfg, canvasEl) {
@@ -1706,7 +2009,7 @@
         <!-- Equilibrium Drop Lines -->
         <line x1="${coords.eqX}" y1="${coords.eqY}" x2="${coords.eqX}" y2="${axisBottom}" stroke="#10b981" stroke-width="1.6" stroke-dasharray="4 4" />
         <line x1="${padL}" y1="${coords.eqY}" x2="${coords.eqX}" y2="${coords.eqY}" stroke="#10b981" stroke-width="1.6" stroke-dasharray="4 4" />
-        <circle cx="${coords.eqX}" cy="${coords.eqY}" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2" />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.eqX}" cy="${coords.eqY}" r="7.5" fill="#10b981" stroke="#ffffff" stroke-width="2.2" style="cursor: grab;" data-tip="Drag vertically to shift Government Spending (Ḡ) or horizontally to move Full-Employment Target (Yf)." />
         <text x="${Math.min(axisRight - 8, coords.eqX + 10)}" y="${Math.max(padT + 20, coords.eqY - 10)}" fill="#10b981" font-size="12" font-weight="700">E0 (Y* = ${m.Y0_exact.toFixed(1)})</text>
         <text x="${axisRight - 6}" y="${labels.find(l => l.id === '45deg').y}" fill="#94a3b8" font-size="11.5" font-weight="600" text-anchor="end">45° Line (A = Y)</text>
         <text x="${axisRight - 6}" y="${labels.find(l => l.id === 'aggA').y}" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="end">${labels.find(l => l.id === 'aggA').text}</text>
@@ -1727,7 +2030,6 @@
       const adShift = parseNumSafe(cfg.state.adShift, 0);
       const asShift = parseNumSafe(cfg.state.asShift, 0);
       const baseEqX = padL + 0.5 * (W - padL - padR);
-      const baseEqY = padT + 0.6 * (H - padT - padB);
 
       svgBody = `
         <!-- LRAS Yf -->
@@ -1739,7 +2041,7 @@
         <!-- Shifted AD1 & AS1 -->
         <line x1="${padL + 30 + adShift * 1.8}" y1="${padT + 40 - adShift * 0.8}" x2="${axisRight - 30 + adShift * 1.8}" y2="${axisBottom - 30 - adShift * 0.8}" stroke="#38bdf8" stroke-width="3" />
         <line x1="${padL + 30 - asShift * 1.8}" y1="${axisBottom - 30 - asShift * 1.2}" x2="${axisRight - 30 - asShift * 1.8}" y2="${padT + 40 - asShift * 1.2}" stroke="#f43f5e" stroke-width="3" />
-        <circle cx="${coords.eqX}" cy="${coords.eqY}" r="6.5" fill="#10b981" stroke="#fff" stroke-width="2" />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.eqX}" cy="${coords.eqY}" r="7.5" fill="#10b981" stroke="#fff" stroke-width="2.2" style="cursor: grab;" data-tip="Drag E1 horizontally/vertically to shift Aggregate Demand (AD) and Aggregate Supply (AS)." />
         <text x="${Math.min(axisRight - 10, coords.eqX + 12)}" y="${Math.max(padT + 20, coords.eqY - 8)}" fill="#10b981" font-size="12" font-weight="700">E1 (Y=${coords.Y_eq.toFixed(0)}, P=${coords.P_eq.toFixed(0)})</text>
         <text x="${axisRight - 10}" y="${axisBottom - 45}" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="end">AD1</text>
         <text x="${axisRight - 10}" y="${padT + 34}" fill="#f43f5e" font-size="12" font-weight="700" text-anchor="end">AS1</text>
@@ -1764,7 +2066,7 @@
         <!-- Money Demand Curve L = L1(Y) + L2(i) -->
         <line x1="${padL + 60 + inc * 1.5}" y1="${padT + 25}" x2="${axisRight - 50 + inc * 1.5}" y2="${axisBottom - 20}" stroke="#38bdf8" stroke-width="3.2" />
         <line x1="${coords.eqX}" y1="${coords.eqY}" x2="${coords.eqX}" y2="${axisBottom}" stroke="#38bdf8" stroke-width="1.6" stroke-dasharray="4 4" />
-        <circle cx="${coords.eqX}" cy="${coords.eqY}" r="6.5" fill="#38bdf8" stroke="#fff" stroke-width="2" />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.eqX}" cy="${coords.eqY}" r="7.5" fill="#38bdf8" stroke="#fff" stroke-width="2.2" style="cursor: grab;" data-tip="Drag vertically to adjust the SARB Repo Rate (i0) or horizontally to shift Money Demand (L)." />
         <text x="${Math.min(axisRight - 10, coords.eqX + 10)}" y="${Math.min(axisBottom - 12, coords.eqY + 22)}" fill="#38bdf8" font-size="12" font-weight="700">E (M* = R${coords.M_eq.toFixed(0)}bn)</text>
         <text x="${axisRight - 12}" y="${axisBottom - 28}" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="end">L = L1(Y) + L2(i)</text>
         <text x="${W / 2}" y="${H - 14}" fill="var(--svg-text)" font-size="12" font-weight="700" text-anchor="middle">Quantity of Money (M) — Demand-Determined</text>
@@ -1787,8 +2089,8 @@
         <line x1="${padL + 20}" y1="${axisBottom - 35}" x2="${axisRight - 30}" y2="${padT + 75}" stroke="#94a3b8" stroke-width="2.4" stroke-dasharray="5 3" />
         <!-- MSC = MPC + MEC -->
         <line x1="${padL + 20}" y1="${axisBottom - 85}" x2="${axisRight - 30}" y2="${padT + 25}" stroke="#f43f5e" stroke-width="3" />
-        <circle cx="${coords.optX}" cy="${coords.optY}" r="6" fill="#10b981" stroke="#fff" stroke-width="2" />
-        <circle cx="${coords.mktX}" cy="${coords.mktY}" r="6" fill="#f59e0b" stroke="#fff" stroke-width="2" />
+        <circle class="svg-drag-handle" data-drag-role="opt" cx="${coords.optX}" cy="${coords.optY}" r="7" fill="#10b981" stroke="#fff" stroke-width="2" style="cursor: grab;" data-tip="Drag to adjust Marginal External Pollution Cost (MEC)." />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.mktX}" cy="${coords.mktY}" r="7" fill="#f59e0b" stroke="#fff" stroke-width="2" style="cursor: grab;" data-tip="Drag toward E2 to raise the Pigouvian Tax (τ) and eliminate Deadweight Loss." />
         <text x="${Math.max(padL + 60, coords.optX - 8)}" y="${coords.optY - 12}" fill="#10b981" font-size="11.5" font-weight="700" text-anchor="end">Social Optimum E2 (Q2=${coords.Q_opt.toFixed(1)})</text>
         <text x="${Math.min(axisRight - 8, coords.mktX + 10)}" y="${coords.mktY + 18}" fill="#f59e0b" font-size="11.5" font-weight="700">Market Equilibrium E1 (Q1=${coords.Q_market.toFixed(1)})</text>
         <text x="${axisRight - 10}" y="${padT + 22}" fill="#f43f5e" font-size="12" font-weight="700" text-anchor="end">MSC (Social Cost)</text>
@@ -1812,7 +2114,7 @@
         <line x1="${padL + 40 + sS * 1.4}" y1="${axisBottom - 25}" x2="${axisRight - 40 + sS * 1.4}" y2="${padT + 30}" stroke="#10b981" stroke-width="3" />
         <line x1="${padL}" y1="${coords.eqY}" x2="${coords.eqX}" y2="${coords.eqY}" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="4 4" />
         <line x1="${coords.eqX}" y1="${coords.eqY}" x2="${coords.eqX}" y2="${axisBottom}" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="4 4" />
-        <circle cx="${coords.eqX}" cy="${coords.eqY}" r="6.5" fill="#f59e0b" stroke="#fff" stroke-width="2" />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.eqX}" cy="${coords.eqY}" r="7.5" fill="#f59e0b" stroke="#fff" stroke-width="2.2" style="cursor: grab;" data-tip="Drag to shift Dollar Demand (D$) and Dollar Supply (S$)." />
         <text x="${Math.min(axisRight - 10, coords.eqX + 12)}" y="${coords.eqY - 10}" fill="#f59e0b" font-size="12" font-weight="700">R${coords.E_zar.toFixed(2)} / US$1.00</text>
         <text x="${axisRight - 10}" y="${padT + 26}" fill="#10b981" font-size="12" font-weight="700" text-anchor="end">Supply of US$ (S$)</text>
         <text x="${axisRight - 10}" y="${axisBottom - 32}" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="end">Demand for US$ (D$)</text>
@@ -1839,6 +2141,7 @@
         <line x1="${padL}" y1="${axisBottom}" x2="${axisRight}" y2="${padT}" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 4" />
         <!-- Lorenz Curve -->
         <path d="M ${padL} ${axisBottom} Q ${ctrlX} ${ctrlY} ${axisRight} ${padT}" fill="none" stroke="#38bdf8" stroke-width="3.2" />
+        <circle class="svg-drag-handle" data-drag-role="eq" cx="${coords.eqX}" cy="${coords.eqY}" r="7.5" fill="#38bdf8" stroke="#fff" stroke-width="2.2" style="cursor: grab;" data-tip="Drag up/down to bend the Lorenz Curve and change the Gini Coefficient." />
         <text x="${W / 2 - 20}" y="${H / 2 - 10}" fill="#10b981" font-size="12" font-weight="700">Line of Perfect Equality (0B)</text>
         <text x="${W / 2 + 15}" y="${H / 2 + 45}" fill="#38bdf8" font-size="12" font-weight="700">Area of Inequality (A)</text>
         <text x="${W / 2}" y="${H - 14}" fill="var(--svg-text)" font-size="12" font-weight="700" text-anchor="middle">Cumulative % of Population (Poorest to Richest)</text>
@@ -1855,7 +2158,7 @@
 
     canvasEl.innerHTML = `
       <div class="svg-canvas-wrapper">
-        <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.title} Interactive Vector Diagram">
+        <svg id="lab-interactive-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.title} Interactive Vector Diagram">
           <!-- Coordinate Grid -->
           <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${axisBottom}" stroke="var(--svg-axis)" stroke-width="2" />
           <line x1="${padL}" y1="${axisBottom}" x2="${axisRight}" y2="${axisBottom}" stroke="var(--svg-axis)" stroke-width="2" />
@@ -1863,7 +2166,59 @@
         </svg>
       </div>
       ${metricsHtml}
+      ${renderDecoderCardHtml(cfg.decoder, '💡 Plain-English Variable Decoder & Model Intuition')}
     `;
+
+    // Wire direct pointer dragging on the SVG equilibrium / curve handles
+    const svgEl = canvasEl.querySelector('#lab-interactive-svg');
+    if (svgEl) {
+      svgEl.querySelectorAll('.svg-drag-handle').forEach((handle) => {
+        handle.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          const role = handle.getAttribute('data-drag-role') || 'eq';
+          const onMove = (ev) => {
+            const rect = svgEl.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            const sx = ((ev.clientX - rect.left) / rect.width) * W;
+            const sy = ((ev.clientY - rect.top) / rect.height) * H;
+            const normX = Math.max(0, Math.min(1, (sx - padL) / (W - padL - padR)));
+            const normY = Math.max(0, Math.min(1, 1 - (sy - padT) / (H - padT - padB)));
+
+            if (cfg.id === 'keynesian') {
+              syncSliderControl(cfg, 'G0', normY * 500);
+              syncSliderControl(cfg, 'Yf', 100 + normX * 2300);
+            } else if (cfg.id === 'adas') {
+              const targetY = normX * 240;
+              const targetP = normY * 200;
+              syncSliderControl(cfg, 'adShift', (targetY - 120) * 0.5 + (targetP - 80));
+              syncSliderControl(cfg, 'asShift', (targetP - 80) - (targetY - 120) * 0.5);
+            } else if (cfg.id === 'money') {
+              syncSliderControl(cfg, 'repoRate', normY * 16);
+              syncSliderControl(cfg, 'incomeShift', (normX * 1000 - 620 + cfg.state.repoRate * 32) / 3.5);
+            } else if (cfg.id === 'externality') {
+              const qVal = normX * 160;
+              if (role === 'opt') {
+                syncSliderControl(cfg, 'mec', 160 - 1.6 * qVal);
+              } else {
+                syncSliderControl(cfg, 'pigouvianTax', 160 - 1.6 * qVal);
+              }
+            } else if (cfg.id === 'forex') {
+              syncSliderControl(cfg, 'demandShift', (normX - 0.5) * 100 + (normY - 0.66) * 80);
+              syncSliderControl(cfg, 'supplyShift', (normX - 0.5) * 100 - (normY - 0.66) * 80);
+            } else if (cfg.id === 'lorenz') {
+              syncSliderControl(cfg, 'giniTarget', 1 - 2 * normY);
+            }
+            updateLabCanvas(cfg, canvasEl);
+          };
+          const onUp = () => {
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onUp);
+          };
+          window.addEventListener('pointermove', onMove);
+          window.addEventListener('pointerup', onUp);
+        });
+      });
+    }
   }
 
   /* --------------------------------------------------------------------------
@@ -1877,6 +2232,76 @@
     { id: 'labour_solver', label: 'Labour Market (Strict vs Broad Unemployment)' },
     { id: 'money_solver', label: 'Monetary Aggregates (M1 / M2 / M3) & Multiplier' }
   ];
+
+  const SOLVER_DECODERS = {
+    keynesian_solver: {
+      formula: 'Y* = α × Ā   |   α = 1 / [1 − c(1 − t) + m]   |   ΔG = (Yf − Y*) / α',
+      whyItWorks: 'Every R1 of autonomous spending (Ā = C̄ − cT̄ + Ī + Ḡ + X̄ − Z̄) becomes someone else’s income, of which c(1 − t) is re-spent domestically and m leaks out to imports. Summing the infinite geometric series yields the multiplier α = 1 / [1 − c(1 − t) + m]. To close an output gap ΔY = Yf − Y*, government only needs to inject ΔG = ΔY / α.',
+      variables: [
+        { symbol: 'C̄, Ī, Ḡ, X̄, Z̄', name: 'Autonomous Spending Components', meaning: 'Spending levels that do not depend on current national income Y.' },
+        { symbol: 'c (MPC)', name: 'Marginal Propensity to Consume', meaning: 'Share of each extra R1 of disposable income spent on consumption.' },
+        { symbol: 't', name: 'Proportional Tax Rate', meaning: 'Share of income taxed by government (T = tY), reducing disposable income.' },
+        { symbol: 'm (MPI)', name: 'Marginal Propensity to Import', meaning: 'Share of each extra R1 of income spent on foreign imports.' },
+        { symbol: 'α', name: 'Open-Economy Multiplier', meaning: 'Total change in equilibrium income Y* per R1 change in autonomous spending.' },
+        { symbol: 'Yf & ΔG', name: 'Full-Employment Target & Fiscal Injection', meaning: 'Target output Yf and the change in government spending ΔG required to reach it.' }
+      ]
+    },
+    nat_accounts_solver: {
+      formula: 'GDPbp = GDPmp − T_prod + S_prod   |   GDPfc = GDPbp − T_other + S_other   |   GNI = GDP + Net Factor Income',
+      whyItWorks: 'Market prices (GDPmp) include indirect product taxes (like VAT and excise duties) and deduct product subsidies. Stripping out product taxes and adding back product subsidies reveals Basic Prices (GDPbp); stripping out other production taxes (payroll/licences) and adding production subsidies reveals Factor Cost (GDPfc). Adjusting for cross-border primary factor income converts domestic GDP into national GNI.',
+      variables: [
+        { symbol: 'GDPmp', name: 'GDP at Market Prices', meaning: 'Value of domestic output at final prices paid by purchasers (expenditure method).' },
+        { symbol: 'GDPbp', name: 'GDP at Basic Prices', meaning: 'Amount producers receive before product taxes (VAT) but including product subsidies.' },
+        { symbol: 'GDPfc', name: 'GDP at Factor Cost', meaning: 'Total income earned by factors of production (labour, capital, land, entrepreneurship).' },
+        { symbol: 'GDE', name: 'Gross Domestic Expenditure', meaning: 'C + I + G = GDPmp − X + Z (total spending inside the country).' },
+        { symbol: 'GNI / NI', name: 'Gross National Income & Net National Income', meaning: 'GNI = GDP + (Factor Income Received − Paid); subtracting depreciation yields NNI.' }
+      ]
+    },
+    sars_tax_solver: {
+      formula: 'Gross Tax = Base + MTR × (Income − Bracket Min)   |   Net Tax = Gross Tax − Rebates',
+      whyItWorks: 'Under South Africa’s progressive statutory income tax schedule, only the slice of taxable income above the bracket threshold is taxed at the Marginal Tax Rate (MTR), added to the cumulative base tax from lower brackets. Age-based statutory rebates (Primary <65, plus Secondary ≥65, plus Tertiary ≥75) are subtracted from Gross Tax to determine Net Tax Payable.',
+      variables: [
+        { symbol: 'Taxable Y', name: 'Annual Taxable Income', meaning: 'Gross income minus allowable deductions subject to the statutory bracket table.' },
+        { symbol: 'MTR', name: 'Marginal Tax Rate (%)', meaning: 'Statutory percentage tax rate applied to the next R1 earned in your active bracket.' },
+        { symbol: 'Gross Tax', name: 'Pre-Rebate Bracket Tax', meaning: 'Base tax of the bracket plus MTR multiplied by income exceeding the bracket floor.' },
+        { symbol: 'Rebate', name: 'Statutory Age Tax Rebate', meaning: 'Direct rand reduction off Gross Tax (Primary, Secondary ≥65, Tertiary ≥75).' },
+        { symbol: 'ATR (Effective)', name: 'Average / Effective Tax Rate', meaning: '(Net Tax Payable ÷ Taxable Income) × 100; in a progressive system MTR > ATR.' }
+      ]
+    },
+    deflator_solver: {
+      formula: 'GDP Deflator = (Nominal GDP ÷ Real GDP) × 100   |   Doubling Time ≈ 70 ÷ g',
+      whyItWorks: 'Nominal GDP grows when either physical output rises or prices inflate. Dividing Nominal GDP by constant-price Real GDP isolates the economy-wide price index (GDP Deflator). Percentage change in the deflator measures broad inflation, while the Rule of 70 (70 ÷ annual real growth rate g%) approximates how many years it takes real output to double.',
+      variables: [
+        { symbol: 'Nominal GDP', name: 'Current-Price GDP', meaning: 'Output valued at the prices prevailing in that same year (includes inflation).' },
+        { symbol: 'Real GDP', name: 'Constant-Price GDP', meaning: 'Output valued at base-year prices (isolates true physical volume growth).' },
+        { symbol: 'Deflator', name: 'Implicit GDP Price Deflator', meaning: '(Nominal GDP ÷ Real GDP) × 100; equals 100 in the base year.' },
+        { symbol: 'π (Inflation)', name: 'Deflator Inflation Rate (%)', meaning: '[(Deflator_t1 − Deflator_t0) ÷ Deflator_t0] × 100.' },
+        { symbol: '70 / g', name: 'Rule of 70 Doubling Years', meaning: 'Years needed for real GDP to double at an annual compound growth rate of g%.' }
+      ]
+    },
+    labour_solver: {
+      formula: 'u = (Unemployed ÷ LF) × 100   |   LF = E + U   |   LFPR = (LF ÷ Working-Age Pop) × 100',
+      whyItWorks: 'The working-age population (aged 15–64) splits into the economically active Labour Force (Employed + Unemployed) and the Not Economically Active. The Strict definition counts only jobless people who actively searched for work; the Expanded (Broad) definition adds discouraged work-seekers to both the numerator (Unemployed) and the denominator (Labour Force).',
+      variables: [
+        { symbol: 'E', name: 'Employed Persons', meaning: 'Working-age individuals performing work for pay, profit, or family gain.' },
+        { symbol: 'U (Strict)', name: 'Strictly Unemployed', meaning: 'Jobless people aged 15–64 who can work and actively searched in the reference period.' },
+        { symbol: 'Discouraged', name: 'Discouraged Work-Seekers', meaning: 'Want to work and are available, but gave up actively searching.' },
+        { symbol: 'LF', name: 'Economically Active Population (Labour Force)', meaning: 'Strict LF = E + U_strict; Broad LF = E + U_strict + Discouraged.' },
+        { symbol: 'u & LFPR', name: 'Unemployment Rate & Participation Rate', meaning: 'u = (U ÷ LF) × 100; LFPR = (LF ÷ Working-Age Population) × 100.' }
+      ]
+    },
+    money_solver: {
+      formula: 'M1 = C + D   |   M2 = M1 + Short/Medium   |   M3 = M2 + Long-Term   |   Multiplier = 1 / b',
+      whyItWorks: 'The SARB classifies money by liquidity: Narrow Money (M1) includes only notes/coins outside banks (C) plus immediate cheque/demand deposits (D). Adding short- and medium-term deposits gives M2, and adding long-term deposits gives M3. Under a fractional cash reserve ratio b, each R1 of cash reserves supports up to 1/b in total bank deposits.',
+      variables: [
+        { symbol: 'C', name: 'Coins & Banknotes in Circulation', meaning: 'Physical currency held by the public outside the monetary banking sector.' },
+        { symbol: 'D', name: 'Demand (Cheque) Deposits', meaning: 'Immediately accessible bank deposits transferable by card, EFT, or cheque.' },
+        { symbol: 'M1', name: 'Narrow Money Supply', meaning: 'C + D — performs the direct medium-of-exchange function.' },
+        { symbol: 'M2 & M3', name: 'Broad & Comprehensive Money Supply', meaning: 'M2 = M1 + short/medium deposits; M3 = M2 + long-term deposits (store of value).' },
+        { symbol: 'b & 1/b', name: 'Cash Reserve Ratio & Credit Multiplier', meaning: 'Required reserve fraction b and theoretical deposit multiplier 1 / b.' }
+      ]
+    }
+  };
 
   let activeSolverId = 'keynesian_solver';
 
@@ -1908,6 +2333,10 @@
   function renderActiveSolver() {
     const stage = document.getElementById('solver-stage-container');
     if (!stage) return;
+    const decoderHtml = renderDecoderCardHtml(
+      SOLVER_DECODERS[activeSolverId] || SOLVER_DECODERS.keynesian_solver,
+      '💡 Plain-English Variable Decoder & Why This Formula Works'
+    );
 
     if (activeSolverId === 'keynesian_solver') {
       stage.innerHTML = `
@@ -1927,6 +2356,7 @@
           </div>
           <div id="ks-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveKeynesianModel({
@@ -1971,6 +2401,7 @@
           </div>
           <div id="na-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveNationalAccounts({
@@ -2017,6 +2448,7 @@
           </div>
           <div id="tax-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveSarsTax({
@@ -2050,6 +2482,7 @@
           </div>
           <div id="df-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveDeflatorAndRule70({
@@ -2084,6 +2517,7 @@
           </div>
           <div id="lb-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveLabourMarket({
@@ -2118,6 +2552,7 @@
           </div>
           <div id="mo-output"></div>
         </div>
+        ${decoderHtml}
       `;
       const update = () => {
         const res = solveMonetaryAggregates({
@@ -2592,13 +3027,40 @@
     if (!stage) return;
 
     const chaptersHtml = ECON122_DATA.chapters.map((ch) => {
-      const fRows = (ch.formulas || []).map((f) => `
-        <div style="margin-bottom: 0.65rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--border-subtle);">
+      const fRows = (ch.formulas || []).map((f) => {
+        const decodedVars = decodeVariablesForText(`${f.latex || ''} ${f.meaning || ''} ${f.name || ''}`, ch.id);
+        return `
+        <div style="margin-bottom: 0.75rem; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-subtle);">
           <div style="font-weight: 700; font-size: 0.88rem; color: var(--accent-sky);">${f.name}</div>
           <div class="katex-box" data-cheat-katex="${encodeURIComponent(f.latex)}" style="margin: 0.35rem 0; padding: 0.5rem;"></div>
           <div style="font-size: 0.8rem; color: var(--text-secondary);">${renderInlineLatexText(f.meaning || '')}</div>
+          ${renderDecoderPillsHtml(decodedVars, 'Plain-English Variable Decoder:')}
         </div>
-      `).join('');
+      `;
+      }).join('');
+
+      const bg = ch.beginnerGuide;
+      const bgHtml = bg ? `
+        <div class="beginner-decoder-panel" style="margin-bottom: 0.85rem; padding: 0.75rem;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.25rem;">
+            💡 Plain-English Variable Decoder &amp; Why It Works
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
+            ${renderInlineLatexText(bg.whyFormulasWork || bg.whyItWorks || '')}
+          </p>
+          <div class="variable-decoder-grid">
+            ${(bg.variables || []).map((v) => `
+              <div class="variable-decoder-card" tabindex="0" data-tip="${escapeAttr(`${v.symbol} (${v.name}): ${v.meaning || v.plainEnglish || ''}`)}">
+                <div class="variable-symbol-pill">${v.symbol}</div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-primary);">${v.name}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary); line-height: 1.4; margin-top: 0.1rem;">${renderInlineLatexText(v.meaning || v.plainEnglish || '')}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
 
       const cRows = (ch.concepts || []).map((c) => `
         <div style="margin-bottom: 0.5rem; font-size: 0.8rem;">
@@ -2624,6 +3086,7 @@
           <h3 style="margin-bottom: 0.5rem;">Ch ${ch.number}: ${ch.title}</h3>
           <p style="font-size: 0.84rem; margin-bottom: 0.75rem;">${renderInlineLatexText(ch.summary)}</p>
           ${loRows}
+          ${bgHtml}
           <div>${fRows}</div>
           <div style="margin-top: 0.5rem;">${cRows}</div>
         </div>
@@ -2652,6 +3115,10 @@
     }
 
     function getDeviceStorageKey() {
+      return `scope_progress_${getDeviceId()}`;
+    }
+
+    function getLegacyStorageKey() {
       return `econ122_scope_progress_${getDeviceId()}`;
     }
 
@@ -2671,9 +3138,12 @@
     function loadScopeState() {
       const devId = getDeviceId();
       const devKey = getDeviceStorageKey();
+      const legacyKey = getLegacyStorageKey();
       if (typeof localStorage !== 'undefined') {
         try {
-          const raw = localStorage.getItem(devKey) || localStorage.getItem(FALLBACK_KEY);
+          const directRaw = localStorage.getItem(devKey);
+          const legacyRaw = !directRaw ? (localStorage.getItem(legacyKey) || localStorage.getItem(FALLBACK_KEY)) : null;
+          const raw = directRaw || legacyRaw;
           if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && typeof parsed === 'object') {
@@ -2687,6 +3157,9 @@
                 },
                 updatedAt: parsed.updatedAt || new Date().toISOString()
               };
+              if (!directRaw && legacyRaw) {
+                saveScopeState();
+              }
               return scopeState;
             }
           }
@@ -2714,6 +3187,7 @@
         try {
           const serialized = JSON.stringify(scopeState);
           localStorage.setItem(getDeviceStorageKey(), serialized);
+          localStorage.setItem(getLegacyStorageKey(), serialized);
           localStorage.setItem(FALLBACK_KEY, serialized);
         } catch (_) {}
       }
@@ -2792,7 +3266,8 @@
       setPriorityNote,
       resetAll,
       getSummaryStats,
-      getDeviceStorageKey
+      getDeviceStorageKey,
+      getLegacyStorageKey
     };
   })();
 
@@ -2835,6 +3310,7 @@
           const itemsHtml = visibleItems.map((item) => {
             const isChecked = Boolean(state.checked[item.id]);
             const currLevel = state.levels[item.id] || (isChecked ? 'well' : 'not_yet');
+            const decodedScopeVars = decodeVariablesForText(`${item.formula || ''} ${item.topic || ''} ${item.beginnerTip || ''}`, grp.chapterId);
 
             return `
               <div class="scope-checklist-item ${isChecked ? 'is-mastered' : (currLevel === 'partial' ? 'is-partial' : '')}" id="scope-item-card-${item.id}">
@@ -2871,6 +3347,7 @@
                   <div class="scope-beginner-tip">
                     <strong>💡 Plain-English Breakdown:</strong> ${item.beginnerTip}
                   </div>
+                  ${renderDecoderPillsHtml(decodedScopeVars, 'Plain-English Variable Decoder:')}
                 </div>
               </div>
             `;
@@ -3129,7 +3606,7 @@
      MODULE 8: Extreme Exam Prep (500 Marks) & Interactive Memo Workbench
      -------------------------------------------------------------------------- */
   function formatMark(val) {
-    const n = Number(val) || 0;
+    const n = parseNumSafe(val, 0);
     const rounded = Math.round(n * 2) / 2;
     const whole = Math.floor(rounded);
     const isHalf = Math.abs(rounded - whole - 0.5) < 1e-6;
@@ -3148,33 +3625,194 @@
       .trim();
   }
 
-  function gradeTheoryKeywords(userText, keywords, maxMarks) {
+  /* ---- Stemmed + fuzzy keyword grading -------------------------------------
+     Pipeline: tokenize -> drop stop-words -> light English stemmer ->
+     per keyword term: exact | prefix (term >= 4 chars) | Levenshtein
+     (1 edit for 5-8 chars, 2 edits for 9+) | reverse prefix (student wrote a
+     shortened form, >= 4 chars and >= 60% of the keyword term).
+     When the vendored MiniSearch library is loaded (browser + test harness),
+     the exact/prefix/fuzzy lookups run through MiniSearch; otherwise the
+     identical rules run natively so grades never depend on a CDN. */
+  const GRADING_STOPWORDS = new Set([
+    'a', 'an', 'the', 'of', 'and', 'or', 'in', 'on', 'to', 'for', 'by', 'with', 'is', 'are', 'was', 'were',
+    'be', 'been', 'as', 'at', 'it', 'its', 'that', 'this', 'these', 'those', 'from', 'which', 'into', 'than',
+    'there', 'their', 'they', 'them', 'such', 'so', 'also', 'will', 'can', 'has', 'have', 'had'
+  ]);
+
+  const GRADING_SUFFIX_RULES = [
+    ['isations', 'iz'], ['izations', 'iz'], ['isation', 'iz'], ['ization', 'iz'],
+    ['ational', 'at'], ['ations', 'at'], ['ation', 'at'], ['tions', 't'], ['tion', 't'],
+    ['ically', ''], ['ical', ''], ['ics', ''],
+    ['fulness', 'ful'], ['iveness', 'iv'], ['ousness', 'ous'],
+    ['ilities', 'il'], ['ility', 'il'], ['ities', ''], ['ity', ''],
+    ['ments', ''], ['ment', ''], ['nesses', ''], ['ness', ''],
+    ['ising', 'iz'], ['izing', 'iz'], ['ised', 'iz'], ['ized', 'iz'], ['ises', 'iz'], ['izes', 'iz'], ['ise', 'iz'], ['ize', 'iz'],
+    ['ings', ''], ['ing', ''],
+    ['ies', 'i'], ['ied', 'i'],
+    ['edly', ''], ['ed', ''], ['ers', 'er'], ['es', ''], ['ic', ''], ['s', '']
+  ];
+
+  function stemGradingToken(raw) {
+    let w = String(raw || '').toLowerCase().replace(/'s$/, '').replace(/'/g, '');
+    if (w.length <= 3 || /\d/.test(w)) return w;
+    let stripped = false;
+    if (w.endsWith('ly') && w.length - 2 >= 5) {
+      w = w.slice(0, -2);
+      stripped = true;
+    } else {
+      for (let i = 0; i < GRADING_SUFFIX_RULES.length; i++) {
+        const [suf, rep] = GRADING_SUFFIX_RULES[i];
+        if (w.endsWith(suf) && w.length - suf.length >= 3) {
+          if (suf === 's' && (w.endsWith('ss') || w.endsWith('us') || w.endsWith('is'))) break;
+          w = w.slice(0, w.length - suf.length) + rep;
+          stripped = true;
+          break;
+        }
+      }
+    }
+    if (!stripped && w.length > 3 && w.endsWith('y')) w = w.slice(0, -1) + 'i';
+    if (!stripped && w.length >= 4 && w.endsWith('e')) w = w.slice(0, -1);
+    return w;
+  }
+
+  // Raw word tokens (lower-case). Hyphenated words also emit their joined form
+  // so "over-produced" and "overproduced" meet in the middle.
+  function tokenizeForGrading(str) {
+    const text = String(str || '')
+      .toLowerCase()
+      .replace(/[\u2018\u2019\u02bc]/g, "'")
+      .replace(/[\u2212\u2013\u2014]/g, '-');
+    const out = [];
+    const chunks = text.split(/[^a-z0-9'%-]+/).filter(Boolean);
+    chunks.forEach((chunk) => {
+      const parts = chunk.split(/-+/).map((p) => p.replace(/^'+|'+$/g, '')).filter(Boolean);
+      parts.forEach((p) => out.push(p));
+      if (parts.length > 1) out.push(parts.join(''));
+    });
+    return out;
+  }
+
+  function processGradingTerm(tok) {
+    const t = String(tok || '').replace(/^'+|'+$/g, '');
+    if (!t || GRADING_STOPWORDS.has(t)) return null;
+    return stemGradingToken(t);
+  }
+
+  function gradingStemsOf(str) {
+    const seen = new Set();
+    tokenizeForGrading(str).forEach((tok) => {
+      const s = processGradingTerm(tok);
+      if (s) seen.add(s);
+    });
+    return Array.from(seen);
+  }
+
+  function gradingFuzzyDistance(term) {
+    const len = String(term || '').length;
+    if (len >= 9) return 2;
+    if (len >= 5) return 1;
+    return 0;
+  }
+
+  function boundedLevenshtein(a, b, maxDist) {
+    if (a === b) return 0;
+    if (Math.abs(a.length - b.length) > maxDist) return maxDist + 1;
+    let prev = new Array(b.length + 1);
+    for (let j = 0; j <= b.length; j++) prev[j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      const cur = [i];
+      let rowMin = cur[0];
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+        if (cur[j] < rowMin) rowMin = cur[j];
+      }
+      if (rowMin > maxDist) return maxDist + 1;
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  function isReversePrefixHit(kwTerm, userStems) {
+    return userStems.some((u) => u.length >= 4 && u.length < kwTerm.length && u.length >= kwTerm.length * 0.6 && kwTerm.startsWith(u));
+  }
+
+  function nativeTermHit(kwTerm, userStems) {
+    const maxD = gradingFuzzyDistance(kwTerm);
+    for (let i = 0; i < userStems.length; i++) {
+      const u = userStems[i];
+      if (u === kwTerm) return true;
+      if (kwTerm.length >= 4 && u.startsWith(kwTerm)) return true;
+      if (maxD > 0 && boundedLevenshtein(kwTerm, u, maxD) <= maxD) return true;
+    }
+    return isReversePrefixHit(kwTerm, userStems);
+  }
+
+  function getMiniSearchCtor() {
+    const g = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : {});
+    const ctor = g.MiniSearch;
+    return typeof ctor === 'function' ? ctor : null;
+  }
+
+  function buildGradingMatcher(userText, opts = {}) {
+    const userStems = gradingStemsOf(userText);
+    const MiniSearchCtor = opts.forceNative ? null : getMiniSearchCtor();
+    if (MiniSearchCtor && userStems.length > 0) {
+      try {
+        const ms = new MiniSearchCtor({
+          fields: ['text'],
+          idField: 'id',
+          tokenize: tokenizeForGrading,
+          processTerm: processGradingTerm,
+          searchOptions: {
+            tokenize: (s) => [s],
+            processTerm: (s) => s,
+            prefix: (term) => term.length >= 4,
+            fuzzy: (term) => gradingFuzzyDistance(term) || false
+          }
+        });
+        ms.add({ id: 1, text: String(userText || '') });
+        return {
+          engine: 'minisearch',
+          userStems,
+          hit: (kwTerm) => ms.search(kwTerm).length > 0 || isReversePrefixHit(kwTerm, userStems)
+        };
+      } catch (_) { /* fall through to the native matcher */ }
+    }
+    return { engine: 'native', userStems, hit: (kwTerm) => nativeTermHit(kwTerm, userStems) };
+  }
+
+  function keywordTermVariants(kw) {
+    const variants = [gradingStemsOf(String(kw).replace(/-/g, ' '))];
+    if (/-/.test(String(kw))) variants.push(gradingStemsOf(String(kw).replace(/-/g, '')));
+    return variants.filter((v) => v.length > 0);
+  }
+
+  function gradeTheoryKeywords(userText, keywords, maxMarks, opts = {}) {
     const kws = Array.isArray(keywords) ? keywords : [];
-    const totalM = Number(maxMarks) || 1;
+    const totalM = Math.max(0, parseNumSafe(maxMarks, 1));
     const normUser = normalizeForMatch(userText);
+    const compactUser = normUser.replace(/\s+/g, '');
+    const matcher = buildGradingMatcher(userText, opts);
     const matched = [];
     const missed = [];
 
     kws.forEach((kw) => {
       const normKw = normalizeForMatch(kw);
       if (!normKw) return;
-      if (normUser.includes(normKw)) {
+      const escapedKw = normKw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const phraseHit = new RegExp(`(^|[^a-z0-9])${escapedKw}($|[^a-z0-9])`).test(normUser);
+      const isSymbolicKw = /[+=%]|\s-\s/.test(normKw);
+      if (normUser && (phraseHit || (isSymbolicKw && compactUser.includes(normKw.replace(/\s+/g, ''))))) {
         matched.push(kw);
         return;
       }
-      // Check word-stem matching for multi-word or inflected keywords
-      const words = normKw.split(' ').filter((w) => w.length >= 3);
-      if (words.length > 0) {
-        const hitCount = words.filter((w) => {
-          const stem = w.length >= 6 ? w.slice(0, w.length - 2) : (w.length >= 5 ? w.slice(0, w.length - 1) : w);
-          return normUser.includes(stem);
-        }).length;
-        if (hitCount >= Math.ceil(words.length * 0.75)) {
-          matched.push(kw);
-          return;
-        }
-      }
-      missed.push(kw);
+      const isHit = matcher.userStems.length > 0 && keywordTermVariants(kw).some((terms) => {
+        const hits = terms.filter((t) => matcher.hit(t)).length;
+        return hits >= Math.ceil(terms.length * 0.75);
+      });
+      if (isHit) matched.push(kw);
+      else missed.push(kw);
     });
 
     const ratio = kws.length > 0 ? matched.length / kws.length : 0;
@@ -3186,7 +3824,8 @@
       missed,
       ratio,
       autoMarks,
-      maxMarks: totalM
+      maxMarks: totalM,
+      engine: matcher.engine
     };
   }
 
@@ -3214,45 +3853,168 @@
   }
 
   const CALC_SYMBOL_TOOLBAR = [
-    { label: '×', insert: ' × ', title: 'Multiply (×)' },
-    { label: '÷', insert: ' ÷ ', title: 'Divide (÷)' },
-    { label: '+', insert: ' + ', title: 'Plus (+)' },
-    { label: '−', insert: ' − ', title: 'Minus (−)' },
-    { label: '=', insert: ' = ', title: 'Equals (=)' },
-    { label: 'Δ', insert: 'Δ', title: 'Change in (Δ)' },
-    { label: '%', insert: '%', title: 'Percentage (%)' },
-    { label: 'R', insert: 'R', title: 'Rand (R)' },
-    { label: '(a ÷ b)', insert: '() ÷ ()', title: 'Fraction template' },
-    { label: '₀', insert: '₀', title: 'Subscript 0' },
-    { label: '₁', insert: '₁', title: 'Subscript 1' },
+    { label: '×', insert: ' × ', title: 'Multiply' },
+    { label: '÷', insert: ' ÷ ', title: 'Divide' },
+    { label: '+', insert: ' + ', title: 'Add' },
+    { label: '−', insert: ' − ', title: 'Subtract' },
+    { label: '=', insert: ' = ', title: 'Equals' },
+    { label: 'Δ', insert: 'Δ', title: 'Δ (delta) = "change in". ΔY = new Y − old Y.' },
+    { label: '%', insert: '%', title: 'Percent: divide by 100 to use it in a formula (5% = 0.05).' },
+    { label: 'R', insert: 'R', title: 'Rand — always state the currency/unit on your final answer.' },
+    { label: '(a ÷ b)', insert: '() ÷ ()', title: 'Fraction template: top part in the first brackets, bottom part in the second.' },
+    { label: '₀', insert: '₀', title: 'Subscript 0 — usually the starting / base value (Y₀ = original income).' },
+    { label: '₁', insert: '₁', title: 'Subscript 1 — the new value after a change (Y₁ = new income).' },
     { label: '₂', insert: '₂', title: 'Subscript 2' },
-    { label: '²', insert: '²', title: 'Superscript 2' },
-    { label: 'Y', insert: 'Y', title: 'National Income / Output (Y)' },
-    { label: 'C', insert: 'C', title: 'Consumption (C)' },
-    { label: 'I', insert: 'I', title: 'Investment (I)' },
-    { label: 'G', insert: 'G', title: 'Government Spending (G)' },
-    { label: 'X', insert: 'X', title: 'Exports (X)' },
-    { label: 'Z', insert: 'Z', title: 'Imports (Z)' },
-    { label: 'C̄', insert: 'C̄', title: 'Autonomous Consumption (C̄)' },
-    { label: 'Ī', insert: 'Ī', title: 'Autonomous Investment (Ī)' },
-    { label: 'Ā', insert: 'Ā', title: 'Autonomous Spending (Ā)' },
-    { label: 'Yd', insert: 'Yd', title: 'Disposable Income (Yd)' },
-    { label: 'α', insert: 'α', title: 'Multiplier (α)' },
-    { label: 'MPC', insert: 'MPC', title: 'Marginal Propensity to Consume' },
-    { label: 'MPS', insert: 'MPS', title: 'Marginal Propensity to Save' },
-    { label: 'GDPmp', insert: 'GDP@MP', title: 'GDP at Market Prices' },
-    { label: 'GDPbp', insert: 'GDP@BP', title: 'GDP at Basic Prices' },
-    { label: 'GDPfc', insert: 'GDP@FC', title: 'GDP at Factor Cost' },
-    { label: 'GDE', insert: 'GDE', title: 'Gross Domestic Expenditure' },
-    { label: 'GNI', insert: 'GNI', title: 'Gross National Income' },
-    { label: 'M1', insert: 'M1', title: 'M1 Money Supply' },
-    { label: 'M2', insert: 'M2', title: 'M2 Money Supply' },
-    { label: 'M3', insert: 'M3', title: 'M3 Money Supply' },
-    { label: 'CPI', insert: 'CPI', title: 'Consumer Price Index' },
-    { label: 'TOT', insert: 'TOT', title: 'Terms of Trade' },
-    { label: 'UR', insert: 'UR', title: 'Unemployment Rate' },
-    { label: 'LFPR', insert: 'LFPR', title: 'Labour Force Participation Rate' }
+    { label: '²', insert: '²', title: 'Squared (superscript 2)' },
+    { label: 'Y', insert: 'Y', title: 'Y = total income = total output of the economy.' },
+    { label: 'C', insert: 'C', title: 'C = consumption: what households spend on goods and services.' },
+    { label: 'I', insert: 'I', title: 'I = investment: firms buying machines, buildings and stock.' },
+    { label: 'G', insert: 'G', title: 'G = government spending on goods and services.' },
+    { label: 'X', insert: 'X', title: 'X = exports: foreigners buying our goods (money flows in).' },
+    { label: 'Z', insert: 'Z', title: 'Z = imports: we buy foreign goods (money flows out).' },
+    { label: 'C̄', insert: 'C̄', title: 'C̄ = autonomous consumption: spending that happens even if income is zero.' },
+    { label: 'Ī', insert: 'Ī', title: 'Ī = autonomous investment: investment that does not depend on income.' },
+    { label: 'Ā', insert: 'Ā', title: 'Ā = all autonomous spending added together (C̄ + Ī + Ḡ + X̄ − Z̄ …).' },
+    { label: 'Yd', insert: 'Yd', title: 'Yd = disposable income: income left after paying tax (Y − T).' },
+    { label: 'α', insert: 'α', title: 'α = the multiplier: how many rands of income one extra rand of spending creates.' },
+    { label: 'MPC', insert: 'MPC', title: 'MPC (c) = share of each extra rand of income that is spent (0 < c < 1).' },
+    { label: 'MPS', insert: 'MPS', title: 'MPS = share of each extra rand that is saved. MPC + MPS = 1.' },
+    { label: 'GDPmp', insert: 'GDP@MP', title: 'GDP at market prices: what buyers actually pay, taxes on products included.' },
+    { label: 'GDPbp', insert: 'GDP@BP', title: 'GDP at basic prices = GDPmp − taxes on products + subsidies on products.' },
+    { label: 'GDPfc', insert: 'GDP@FC', title: 'GDP at factor cost = what the factors of production earn (all indirect taxes removed, subsidies added).' },
+    { label: 'GDE', insert: 'GDE', title: 'GDE = total spending inside the country: C + I + G (imports included).' },
+    { label: 'GNI', insert: 'GNI', title: 'GNI = income earned by permanent residents: GDP + primary income received − paid.' },
+    { label: 'M1', insert: 'M1', title: 'M1 = notes and coins held by the public + demand (cheque) deposits.' },
+    { label: 'M2', insert: 'M2', title: 'M2 = M1 + other short- and medium-term deposits.' },
+    { label: 'M3', insert: 'M3', title: 'M3 = M2 + long-term deposits (the broadest money measure).' },
+    { label: 'CPI', insert: 'CPI', title: 'CPI = consumer price index: the price of a typical shopping basket vs the base year (= 100).' },
+    { label: 'TOT', insert: 'TOT', title: 'Terms of trade = (export price index ÷ import price index) × 100.' },
+    { label: 'UR', insert: 'UR', title: 'Unemployment rate = unemployed ÷ labour force × 100.' },
+    { label: 'LFPR', insert: 'LFPR', title: 'Labour force participation rate = labour force ÷ working-age population × 100.' }
   ];
+
+  /* Converts a student's plain-text working ("GDE = C + I + G = 2 480 000 + …", "α = 1 ÷ (1 − c)",
+     "C̄", "Y₀", "GDP@MP") into KaTeX source for the live typeset preview. Never throws. */
+  const WORKING_SYMBOL_TEX = {
+    '×': '\\times ', '*': '\\times ', '÷': '\\div ', '−': '-', '–': '-', '—': '-', '±': '\\pm ',
+    '≈': '\\approx ', '≥': '\\geq ', '≤': '\\leq ', '≠': '\\neq ', '→': '\\rightarrow ', '⇒': '\\Rightarrow ',
+    'Δ': '\\Delta ', 'α': '\\alpha ', 'β': '\\beta ', 'π': '\\pi ', 'μ': '\\mu ', 'σ': '\\sigma ', '√': '\\surd ',
+    '%': '\\%', '$': '\\$', '#': '\\#', '&': '\\&', '_': '\\_', '{': '\\{', '}': '\\}', '\\': '\\backslash ',
+    '^': '\\wedge ', '~': '\\sim ', '<': '<', '>': '>', '=': '=', '+': '+', '-': '-', '/': '/',
+    '(': '(', ')': ')', '[': '[', ']': ']', ':': ':', ';': ';', '!': '!', '?': '?', '|': '|', '\'': '\'',
+    'Ā': '\\bar{A}', 'Ē': '\\bar{E}', 'Ī': '\\bar{I}', 'Ō': '\\bar{O}', 'Ū': '\\bar{U}', 'Ȳ': '\\bar{Y}', 'Ḡ': '\\bar{G}',
+    'ā': '\\bar{a}', 'ī': '\\bar{\\imath}', 'ȳ': '\\bar{y}'
+  };
+  const SUBSCRIPT_DIGITS = '₀₁₂₃₄₅₆₇₈₉';
+  const SUPERSCRIPT_DIGITS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+  function workingLineToLatex(line) {
+    const chars = Array.from(String(line || ''));
+    let out = '';
+    let prevKind = '';
+    let i = 0;
+    const isWordChar = (k) => k === 'word' || k === 'num' || k === 'close';
+    while (i < chars.length) {
+      const ch = chars[i];
+      if (/\s/.test(ch)) {
+        let j = i;
+        while (j < chars.length && /\s/.test(chars[j])) j++;
+        const nextCh = chars[j] || '';
+        const nextKind = /[0-9]/.test(nextCh) ? 'num' : (/[A-Za-z(]/.test(nextCh) ? 'word' : 'op');
+        if (prevKind === 'num' && nextKind === 'num') out += '\\,';
+        else if (isWordChar(prevKind) && nextKind !== 'op') out += '\\;';
+        i = j;
+        continue;
+      }
+      if (/[A-Za-z]/.test(ch)) {
+        let j = i;
+        while (j < chars.length && /[A-Za-z]/.test(chars[j])) j++;
+        const word = chars.slice(i, j).join('');
+        if (chars[j] === '\u0304') {
+          // Combining macron: C̄ / Ī / Ā (macron applies to the last letter of the run)
+          const head = word.slice(0, -1);
+          out += (head ? `\\mathrm{${head}}` : '') + `\\bar{${word.slice(-1)}}`;
+          j++;
+        } else if (word.length === 1) {
+          out += /^[0-9]$/.test(chars[j] || '') && word === 'R' ? '\\mathrm{R}' : word;
+        } else {
+          out += `\\mathrm{${word}}`;
+        }
+        prevKind = 'word';
+        i = j;
+        continue;
+      }
+      if (/[0-9.,]/.test(ch)) {
+        let j = i;
+        while (j < chars.length && /[0-9.,]/.test(chars[j])) j++;
+        out += chars.slice(i, j).join('').replace(/,/g, '{,}');
+        prevKind = 'num';
+        i = j;
+        continue;
+      }
+      if (SUBSCRIPT_DIGITS.includes(ch) || SUPERSCRIPT_DIGITS.includes(ch)) {
+        const table = SUBSCRIPT_DIGITS.includes(ch) ? SUBSCRIPT_DIGITS : SUPERSCRIPT_DIGITS;
+        let j = i;
+        let digits = '';
+        while (j < chars.length && table.includes(chars[j])) {
+          digits += String(table.indexOf(chars[j]));
+          j++;
+        }
+        out += (out ? '' : '{}') + (table === SUBSCRIPT_DIGITS ? `_{${digits}}` : `^{${digits}}`);
+        prevKind = 'word';
+        i = j;
+        continue;
+      }
+      if (ch === '@') {
+        let j = i + 1;
+        while (j < chars.length && /[A-Za-z]/.test(chars[j])) j++;
+        const sub = chars.slice(i + 1, j).join('');
+        out += sub ? `_{\\mathrm{${sub}}}` : '@';
+        prevKind = 'word';
+        i = j;
+        continue;
+      }
+      if (Object.prototype.hasOwnProperty.call(WORKING_SYMBOL_TEX, ch)) {
+        out += WORKING_SYMBOL_TEX[ch];
+        prevKind = (ch === ')' || ch === ']') ? 'close' : (WORKING_SYMBOL_TEX[ch].startsWith('\\bar') ? 'word' : 'op');
+        i++;
+        continue;
+      }
+      if (ch === '\u0304') { i++; continue; }
+      // Any other character (accented letters, emoji…) goes through \text{} verbatim-safe.
+      out += `\\text{${ch.replace(/[{}\\]/g, '')}}`;
+      prevKind = 'word';
+      i++;
+    }
+    return out;
+  }
+
+  function workingToLatex(text) {
+    return String(text || '')
+      .split(/\r?\n/)
+      .map((l) => workingLineToLatex(l))
+      .filter((l) => l.trim().length > 0);
+  }
+
+  function renderWorkingPreview(previewEl, text) {
+    if (!previewEl) return;
+    const lines = workingToLatex(text);
+    if (lines.length === 0 || typeof window === 'undefined' || !window.katex) {
+      previewEl.hidden = true;
+      previewEl.innerHTML = '';
+      return;
+    }
+    previewEl.hidden = false;
+    previewEl.innerHTML = `<span class="calc-preview-label">Preview</span>` + lines.map((l) => {
+      let html;
+      try {
+        html = window.katex.renderToString(l, { throwOnError: false, displayMode: false, strict: 'ignore' });
+      } catch (_) {
+        html = escapeAttr(l);
+      }
+      return `<div class="calc-preview-line">${html}</div>`;
+    }).join('');
+  }
 
   const ExtremeExamEngine = (() => {
     let sectionFilter = 'ALL'; // 'ALL' | 'A' | 'B' | 'C'
@@ -3340,7 +4102,7 @@
         const chosenIdx = sessionState.mcqChoices[part.id];
         const opts = getShuffledOptionsForPart(part);
         if (typeof chosenIdx === 'number' && opts[chosenIdx] && opts[chosenIdx].isCorrect) {
-          return part.marks || 2;
+          return parseNumSafe(part.marks, 2);
         }
         return 0;
       }
@@ -3359,7 +4121,7 @@
         let sum = 0;
         (part.rubricSteps || []).forEach((st) => {
           if (stepChecks[st.id]) {
-            sum += Number(st.marks) || 0;
+            sum += parseNumSafe(st.marks, 0);
           }
         });
         return Math.min(part.marks, sum);
@@ -3377,7 +4139,7 @@
       });
       return {
         earned,
-        total: page.totalMarks || 0,
+        total: parseNumSafe(page.totalMarks, 0),
         isChecked
       };
     }
@@ -3415,7 +4177,7 @@
           };
         }
         byChapter[chId].earned += pScore.earned;
-        byChapter[chId].total += p.totalMarks || 0;
+        byChapter[chId].total += parseNumSafe(p.totalMarks, 0);
       });
 
       return {
@@ -3593,7 +4355,7 @@
     }).join('');
 
     const partsHtml = (page.parts || []).map((part) => {
-      return renderExtremePartHtml(part, isPageChecked, sState);
+      return renderExtremePartHtml(part, isPageChecked, sState, page.chapterId);
     }).join('');
 
     stage.innerHTML = `
@@ -3662,8 +4424,13 @@
     bindExtremePageEvents(stage, page, pages, pageIdx);
   }
 
-  function renderExtremePartHtml(part, isPageChecked, sState) {
+  function renderExtremePartHtml(part, isPageChecked, sState, chapterId) {
     const partEarned = ExtremeExamEngine.getPartScore(part, isPageChecked);
+    const partDecodedVars = decodeVariablesForText(
+      [part.stem, part.prompt, part.officialMemo, part.beginnerExplanation].filter(Boolean).join(' '),
+      chapterId || 'ch13'
+    );
+    const partDecoderPillsHtml = renderDecoderPillsHtml(partDecodedVars, 'Plain-English Variable Decoder:');
 
     if (part.type === 'mcq') {
       const opts = ExtremeExamEngine.getShuffledOptionsForPart(part);
@@ -3710,6 +4477,7 @@
             <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
             <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
           </div>
+          ${partDecoderPillsHtml}
         </div>
       ` : '';
 
@@ -3733,8 +4501,8 @@
 
       let memoHtml = '';
       if (isPageChecked) {
-        const matchedPills = kwResult.matched.map((k) => `<span class="kw-pill kw-hit">✓ ${k}</span>`).join('');
-        const missedPills = kwResult.missed.map((k) => `<span class="kw-pill kw-miss">○ ${k}</span>`).join('');
+        const matchedPills = kwResult.matched.map((k) => `<span class="kw-pill kw-hit" tabindex="0" data-tip="Found in your answer (spelling slips and word endings are tolerated).">✓ ${escapeAttr(k)}</span>`).join('');
+        const missedPills = kwResult.missed.map((k) => `<span class="kw-pill kw-miss" tabindex="0" data-tip="Not found — the memo expects this idea. If you said it in other words, self-mark below.">○ ${escapeAttr(k)}</span>`).join('');
 
         // Generate fine-grained score buttons (0, half-marks, integer marks up to part.marks)
         const markChoices = [];
@@ -3802,6 +4570,7 @@
               <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
               <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
             </div>
+            ${partDecoderPillsHtml}
           </div>
         `;
       }
@@ -3835,7 +4604,8 @@
         class="symbol-toolbar-btn"
         data-target-input="extreme-input-${part.id}"
         data-insert-symbol="${escapeAttr(sym.insert)}"
-        title="${escapeAttr(sym.title)}"
+        data-tip="${escapeAttr(sym.title)}"
+        aria-label="Insert ${escapeAttr(sym.label)}: ${escapeAttr(sym.title)}"
       >${sym.label}</button>
     `).join('');
 
@@ -3885,6 +4655,7 @@
             <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
             <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
           </div>
+          ${partDecoderPillsHtml}
         </div>
       `;
     }
@@ -3896,6 +4667,7 @@
           <span class="extreme-part-marks">[${part.marks} marks]</span>
         </div>
         <p class="extreme-part-stem">${renderInlineLatexText(part.prompt)}</p>
+        ${partDecoderPillsHtml}
 
         <div class="symbol-toolbar" role="toolbar" aria-label="Math and Economic Symbol Toolbar for Question ${part.number}">
           <span class="symbol-toolbar-title">Insert Symbol:</span>
@@ -3909,6 +4681,7 @@
           rows="3"
           placeholder="Write your formula, substitution, and final answer here (click any symbol above to insert at cursor)..."
         >${escapeAttr(userTxt)}</textarea>
+        <div class="calc-live-preview" data-preview-for="extreme-input-${part.id}" aria-live="polite" hidden></div>
         ${memoHtml}
       </div>
     `;
@@ -4038,6 +4811,7 @@
       if (card && typeof card.scrollIntoView === 'function') {
         card.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      springIn(card, { distance: 14 });
     };
 
     // Page Jump select
@@ -4096,6 +4870,9 @@
         else AudioEngine.playClick();
         updateKpiBanner();
         renderExtremeExamStage();
+        document.querySelectorAll('#extreme-active-page .extreme-memo-box').forEach((box, i) => {
+          springIn(box, { delay: Math.min(i, 6) * 60 });
+        });
       });
     }
 
@@ -4112,17 +4889,27 @@
       });
     });
 
-    // Textarea input persistence (Theory & Calculation)
+    // Textarea input persistence (Theory & Calculation) + live typeset preview for calculations
+    const previewFor = (inputEl) => stage.querySelector(`[data-preview-for="${inputEl.id}"]`);
     stage.querySelectorAll('[data-text-part]').forEach((ta) => {
+      const pv = previewFor(ta);
+      if (pv) renderWorkingPreview(pv, ta.value);
+      let rafId = 0;
       ta.addEventListener('input', () => {
         const partId = ta.getAttribute('data-text-part');
         sState.textAnswers[partId] = ta.value;
         ExtremeExamEngine.saveSessionState();
+        if (pv && typeof requestAnimationFrame === 'function') {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(() => renderWorkingPreview(pv, ta.value));
+        }
       });
     });
 
     // Math & Economic Symbol Toolbar insertion at cursor
     stage.querySelectorAll('[data-insert-symbol]').forEach((btn) => {
+      // Keep the caret in the textarea: stop the button from taking focus on mouse/touch down.
+      btn.addEventListener('mousedown', (e) => e.preventDefault());
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-target-input');
         const sym = btn.getAttribute('data-insert-symbol') || '';
@@ -4143,6 +4930,7 @@
           if (typeof inputEl.setSelectionRange === 'function') {
             inputEl.setSelectionRange(newCursor, newCursor);
           }
+          renderWorkingPreview(previewFor(inputEl), inputEl.value);
           AudioEngine.playClick();
         }
       });
@@ -4152,7 +4940,7 @@
     stage.querySelectorAll('[data-theory-full-toggle]').forEach((chk) => {
       chk.addEventListener('change', () => {
         const partId = chk.getAttribute('data-theory-full-toggle');
-        const maxM = parseFloat(chk.getAttribute('data-max-marks')) || 1;
+        const maxM = parseNumSafe(chk.getAttribute('data-max-marks'), 1);
         if (chk.checked) {
           sState.theorySelfMarks[partId] = maxM;
           AudioEngine.playSuccess();
@@ -4170,8 +4958,8 @@
     stage.querySelectorAll('[data-theory-mark]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const partId = btn.getAttribute('data-theory-part');
-        const m = parseFloat(btn.getAttribute('data-theory-mark'));
-        if (!Number.isNaN(m)) {
+        const m = parseNumSafe(btn.getAttribute('data-theory-mark'), NaN);
+        if (Number.isFinite(m)) {
           sState.theorySelfMarks[partId] = m;
           ExtremeExamEngine.saveSessionState();
           AudioEngine.playClick();
@@ -4214,9 +5002,18 @@
     resolveLabelCollisions,
     computeSvgLabCoordinates,
     gradeTheoryKeywords,
+    stemGradingToken,
+    gradingStemsOf,
+    workingToLatex,
     evaluateCalculationRubric,
     formatMark,
     escapeAttr,
+    GLOBAL_VARIABLE_DECODER,
+    LAB_CONFIGS,
+    SOLVER_DECODERS,
+    decodeVariablesForText,
+    renderDecoderPillsHtml,
+    renderDecoderCardHtml,
     ScopeEngine,
     ExtremeExamEngine
   };

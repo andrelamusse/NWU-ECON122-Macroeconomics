@@ -2101,3 +2101,160 @@ input[type="range"] {
   font-weight: 700;
 }
 
+
+/* Anchored tooltip (positioned by Floating UI) */
+.fx-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  max-width: min(320px, calc(100vw - 16px));
+  padding: 0.5rem 0.7rem;
+  border-radius: 9px;
+  background: var(--bg-canvas-elevated);
+  border: 1px solid var(--border-highlight);
+  box-shadow: var(--shadow-float);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px) scale(0.98);
+  transition: opacity 0.18s var(--ease-out-expo), transform 0.32s var(--ease-out-expo);
+}
+
+.fx-tooltip[data-placement^="bottom"] {
+  transform: translateY(-4px) scale(0.98);
+}
+
+.fx-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.kw-pill[data-tip] {
+  cursor: help;
+}
+
+.kw-pill[data-tip]:focus-visible,
+.symbol-toolbar-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Live typeset preview of a student's calculation working */
+.calc-live-preview {
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  border: 1px dashed var(--border-highlight);
+  background: var(--bg-code);
+  display: grid;
+  gap: 0.2rem;
+  overflow-x: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-live-preview[hidden] {
+  display: none;
+}
+
+.calc-preview-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.calc-preview-line {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Inline Plain-English Variable Decoder Pills (per-formula & per-question) */
+.formula-var-decoder {
+  margin-top: 0.55rem;
+  padding: 0.5rem 0.68rem;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.formula-var-decoder-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-emerald);
+}
+
+.formula-var-decoder-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.decoder-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.2rem 0.52rem;
+  border-radius: 999px;
+  background: var(--bg-canvas-elevated);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  cursor: help;
+  transition: border-color 0.18s var(--ease-out-expo), background 0.18s var(--ease-out-expo), transform 0.18s var(--ease-out-expo);
+}
+
+.decoder-inline-pill:hover,
+.decoder-inline-pill:focus-visible,
+.variable-decoder-card[data-tip]:hover,
+.variable-decoder-card[data-tip]:focus-visible {
+  border-color: var(--accent-sky);
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.decoder-inline-sym {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-sky);
+  font-variant-numeric: tabular-nums;
+}
+
+.decoder-inline-name {
+  font-weight: 500;
+}
+
+/* Interactive 2D SVG Lab Drag Handle */
+.svg-drag-handle {
+  cursor: grab;
+  transition: r 0.18s var(--ease-out-expo), stroke-width 0.18s var(--ease-out-expo);
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
+}
+
+.svg-drag-handle:hover {
+  r: 9px;
+  stroke-width: 3px;
+}
+
+.svg-drag-handle:active {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-tooltip,
+  .decoder-inline-pill,
+  .svg-drag-handle {
+    transition: none;
+  }
+}

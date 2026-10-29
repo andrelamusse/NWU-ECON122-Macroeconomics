@@ -1,6 +1,6 @@
 ---
 description: Guardrails for interactive academic assessment engines, beginner-friendly explanations, and minimalist admin telemetry monitors.
-globs: ["*.html", "*.js", "scripts/*.py"]
+trigger: always_on
 ---
 
 # Academic Assessment Workbench & Telemetry Guardrails
