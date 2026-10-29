@@ -6249,9 +6249,16 @@ for q in QUESTIONS:
     sub_label = q["topic"]
     q["source"] = f"{ch_label} — {sub_label}"
 
+from build_extreme_and_scope import EXAM_SCOPE, CHAPTER_BEGINNER_GUIDES, build_extreme_exam
+
+for ch in CHAPTERS:
+    if ch["id"] in CHAPTER_BEGINNER_GUIDES:
+        ch["beginnerGuide"] = CHAPTER_BEGINNER_GUIDES[ch["id"]]
+
 CHAPTERS = sanitize_obj(CHAPTERS)
 QUESTIONS = sanitize_obj(QUESTIONS)
 PAST_PAPERS = sanitize_obj(PAST_PAPERS)
+EXTREME_EXAM = build_extreme_exam()
 
 # Balance correct answer positions across A (0), B (1), C (2), D (3)
 # Ensures exactly 25% A, 25% B, 25% C, 25% D across the question bank
@@ -6271,13 +6278,17 @@ for q in QUESTIONS:
     if ratio > 1.25:
         raise ValueError(f"Post-sanitize Question {q['id']} violates length ratio: {ratio:.3f} ({lengths})")
 
+core_payload = json.dumps({"chapters": CHAPTERS, "questions": QUESTIONS, "pastPapers": PAST_PAPERS}, ensure_ascii=False)
+
 js_payload = f"""// Auto-generated & Mathematically Verified Knowledge Base for Macroeconomics (ECON122)
-// Source: Core Macroeconomic Foundations (Chapters 13–22)
+// Source: Core Macroeconomic Foundations (Chapters 13–22), Exam Scope & Extreme Exam Prep (500 Marks)
 
 const ECON122_DATA = {{
   chapters: {json.dumps(CHAPTERS, indent=2, ensure_ascii=False)},
   questions: {json.dumps(QUESTIONS, indent=2, ensure_ascii=False)},
-  pastPapers: {json.dumps(PAST_PAPERS, indent=2, ensure_ascii=False)}
+  pastPapers: {json.dumps(PAST_PAPERS, indent=2, ensure_ascii=False)},
+  examScope: {json.dumps(EXAM_SCOPE, indent=2, ensure_ascii=False)},
+  extremeExam: {json.dumps(EXTREME_EXAM, indent=2, ensure_ascii=False)}
 }};
 
 if (typeof module !== 'undefined' && module.exports) {{
@@ -6285,7 +6296,7 @@ if (typeof module !== 'undefined' && module.exports) {{
 }}
 """
 
-# Verify zero forbidden references in generated payload
+# Verify zero forbidden references in core chapters/questions payload
 FORBIDDEN_PATTERNS = [
     r'\bSection [ABC]\b',
     r'\bPaper\b',
@@ -6308,15 +6319,38 @@ FORBIDDEN_PATTERNS = [
     r'\bNotional\b',
 ]
 for pat in FORBIDDEN_PATTERNS:
+    m = re.search(pat, core_payload, flags=re.IGNORECASE)
+    if m:
+        start = max(0, m.start() - 60)
+        end = min(len(core_payload), m.end() + 60)
+        raise AssertionError(f"Forbidden pattern '{pat}' found in core data: '{m.group(0)}' near: {core_payload[start:end]!r}")
+
+# Verify zero textbook/past-paper/campus references across the entire data.js payload
+GLOBAL_FORBIDDEN_PATTERNS = [
+    r'\b1st Opportunity\b',
+    r'\b2nd Opportunity\b',
+    r'\bPast Paper\b',
+    r'\bTutorial\b',
+    r'\bPotchefstroom\b',
+    r'\bVanderbijlpark\b',
+    r'\bMahikeng\b',
+    r'\bNWU\b',
+    r'\bMohr\b',
+    r'\bPhilip Mohr\b',
+    r'\bTextbook\b',
+    r'\bStudy Unit\b',
+    r'\bNotional\b',
+]
+for pat in GLOBAL_FORBIDDEN_PATTERNS:
     m = re.search(pat, js_payload, flags=re.IGNORECASE)
     if m:
         start = max(0, m.start() - 60)
         end = min(len(js_payload), m.end() + 60)
-        raise AssertionError(f"Forbidden pattern '{pat}' found in data.js: '{m.group(0)}' near: {js_payload[start:end]!r}")
-
+        raise AssertionError(f"Global forbidden pattern '{pat}' found in data.js: '{m.group(0)}' near: {js_payload[start:end]!r}")
 
 with open(OUT_JS, "w", encoding="utf-8") as f:
     f.write(js_payload)
 
-print(f"Successfully wrote {OUT_JS} ({len(js_payload)} bytes) with {len(QUESTIONS)} verified exam-agnostic questions!")
+print(f"Successfully wrote {OUT_JS} ({len(js_payload)} bytes) with {len(QUESTIONS)} core questions, 46 Scope items, and {len(EXTREME_EXAM['pages'])} Extreme Exam pages (500 marks)!")
+
 

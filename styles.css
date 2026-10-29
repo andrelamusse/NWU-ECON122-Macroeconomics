@@ -1559,3 +1559,543 @@ input[type="range"] {
     box-shadow: none !important;
   }
 }
+
+/* ============================================================================
+   10. Plain-English Variable Decoder, Exam Scope & Extreme Exam Prep Workbench
+   ============================================================================ */
+.variable-decoder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.variable-decoder-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.variable-symbol-pill {
+  flex-shrink: 0;
+  padding: 0.28rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--accent-sky);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Exam Scope Checklist */
+.scope-hero-top,
+.extreme-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.scope-progress-summary-box,
+.extreme-score-badge-box {
+  padding: 0.85rem 1.25rem;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  text-align: right;
+  min-width: 190px;
+}
+
+.scope-big-pct,
+.extreme-score-val {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--accent-emerald);
+  line-height: 1.1;
+}
+
+.scope-big-sub,
+.extreme-score-sub,
+.extreme-score-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.scope-progress-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  margin: 1.1rem 0 0.9rem;
+}
+
+.scope-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-sky), var(--accent-emerald));
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.scope-kpi-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.1rem;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+
+.scope-mini-stat strong {
+  color: var(--text-primary);
+  margin-left: 0.3rem;
+}
+
+.scope-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.scope-filter-group,
+.extreme-section-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+}
+
+.scope-toolbar .scope-filter-group {
+  margin-top: 0;
+}
+
+.active-filter {
+  border-color: var(--accent-sky) !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.22);
+}
+
+.scope-group-card {
+  margin-bottom: 1.25rem;
+}
+
+.scope-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.scope-group-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.scope-items-stack,
+.extreme-parts-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.scope-checklist-item {
+  padding: 1rem 1.15rem;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.scope-checklist-item.is-mastered {
+  border-color: rgba(48, 209, 88, 0.45);
+  background: rgba(48, 209, 88, 0.05);
+}
+
+.scope-checklist-item.is-partial {
+  border-color: rgba(255, 159, 10, 0.42);
+  background: rgba(255, 159, 10, 0.04);
+}
+
+.scope-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.scope-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.scope-item-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent-emerald);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.scope-item-code {
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--accent-sky);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.scope-item-topic {
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.scope-level-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.scope-level-btn {
+  padding: 0.32rem 0.68rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scope-level-btn:hover {
+  border-color: var(--accent-sky);
+  color: var(--text-primary);
+}
+
+.scope-level-btn.active-not-yet {
+  background: rgba(255, 69, 58, 0.14);
+  border-color: rgba(255, 69, 58, 0.45);
+  color: var(--accent-rose);
+}
+
+.scope-level-btn.active-partial {
+  background: rgba(255, 159, 10, 0.15);
+  border-color: rgba(255, 159, 10, 0.5);
+  color: var(--accent-amber);
+}
+
+.scope-level-btn.active-well {
+  background: rgba(48, 209, 88, 0.16);
+  border-color: rgba(48, 209, 88, 0.5);
+  color: var(--accent-emerald);
+}
+
+.scope-item-guide {
+  margin-top: 0.75rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--border-subtle);
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.scope-formula-bar {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-sky);
+  background: rgba(56, 189, 248, 0.07);
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+}
+
+.scope-beginner-tip {
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* Extreme Exam Prep Workbench */
+.extreme-shared-context {
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.15rem;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.extreme-part-block {
+  padding: 1.15rem 1.25rem;
+  border-radius: 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.extreme-part-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.extreme-part-num {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--accent-sky);
+}
+
+.extreme-part-marks {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.extreme-part-stem {
+  font-size: 1rem;
+  line-height: 1.58;
+  color: var(--text-primary);
+  margin-bottom: 0.85rem;
+}
+
+.option-btn.selected-choice {
+  border-color: var(--accent-sky);
+  background: rgba(56, 189, 248, 0.14);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.extreme-textarea {
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.93rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.extreme-textarea.calc-textarea {
+  font-family: var(--font-mono);
+}
+
+.extreme-textarea:focus {
+  outline: none;
+  border-color: var(--accent-sky);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+/* Math & Economic Symbol Toolbar */
+.symbol-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  margin-bottom: 0.55rem;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.symbol-toolbar-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 0.25rem;
+}
+
+.symbol-toolbar-btn {
+  padding: 0.26rem 0.55rem;
+  min-height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.79rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.symbol-toolbar-btn:hover {
+  border-color: var(--accent-sky);
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-sky);
+}
+
+/* Memo & Self-Marking Feedback Boxes */
+.extreme-memo-box {
+  margin-top: 1rem;
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--accent-emerald);
+  display: grid;
+  gap: 0.8rem;
+}
+
+.extreme-memo-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.extreme-official-memo {
+  padding: 0.75rem 0.95rem;
+  border-radius: 10px;
+  background: rgba(48, 209, 88, 0.06);
+  border: 1px solid rgba(48, 209, 88, 0.24);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.extreme-beginner-box {
+  padding: 0.75rem 0.95rem;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.07);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  font-size: 0.89rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.kw-pills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.kw-pill {
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.kw-pill.kw-hit {
+  background: rgba(48, 209, 88, 0.16);
+  border: 1px solid rgba(48, 209, 88, 0.4);
+  color: var(--accent-emerald);
+}
+
+.kw-pill.kw-miss {
+  background: rgba(255, 159, 10, 0.14);
+  border: 1px solid rgba(255, 159, 10, 0.38);
+  color: var(--accent-amber);
+}
+
+.extreme-self-mark-bar {
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.self-mark-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.self-mark-btn {
+  padding: 0.24rem 0.55rem;
+  border-radius: 7px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.self-mark-btn.active {
+  background: rgba(48, 209, 88, 0.18);
+  border-color: var(--accent-emerald);
+  color: var(--accent-emerald);
+}
+
+.rubric-checklist-box {
+  padding: 0.75rem 0.95rem;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.rubric-steps-stack {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rubric-step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.rubric-step-item.is-ticked {
+  border-color: rgba(48, 209, 88, 0.45);
+  background: rgba(48, 209, 88, 0.08);
+}
+
+.extreme-action-footer {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.extreme-footer-center {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-lg-action {
+  padding: 0.7rem 1.35rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+

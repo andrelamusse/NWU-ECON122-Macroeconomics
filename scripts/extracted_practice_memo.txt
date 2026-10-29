@@ -1,0 +1,2215 @@
+--- PAGE 1 ---
+ECON 122
+MEMORANDUM
+Exam scope 2026 · Opportunity 1 style
+Module code
+ECON122
+Module description
+Introduction to Macroeconomics
+Type of assessment
+Memorandum: Comprehensive revision examination (Paper 1 style)
+Maximum marks
+500
+Structure
+Section A: Multiple choice [200]  |  Section B: Theory [150]  |  Section C:
+Calculations [150]
+Suggested time
+15 hours in total (≈ 3 hours per 100 marks, as in the real exam). Work in
+sittings: Section A (6 h), Section B (4½ h), Section C (4½ h).
+Textbook
+Mohr & Associates, Economics for South African Students – Chapters 13–18
+and 20–22
+Resources
+Non-programmable calculator
+This is an independent practice paper written to mirror the format, mark allocation and style of past ECON122 Paper 1
+examinations (2018–2024) and the 2026 exam scope. It is not an official university examination paper. All companies, countries
+and data are fictional or hypothetical unless stated otherwise.
+ECON 122: Practice Examination – Memorandum
+1/37
+
+
+--- PAGE 2 ---
+SECTION A — QUICK ANSWER KEY
+2 marks each
+1. A
+2. D
+3. B
+4. D
+5. A
+6. B
+7. A
+8. D
+9. B
+10. A
+11. D
+12. B
+13. B
+14. C
+15. D
+16. A
+17. B
+18. D
+19. B
+20. B
+21. C
+22. D
+23. B
+24. B
+25. C
+26. A
+27. B
+28. B
+29. C
+30. C
+31. B
+32. C
+33. C
+34. D
+35. B
+36. B
+37. D
+38. C
+39. D
+40. D
+41. A
+42. D
+43. A
+44. D
+45. B
+46. C
+47. C
+48. D
+49. A
+50. B
+51. C
+52. A
+53. B
+54. B
+55. B
+56. B
+57. B
+58. C
+59. B
+60. B
+61. A
+62. C
+63. D
+64. D
+65. D
+66. A
+67. C
+68. B
+69. A
+70. D
+71. A
+72. D
+73. D
+74. A
+75. C
+76. D
+77. C
+78. D
+79. A
+80. A
+81. A
+82. D
+83. D
+84. D
+85. A
+86. A
+87. C
+88. A
+89. A
+90. A
+91. C
+92. A
+93. A
+94. C
+95. C
+96. C
+97. C
+98. C
+99. C
+100. C
+How to mark yourself
+Section A: 2 marks per correct answer; each answer below includes a short explanation.
+Sections B and C: marks are shown in brackets after each step, e.g. (½) or (1). In calculations,
+NWU markers usually award ½ for the formula, marks for correct substitution and ½–1 for the final
+answer rounded to two decimals – so always write the formula.
+Theory answers list the key points a marker looks for. Equivalent wording in your own words earns
+the marks.
+Score guide: 75%+ (375+) exam ready · 60–74% (300–374) revise weak chapters · below 60% go
+back to the study guide exercises.
+ECON 122: Practice Examination – Memorandum
+2/37
+
+
+--- PAGE 3 ---
+SECTION A / AFDELING A — MULTIPLE CHOICE
+[200]
+Choose the most correct answer. Each question carries 2 marks (100 × 2 = 200).
+1.
+Gross domestic product (GDP) is the total value of all ___ produced within the boundaries of a
+country in a particular period.
+A.  final goods and services
+B.  final goods sold to households only
+C.  goods and services produced by permanent residents, wherever they live
+D.  goods and services, including intermediate goods
+Answer: A — GDP counts only final goods and services to avoid double counting.
+2.
+Which one of the following would be included in South Africa's GDP for 2026?
+A.  The purchase of existing shares on the JSE
+B.  The sale of a 2019 second-hand car in 2026
+C.  The salary of a South African engineer working in Dubai
+D.  The value of a new house built in Polokwane during 2026
+Answer: D — Only current production within SA's borders counts; resales and financial transactions are excluded.
+3.
+GDP at market prices is equal to GDP at factor cost plus ...
+A.  depreciation (consumption of fixed capital)
+B.  taxes on production and imports minus subsidies
+C.  net primary income from the rest of the world
+D.  subsidies minus taxes on production and imports
+Answer: B — GDPmp = GDPfc + taxes - subsidies.
+4.
+GDP at factor cost is R4 800 billion, taxes on production and imports are R620 billion and subsidies
+are R45 billion. GDP at market prices is:
+A.  R4 135 billion
+B.  R4 225 billion
+C.  R5 465 billion
+D.  R5 375 billion
+Answer: D — 4 800 + 620 - 45 = R5 375 billion.
+5.
+Given C = R3 200 bn, I = R900 bn, G = R1 100 bn, X = R1 500 bn and Z = R1 450 bn, gross
+domestic expenditure (GDE) is:
+A.  R5 200 bn
+B.  R3 750 bn
+C.  R6 700 bn
+D.  R5 250 bn
+Answer: A — GDE = C + I + G = 3 200 + 900 + 1 100 = R5 200 bn (exports and imports are excluded).
+6.
+Which statement best explains why South Africa's gross national income (GNI) is usually smaller
+than its GDP?
+A.  South Africa imports more goods than it exports
+B.  South Africa pays more primary income to the rest of the world than it receives
+C.  Taxes on production exceed subsidies
+D.  Depreciation of the capital stock is very large
+Answer: B — GNI = GDP + primary income receipts - primary income payments; SA's payments exceed its
+receipts.
+ECON 122: Practice Examination – Memorandum
+3/37
+
+
+--- PAGE 4 ---
+7.
+A farmer sells wheat for R10 000 to a miller, who sells flour for R12 500 to a baker, who sells bread
+for R18 000 to a shopkeeper, who sells it to consumers for R21 000. The value added by the baker
+is:
+A.  R5 500
+B.  R2 500
+C.  R18 000
+D.  R3 000
+Answer: A — Value added = sales - purchases = 18 000 - 12 500 = R5 500.
+8.
+Real GDP measures the value of production ...
+A.  at factor cost only
+B.  after subtracting depreciation
+C.  at current prices
+D.  at constant (base-year) prices
+Answer: D — Real GDP removes the effect of price changes by using base-year prices.
+9.
+Real GDP was R4 400 billion in 2025 and R4 532 billion in 2026. The real economic growth rate for
+2026 is:
+A.  2.91%
+B.  3.00%
+C.  13.20%
+D.  30.00%
+Answer: B — (4 532 - 4 400) / 4 400 x 100 = 3.00%.
+10.
+When GDP is calculated using the income approach, it is valued at:
+A.  factor cost
+B.  basic prices
+C.  market prices
+D.  constant prices
+Answer: A — Income method = factor cost; production method = basic prices; expenditure method = market prices.
+11.
+When GDP is calculated using the production (value-added) approach, it is valued at:
+A.  current exchange rates
+B.  market prices
+C.  factor cost
+D.  basic prices
+Answer: D — The production method uses basic prices.
+12.
+The further the Lorenz curve lies from the line of perfect equality (the diagonal), ...
+A.  the lower the Gini coefficient
+B.  the greater the inequality in the income distribution
+C.  the more equal the income distribution
+D.  the higher the per capita income
+Answer: B — Distance from the diagonal measures inequality.
+13.
+A Gini coefficient of 0 indicates ...
+A.  that the Lorenz curve lies on the horizontal axis
+B.  perfect equality
+C.  perfect inequality
+D.  that one household earns all income
+Answer: B — Gini ranges from 0 (perfect equality) to 1 (perfect inequality).
+14.
+The quantile ratio as a measure of inequality compares ...
+A.  the area between the diagonal and the Lorenz curve with the total area
+B.  nominal GDP with real GDP
+C.  the income share of the richest group with that of the poorest group
+D.  the number of employed with the labour force
+Answer: C — E.g. income share of top 10% / bottom 10%.
+ECON 122: Practice Examination – Memorandum
+4/37
+
+
+--- PAGE 5 ---
+15.
+The current account of the balance of payments records ...
+A.  only changes in gold and foreign reserves
+B.  flows of shares, bonds and direct investment
+C.  only unrecorded transactions (errors and omissions)
+D.  exports and imports of goods and services plus income payments to and from other countries
+Answer: D — Financial flows are in the financial account.
+16.
+Which one of the following is NOT one of the five main macroeconomic objectives?
+A.  Maximising government tax revenue
+B.  Full employment
+C.  Price stability
+D.  Equitable distribution of income
+Answer: A — The five objectives: growth, full employment, price stability, BoP stability, equitable income
+distribution.
+17.
+A shop labels a loaf of bread at R19.99. Here money is performing its function as a ...
+A.  medium of exchange
+B.  unit of account
+C.  store of value
+D.  standard of deferred payment only
+Answer: B — Prices are expressed in money: unit of account.
+18.
+Thabo keeps R5 000 in a savings account to spend next year. Money is serving as a ...
+A.  medium of exchange
+B.  factor of production
+C.  unit of account
+D.  store of value
+Answer: D — Holding purchasing power over time = store of value.
+19.
+High inflation most directly undermines money's function as a ...
+A.  means of barter
+B.  store of value
+C.  unit of account
+D.  medium of exchange
+Answer: B — Inflation erodes the purchasing power of stored money.
+20.
+M1 in South Africa consists of ...
+A.  M2 plus long-term deposits
+B.  coins and banknotes in circulation plus demand deposits of the domestic private sector
+C.  coins and banknotes only
+D.  all short- and medium-term deposits
+Answer: B — M1 = C + D (narrowest measure, medium of exchange).
+21.
+M3, the most comprehensive measure of money, is equal to ...
+A.  coins and notes plus cheque deposits
+B.  M2 minus quasi-money
+C.  M2 plus long-term deposits (longer than six months)
+D.  M1 plus short- and medium-term deposits
+Answer: C — M3 = M2 + long-term deposits.
+22.
+Coins and notes in circulation = R50 m, demand deposits = R300 m, short- and medium-term
+deposits = R400 m and long-term deposits = R250 m. M2 is:
+A.  R1 000 m
+B.  R650 m
+C.  R350 m
+D.  R750 m
+Answer: D — M1 = 350; M2 = 350 + 400 = R750 m.
+ECON 122: Practice Examination – Memorandum
+5/37
+
+
+--- PAGE 6 ---
+23.
+The demand for active balances (transactions and precautionary motives) depends mainly on ...
+A.  expected bond prices only
+B.  the level of income
+C.  the interest rate
+D.  the exchange rate
+Answer: B — Active balances (L1) are a function of income.
+24.
+The speculative demand for money (passive balances) is ...
+A.  positively related to the interest rate
+B.  inversely related to the interest rate
+C.  independent of the interest rate
+D.  determined only by the level of income
+Answer: B — Higher interest = higher opportunity cost of holding money.
+25.
+An increase in national income will, ceteris paribus, ...
+A.  have no effect on the demand for money
+B.  cause a movement up along LL
+C.  shift the total demand for money curve (LL) to the right
+D.  shift LL to the left
+Answer: C — Higher income raises demand for active balances, shifting LL right.
+26.
+If the interest rate increases from 7% to 8%, ceteris paribus, there will be ...
+A.  a movement along LL to a smaller quantity of money demanded
+B.  a leftward shift of LL
+C.  a rightward shift of LL
+D.  an increase in the quantity of money demanded
+Answer: A — A change in i causes a movement along the curve, not a shift.
+27.
+In the South African approach to the money supply, the quantity of money is determined by ...
+A.  the SARB printing a fixed amount of banknotes
+B.  the demand for money and the interest rate (there is no independent money supply curve)
+C.  the amount of gold held by the SARB
+D.  the government budget deficit only
+Answer: B — Money is demand-determined (endogenous); SARB influences it via the repo rate.
+28.
+The main instrument of monetary policy used by the SARB is the ...
+A.  personal income tax rate
+B.  repo rate
+C.  VAT rate
+D.  import tariff
+Answer: B — Accommodation policy through the repo rate.
+29.
+When the SARB sells government bonds in the open market, it ...
+A.  lowers the repo rate automatically
+B.  increases banks' cash reserves
+C.  reduces banks' cash reserves and enlarges the money-market shortage
+D.  increases the money supply
+Answer: C — Selling bonds drains liquidity.
+30.
+Which one of the following is NOT a function of the South African Reserve Bank?
+A.  Acting as banker and adviser to the government
+B.  Acting as lender of last resort to banks
+C.  Collecting personal income tax from individuals
+D.  Formulating and implementing monetary policy
+Answer: C — Tax collection is SARS's function.
+ECON 122: Practice Examination – Memorandum
+6/37
+
+
+--- PAGE 7 ---
+31.
+According to your study material, the inflation target range adopted in South Africa in 2000 is:
+A.  0-3%
+B.  3-6%
+C.  6-9%
+D.  1-5%
+Answer: B — 1-5% was the original 1998 proposal; 3-6% from 2000.
+32.
+Public goods are goods that are ...
+A.  non-rival but excludable
+B.  rival but non-excludable
+C.  non-rival and non-excludable
+D.  rival and excludable
+Answer: C — E.g. national defence, street lighting.
+33.
+The free-rider problem associated with public goods arises mainly because public goods are ...
+A.  rival in consumption
+B.  subject to VAT
+C.  non-excludable
+D.  always produced by monopolies
+Answer: C — Non-payers cannot be excluded, so people avoid paying.
+34.
+Fish in the open ocean are an example of a ...
+A.  natural monopoly
+B.  pure public good
+C.  merit good
+D.  common property resource
+Answer: D — Rival but non-excludable: tragedy of the commons.
+35.
+When a factory pollutes a river, ...
+A.  the good is underproduced
+B.  marginal social cost exceeds marginal private cost and the good is overproduced
+C.  marginal private cost exceeds marginal social cost
+D.  social benefit exceeds private benefit
+Answer: B — Negative externality: MSC > MPC, market output too high.
+36.
+The Coase theorem states that ...
+A.  government must always tax polluters
+B.  if the parties to an externality can bargain, they will reach an efficient outcome without
+government intervention
+C.  monopolies should be nationalised
+D.  public goods must be provided by the state
+Answer: B — Assumptions rarely hold in practice.
+37.
+To achieve the socially efficient output, a tax on a polluting industry should equal ...
+A.  the marginal private cost
+B.  the VAT rate
+C.  the firm's total profit
+D.  the difference between marginal social cost and marginal private cost
+Answer: D — This internalises the externality.
+38.
+A group of firms lobbies politicians for protection so that they earn higher profits at the expense of
+society. This is an example of ...
+A.  horizontal equity
+B.  the benefit principle
+C.  rent seeking
+D.  a positive externality
+Answer: C — Rent seeking is a cause of government failure.
+ECON 122: Practice Examination – Memorandum
+7/37
+
+
+--- PAGE 8 ---
+39.
+Using the budget to reduce fluctuations in output, employment and prices refers to the
+government's ...
+A.  regulation function
+B.  allocation function
+C.  distribution function
+D.  stabilisation function
+Answer: D — Allocation = goods markets under-supply; distribution = fairness; stabilisation = macro stability.
+40.
+Expansionary fiscal policy involves ...
+A.  raising the repo rate
+B.  reducing government spending and/or raising taxes
+C.  selling government bonds in the open market
+D.  increasing government spending and/or reducing taxes
+Answer: D — Used in a recession; often increases the budget deficit.
+41.
+The principle that people in the same economic position should pay the same amount of tax is
+known as ...
+A.  horizontal equity
+B.  vertical equity
+C.  neutrality
+D.  the benefit principle
+Answer: A — Vertical equity: different positions, different taxes.
+42.
+Value-added tax (VAT) in South Africa is regarded as ...
+A.  a direct tax
+B.  progressive
+C.  proportional
+D.  regressive
+Answer: D — VAT takes a bigger share of income from low-income earners.
+43.
+The legal minimisation of one's tax liability is called ...
+A.  tax avoidance
+B.  tax evasion
+C.  tax incidence
+D.  tax rebate
+Answer: A — Evasion is illegal non-payment.
+44.
+Use the 2024/25 SARS table in Section C (Question 7). A person younger than 65 has a taxable
+income of R420 000. The tax payable is:
+A.  R130 200
+B.  R60 237
+C.  R92 707
+D.  R75 472
+Answer: D — 77 362 + 31% x (420 000 - 370 500) - 17 235 = R75 472.
+45.
+For the person in the previous question, the effective (average) tax rate is:
+A.  31.00%
+B.  17.97%
+C.  22.07%
+D.  26.00%
+Answer: B — 75 472 / 420 000 x 100 = 17.97% (22.07% forgets the rebate).
+46.
+A country has a comparative advantage in a good when it can produce that good ...
+A.  at a higher price than another country
+B.  in greater quantities than any other good
+C.  at a lower opportunity cost than another country
+D.  with fewer resources than another country
+Answer: C — Absolute = more output from same resources; comparative = lower opportunity cost.
+ECON 122: Practice Examination – Memorandum
+8/37
+
+
+--- PAGE 9 ---
+47.
+Country A can produce 10 shirts or 20 pairs of shoes; Country B can produce 6 shirts or 18 pairs of
+shoes. Which statement is correct?
+A.  Country B has a comparative advantage in shirts
+B.  Country A has a comparative advantage in both goods
+C.  Country A has a comparative advantage in shirts
+D.  There is no basis for trade
+Answer: C — Opportunity cost of 1 shirt: A = 2 shoes, B = 3 shoes.
+48.
+Using the data in the previous question, mutually beneficial terms of trade for 1 shirt lie between ...
+A.  6 and 10 pairs of shoes
+B.  1 and 2 pairs of shoes
+C.  0.33 and 0.5 pairs of shoes
+D.  2 and 3 pairs of shoes
+Answer: D — Between the two domestic opportunity costs.
+49.
+If the export price index is 115 and the import price index is 125, the terms of trade index is:
+A.  92.00 (the terms of trade are unfavourable)
+B.  240.00
+C.  108.70 (the terms of trade are favourable)
+D.  92.00 (the terms of trade are favourable)
+Answer: A — TOT = 115 / 125 x 100 = 92.00 < 100.
+50.
+Which of the following represents a DEMAND for US dollars in the South African foreign exchange
+market?
+A.  An American investor buying shares on the JSE
+B.  A South African firm paying for machinery imported from the USA
+C.  An American tourist exchanging dollars for rand in Cape Town
+D.  A South African exporter receiving dollars for wine sold in the USA
+Answer: B — SA importers need dollars.
+51.
+Which of the following represents a SUPPLY of US dollars in the South African foreign exchange
+market?
+A.  A South African investor buying shares in an American company
+B.  A South African student paying tuition at a US university
+C.  An American tourist exchanging dollars for rand in Cape Town
+D.  A South African importer buying US software
+Answer: C — Holders of dollars who want rand supply dollars.
+52.
+The exchange rate changes from $1 = R17 to $1 = R19. This means that ...
+A.  the rand has depreciated against the dollar
+B.  the rand has appreciated against the dollar
+C.  the dollar has depreciated against the rand
+D.  South African exports have become more expensive in the USA
+Answer: A — More rand is needed to buy one dollar.
+53.
+A depreciation of the rand will, ceteris paribus, ...
+A.  make SA exports more expensive abroad
+B.  make SA exports cheaper abroad and imports more expensive in SA
+C.  make imports cheaper in SA
+D.  reduce the cost of imported oil
+Answer: B — May improve the current account but cause imported inflation.
+ECON 122: Practice Examination – Memorandum
+9/37
+
+
+--- PAGE 10 ---
+54.
+Which one of the following could cause an appreciation of the rand against the dollar?
+A.  An expected depreciation of the rand
+B.  A sharp rise in the world prices of gold and platinum
+C.  An increase in SA imports from the USA
+D.  SA investors buying US shares
+Answer: B — Higher export earnings raise the supply of dollars.
+55.
+To counter a depreciation of the rand, the SARB could ...
+A.  lower the repo rate
+B.  sell dollars from its foreign reserves
+C.  buy dollars in the foreign exchange market
+D.  remove all exchange controls
+Answer: B — Selling dollars increases the supply of dollars.
+56.
+An ad valorem tariff is ...
+A.  a subsidy to exporters
+B.  a tax levied as a percentage of the value of the imported good
+C.  a fixed amount per unit imported
+D.  a physical limit on the quantity imported
+Answer: B — Specific tariff = fixed amount per unit.
+57.
+A physical restriction on the quantity of a good that may be imported is called a(n) ...
+A.  export subsidy
+B.  import quota
+C.  exchange rate policy
+D.  ad valorem tariff
+Answer: B — Quotas directly control the volume of imports.
+58.
+The argument that a new domestic industry should be protected temporarily until it achieves
+economies of scale is the ...
+A.  dumping argument
+B.  government revenue argument
+C.  infant industry argument
+D.  national security argument
+Answer: C — Temporary protection until competitive.
+59.
+Selling goods in a foreign market at artificially low prices (below cost or below the home price) is
+called ...
+A.  import substitution
+B.  dumping
+C.  quota rent
+D.  free trade
+Answer: B — Anti-dumping duties protect local firms.
+60.
+An item costs EUR400 in Germany. If EUR1 = R20.25, the item costs in rand (ignoring transport
+costs):
+A.  R5 062.50
+B.  R8 100.00
+C.  R420.25
+D.  R19.75
+Answer: B — 400 x 20.25 = R8 100.00.
+61.
+When income increases by R1 000 consumption increases by R750. The marginal propensity to
+consume is:
+A.  0.75
+B.  750
+C.  0.25
+D.  1.33
+Answer: A — c = dC / dY = 750 / 1 000.
+ECON 122: Practice Examination – Memorandum
+10/37
+
+
+--- PAGE 11 ---
+62.
+Autonomous consumption refers to consumption ...
+A.  that changes as income changes
+B.  by the government sector
+C.  that takes place even when income is zero, financed from past savings or credit
+D.  of imported goods only
+Answer: C — It is the intercept of the consumption function.
+63.
+In a simple closed economy without government, if the marginal propensity to save is 0.25 the
+multiplier is:
+A.  0.25
+B.  1.33
+C.  2.5
+D.  4
+Answer: D — alpha = 1 / (1 - c) = 1 / s = 1 / 0.25 = 4.
+64.
+If C = 200 + 0.8Y, the savings function is:
+A.  S = 200 + 0.2Y
+B.  S = 200 - 0.8Y
+C.  S = -200 + 0.8Y
+D.  S = -200 + 0.2Y
+Answer: D — S = Y - C; autonomous saving is negative (dissaving).
+65.
+In the Keynesian model, equilibrium income is reached where ...
+A.  government spending equals tax revenue
+B.  savings equal zero
+C.  consumption equals investment
+D.  aggregate expenditure equals total income (A = Y), on the 45-degree line
+Answer: D — Equilibrium condition Y = A.
+66.
+In the simple Keynesian model, investment spending is treated as ...
+A.  autonomous: determined by interest rates and expectations, not by income
+B.  equal to savings at every level of income
+C.  negatively related to income
+D.  induced: a fixed fraction of income
+Answer: A — Hence the investment function is a horizontal line.
+67.
+Which one of the following is NOT an assumption of the simple Keynesian model?
+A.  Prices, wages, the money stock and interest rates are given
+B.  Initially there are only households and firms
+C.  Prices and wages are fully flexible
+D.  Spending is the driving force in the economy
+Answer: C — Prices are assumed given (constant).
+68.
+If C = 50 + 0.75Y and I = 100 in a closed economy without government, equilibrium income is:
+A.  150
+B.  600
+C.  200
+D.  450
+Answer: B — Y = (50 + 100) / (1 - 0.75) = 600.
+69.
+In the economy in the previous question, investment increases by 20. The change in equilibrium
+income is:
+A.  80
+B.  20
+C.  26.67
+D.  15
+Answer: A — dY = 4 x 20 = 80.
+ECON 122: Practice Examination – Memorandum
+11/37
+
+
+--- PAGE 12 ---
+70.
+In an open economy with c = 0.8, t = 0.25 and m = 0.1, the value of the multiplier is:
+A.  5
+B.  1.67
+C.  2.5
+D.  2
+Answer: D — 1 / [1 - 0.8(0.75) + 0.1] = 1 / 0.5 = 2.
+71.
+An increase in the proportional income tax rate will, ceteris paribus, ...
+A.  reduce the size of the multiplier
+B.  increase the marginal propensity to
+consume
+C.  leave the multiplier unchanged
+D.  increase the size of the multiplier
+Answer: A — Tax is a leakage; t appears in the denominator.
+72.
+Does an increase in autonomous government spending change the value of the multiplier?
+A.  No, and it has no effect on equilibrium income
+B.  Yes, it increases the multiplier
+C.  Yes, it reduces the multiplier
+D.  No, it raises equilibrium income through the multiplier but does not change the multiplier itself
+Answer: D — Only c, t and m determine alpha.
+73.
+A higher marginal propensity to import ...
+A.  increases the multiplier because imports are an injection
+B.  increases autonomous spending
+C.  has no effect on the multiplier
+D.  reduces the multiplier because imports are a leakage
+Answer: D — m enters the denominator.
+74.
+If the multiplier is 2.5 and total autonomous spending is 800, equilibrium income is:
+A.  2 000
+B.  3 200
+C.  320
+D.  802.5
+Answer: A — Y = alpha x A = 2.5 x 800.
+75.
+If t = 0.2, equilibrium income is 2 000 and G = 450, the government budget shows a ...
+A.  deficit of 400
+B.  surplus of 400
+C.  deficit of 50
+D.  surplus of 50
+Answer: C — T = 0.2 x 2 000 = 400; T - G = -50.
+76.
+According to Keynes, ...
+A.  savings are always automatically re-injected as investment
+B.  supply creates its own demand (Say's law)
+C.  the economy is always at full employment
+D.  aggregate demand (spending) determines production and income
+Answer: D — Keynes reversed Say's law: A drives Y.
+77.
+Inflation is best defined as ...
+A.  an increase in the price of a single good
+B.  a decrease in the general price level
+C.  a continuous and considerable rise in prices in general
+D.  a once-off increase in the price of petrol
+Answer: C — Key aspects: process, considerable, prices in general.
+ECON 122: Practice Examination – Memorandum
+12/37
+
+
+--- PAGE 13 ---
+78.
+A once-off increase in the petrol price is ...
+A.  inflationary only if wages fall
+B.  always defined as hyperinflation
+C.  an example of deflation
+D.  not inflationary in itself, but its secondary effects on other prices are
+Answer: D — The knock-on effects on other prices are inflationary.
+79.
+The CPI was 120.0 in March 2025 and 124.2 in March 2026. The year-on-year inflation rate for
+March 2026 is:
+A.  3.50%
+B.  0.57%
+C.  3.38%
+D.  4.20%
+Answer: A — (124.2 - 120.0) / 120.0 x 100 = 3.50%.
+80.
+The CPI was 123.5 in February 2026 and 124.2 in March 2026. The month-on-month inflation rate
+for March 2026 is:
+A.  0.57%
+B.  3.50%
+C.  0.56%
+D.  0.70%
+Answer: A — (124.2 - 123.5) / 123.5 x 100 = 0.57%.
+81.
+If nominal GDP is R6 000 bn and real GDP is R5 000 bn, the GDP deflator is:
+A.  120
+B.  83.33
+C.  20
+D.  1.2
+Answer: A — 6 000 / 5 000 x 100 = 120.
+82.
+Cost-push inflation is illustrated by ...
+A.  a rightward shift of aggregate supply
+B.  a rightward shift of aggregate demand
+C.  a leftward shift of aggregate demand
+D.  a leftward shift of aggregate supply, raising prices and lowering output (stagflation)
+Answer: D — Higher production costs reduce supply.
+83.
+When the economy is at full employment, a further increase in aggregate demand will ...
+A.  raise output and lower prices
+B.  only raise real output
+C.  reduce unemployment significantly
+D.  only raise the general price level
+Answer: D — AS is vertical at full employment.
+84.
+In the structuralist approach, inflationary expectations and indexation are examples of ...
+A.  initiating factors
+B.  exogenous shocks
+C.  underlying factors
+D.  propagating factors
+Answer: D — Propagating factors spread and sustain the inflation process.
+85.
+The conflict approach sees inflation as ...
+A.  a symptom of disagreement between social groups over the distribution of income
+B.  caused solely by natural disasters
+C.  the result of falling productivity only
+D.  the result of too much money chasing too few goods only
+Answer: A — Groups claim more than the available national income.
+ECON 122: Practice Examination – Memorandum
+13/37
+
+
+--- PAGE 14 ---
+86.
+Who tends to gain from unexpected inflation?
+A.  Borrowers who repay fixed-interest loans
+B.  Lenders at fixed interest rates
+C.  Pensioners on fixed incomes
+D.  Savers who earn fixed interest
+Answer: A — The real value of debt falls.
+87.
+The original Phillips curve shows ...
+A.  the relationship between interest rates and money demand
+B.  the relationship between GDP and GNI
+C.  an inverse relationship between inflation and unemployment
+D.  a positive relationship between inflation and unemployment
+Answer: C — Trade-off between inflation and unemployment; stagflation shifted it right.
+88.
+Under the strict (narrow) definition, an unemployed person must also have ...
+A.  actively searched for work in the four weeks before the survey
+B.  registered for a UIF grant
+C.  worked for at least one hour in the week before the survey
+D.  been unemployed for longer than one year
+Answer: A — The broad definition drops the active-search requirement.
+89.
+Discouraged work-seekers are counted as unemployed ...
+A.  under the broad (expanded) definition only
+B.  under the strict (narrow) definition only
+C.  under both definitions
+D.  under neither definition
+Answer: A — They want work but have stopped looking.
+90.
+If 15 million people are employed and 5 million are unemployed (strict definition), the narrow
+unemployment rate is:
+A.  25.00%
+B.  75.00%
+C.  20.00%
+D.  33.33%
+Answer: A — 5 / (15 + 5) x 100 = 25%.
+91.
+Grape pickers in the Hex River Valley who are without work after the harvest are an example of ...
+A.  cyclical unemployment
+B.  frictional unemployment
+C.  seasonal unemployment
+D.  structural unemployment
+Answer: C — Work required for only part of the year.
+92.
+Bank tellers who lose their jobs because customers switch to app banking are an example of ...
+A.  structural unemployment
+B.  cyclical unemployment
+C.  frictional unemployment
+D.  seasonal unemployment
+Answer: A — Technological change: skills mismatch.
+93.
+Retail workers retrenched because sales fell during a recession are an example of ...
+A.  cyclical unemployment
+B.  frictional unemployment
+C.  structural unemployment
+D.  seasonal unemployment
+Answer: A — Demand-deficient unemployment linked to the business cycle.
+94.
+Which type of unemployment is temporary, always present in an economy and not regarded as a
+serious problem?
+A.  Structural unemployment
+B.  Cyclical unemployment
+C.  Frictional (search) unemployment
+D.  Long-term unemployment
+Answer: C — Time taken to move between jobs.
+ECON 122: Practice Examination – Memorandum
+14/37
+
+
+--- PAGE 15 ---
+95.
+Economic growth is best measured as the annual percentage change in ...
+A.  the money supply M3
+B.  the consumer price index
+C.  real GDP (preferably per capita)
+D.  nominal GDP
+Answer: C — Must be in real terms and adjusted for population.
+96.
+The phase of the business cycle between a peak and the next trough is the ...
+A.  boom
+B.  recovery
+C.  downswing (contraction)
+D.  upswing (expansion)
+Answer: C — Falling incomes and rising unemployment.
+97.
+Technically, a recession occurs when real GDP ...
+A.  grows slower than the population
+B.  grows by less than 3% per year
+C.  declines for two successive quarters
+D.  declines in any single month
+Answer: C — Two successive quarters of negative growth.
+98.
+Keynesian economists believe that business cycles are ...
+A.  random occurrences with no policy implications
+B.  exogenous, so government should not intervene
+C.  endogenous, so government should intervene with fiscal and monetary policy
+D.  caused by sunspots
+Answer: C — Classical = exogenous; structuralist = random/structural shocks.
+99.
+Which one of the following is a LEADING business cycle indicator?
+A.  Industrial production
+B.  Duration of unemployment
+C.  The exchange rate
+D.  Company profits already reported
+Answer: C — Leading indicators predict future activity (oil price, exchange rates, gold price).
+100. Capital deepening occurs when ...
+A.  the labour force grows faster than the capital stock
+B.  the capital stock grows at the same rate as the labour force
+C.  the amount of capital per worker increases
+D.  depreciation exceeds investment
+Answer: C — Capital widening keeps capital per worker constant.
+ECON 122: Practice Examination – Memorandum
+15/37
+
+
+--- PAGE 16 ---
+SECTION B / AFDELING B — THEORY — MEMORANDUM
+[150]
+QUESTION 1 / VRAAG 1 Concepts and definitions
+[10]
+Define the following concepts:
+1.1
+Fiscal policy
+(1)
+The use of government spending and taxation (the budget) to influence total
+spending/aggregate demand in the economy in order to achieve macroeconomic objectives
+such as growth, employment and price stability. (1)
+1.2
+Monetary policy
+(1)
+Measures taken by the monetary authorities (SARB) to influence the quantity of money or the
+rate of interest with a view to achieving stable prices, full employment and economic growth.
+(1)
+1.3
+Unit of account
+(1)
+The function of money as an agreed measure for stating the prices of goods and services, so
+that all values are expressed in money terms and can be compared. (1)
+1.4
+Comparative advantage
+(1)
+The ability of a party (individual, firm or country) to produce a particular good or service at a
+lower opportunity cost than another party. (1)
+1.5
+Autonomous consumption
+(1)
+Consumption that is independent of the level of income; the amount households consume
+even when income is zero, financed from past savings or credit (the intercept C̄  of the
+consumption function). (1)
+1.6
+Gross domestic product (GDP)
+(1)
+The total value of all final goods and services produced within the boundaries of a country in a
+particular period (usually one year). (1)
+1.7
+Inflation
+(1)
+A continuous and considerable rise in prices in general (the general price level). (1)
+1.8
+Structural unemployment
+(1)
+Unemployment confined to certain industries, sectors or categories of workers, caused by a
+mismatch between workers' qualifications/skills and job requirements, e.g. due to
+technological change or structural decline of industries. (1)
+1.9
+Capital widening
+(1)
+When the stock of capital is increased to accommodate an increasing labour force, so that the
+amount of capital per worker stays the same. (1)
+ECON 122: Practice Examination – Memorandum
+16/37
+
+
+--- PAGE 17 ---
+1.10
+Gross domestic expenditure (GDE)
+(1)
+The total value of spending within the borders of the country by households, firms and the
+government: GDE = C + I + G (includes imports, excludes exports). (1)
+QUESTION 2 / VRAAG 2 Macroeconomic objectives
+[8]
+2.1
+Name and briefly explain the five main macroeconomic objectives.
+(5)
+Economic growth: a sustained increase in the total (real) production of goods and services
+from one period to the next. (1)
+Full employment: all factors of production, particularly labour, are fully employed;
+unemployment kept as low as possible. (1)
+Price stability: keeping inflation low and stable – no hyperinflation or deflation. (1)
+Balance of payments (external) stability: balance between exports and imports; fairly
+stable BoP and exchange rate. (1)
+Equitable distribution of income: no excessive income disparities between members of
+the economy. (1)
+2.2
+Explain, with reference to the Phillips curve, why the objectives of full employment and
+price stability may conflict with each other.
+(3)
+The original Phillips curve shows an inverse relationship (trade-off) between inflation and
+unemployment. (1) Policies that stimulate aggregate demand to reduce unemployment also
+push up the general price level (higher inflation), (1) while restrictive policies that lower
+inflation reduce spending, production and employment (higher unemployment). Policy makers
+therefore have to choose a combination, e.g. accept some inflation in return for lower
+unemployment. (1)
+QUESTION 3 / VRAAG 3 National income accounting
+[12]
+3.1
+In tabular form, distinguish between gross domestic product (GDP), gross domestic
+expenditure (GDE) and gross national income (GNI). Your table should show what each
+measures and the formula used to calculate it.
+(6)
+GDP
+GDE
+GNI
+What it
+measures
+(1½)
+Total value of final goods
+and services produced
+within the borders of the
+country (½)
+Total spending
+within the borders of
+the country by
+residents (½)
+Total income earned by the
+permanent residents of a
+country, wherever they are (½)
+Formula
+(1½)
+C + I + G + (X − Z) (½)
+C + I + G (½)
+GDP + primary income receipts
+− primary income payments to
+the rest of the world (½)
+Key feature
+(3)
+Includes production by
+foreigners in SA; best
+measure of economic
+activity (1)
+Includes imports,
+excludes exports (1)
+Includes income of SA residents
+abroad, excludes foreigners'
+income in SA; better measure of
+standard of living (1)
+ECON 122: Practice Examination – Memorandum
+17/37
+
+
+--- PAGE 18 ---
+3.2
+Indicate whether each of the following would be included in South Africa's GDP for 2026.
+Give a reason for each answer.
+(a) A Toyota bakkie manufactured in 2021 and resold in 2026.
+(b) The salary of a Zimbabwean engineer working temporarily in Sandton.
+(c) Vegetables grown by a household in its own garden for its own use.
+(d) The output of a South African-owned clothing factory in Maseru, Lesotho.
+(4)
+(a) Not included – resale of a second-hand good; it was counted when first produced (no
+current production). (1)
+(b) Included – production within SA's borders counts regardless of who produces it. (1)
+(c) Not included – not sold in a formal market (non-market production is generally excluded).
+(1)
+(d) Not included in SA's GDP – produced outside SA's borders (part of Lesotho's GDP; it
+would be in SA's GNI). (1)
+3.3
+Explain why GDP is called a gross measure and give two reasons why GDP is not a
+perfect measure of economic welfare.
+(2)
+Gross: it does not subtract depreciation (consumption of fixed capital), which is difficult to
+calculate accurately. (1) Not a perfect welfare measure (any two, ½ each): ignores non-market
+production and the informal/unrecorded economy; does not account for negative externalities
+such as pollution (“bads”); says nothing about the distribution of income; data are provisional
+and revised. (1)
+QUESTION 4 / VRAAG 4 Money and banking
+[24]
+4.1
+Name and explain the three functions of money. Give an example of each.
+(3)
+Medium of exchange – generally accepted as payment for goods and services or settlement
+of debt, e.g. paying for groceries with a card. (1)
+Unit of account – an agreed measure for stating prices, e.g. a loaf of bread priced at R19.99.
+(1)
+Store of value – the most liquid way to keep wealth; can be saved and used later, e.g.
+keeping money in a savings account. (1)
+4.2
+“Money is not the same as income or wealth.” Explain this statement.
+(2)
+Income is the reward earned in the production process (wages, rent, interest, profit) – a flow
+over a period. (1) Wealth consists of assets accumulated over time (property, shares,
+paintings). Both are measured in money terms, but many wealthy people hold little money,
+especially during inflation when money loses its store-of-value function. (1)
+4.3
+Discuss the three motives for holding money (the demand for money). In your answer,
+distinguish between active and passive balances and state the factors that determine
+each.
+(6)
+Transactions motive – money held to pay for day-to-day expenses (medium of exchange).
+(1)
+Precautionary motive – money held for unplanned/unexpected expenditure. (1)
+Speculative motive – money held as a store of value while waiting for better investment
+opportunities (e.g. bonds). (1)
+ECON 122: Practice Examination – Memorandum
+18/37
+
+
+--- PAGE 19 ---
+Active balances (L1) = transactions + precautionary demand; mainly determined by the level
+of income – higher income → more money demanded (L1 shifts right). (1½)
+Passive balances (L2) = speculative demand; determined by the interest rate (and
+expectations about it) – inverse relationship. (1)
+Total demand LL = L1 + L2, so L = f(Y, i). (½)
+4.4
+With the aid of a clearly labelled graph, illustrate the effect on the quantity of money
+demanded in South Africa if interest rates increase from 7% to 8%. Also state how the
+graph would change if national income increased instead.
+(4)
+i (%)
+Quantity of money
+0
+LL
+8%
+M1
+7%
+M0
+Interest rate on the vertical axis, quantity of money on the horizontal axis, downward-sloping
+LL (1). The rise in i from 7% to 8% causes a movement along LL from M0 to M1 – a smaller
+quantity of money is demanded (1½), because the opportunity cost of holding money (interest
+forgone) rises (½). An increase in income would shift LL to the right (more active balances
+demanded at every interest rate). (1)
+4.5
+Explain how banks create money. Distinguish between passive and active money creation,
+and explain why there is no independent money supply curve in South Africa.
+(5)
+Banks create demand deposits by making loans to creditworthy borrowers in response to the
+demand for loans. (1) Passive creation: a customer deposits cash and receives an equal
+demand deposit – the composition of money changes but the money supply (M = C + D) is
+unchanged. (1) Active creation: the bank grants credit (e.g. an overdraft) and creates a
+deposit without a cash deposit – the money supply increases. (1) Money creation is limited by
+cash-reserve and liquidity requirements, and the SARB regulates it by influencing the price of
+loans (the interest rate) via the repo rate. (1) The quantity of money is therefore determined by
+the interaction between the demand for money and the interest rate – it is demand-determined
+(endogenous), so there is no independent money supply curve. (1)
+4.6
+Name and briefly explain four functions of the South African Reserve Bank.
+(4)
+Any four (1 each): formulation and implementation of monetary policy (repo rate); service to
+the government (banker and adviser; custodian of gold and foreign reserves; administering
+exchange control); provision of economic and statistical services (e.g. Quarterly Bulletin);
+maintaining financial stability (bank supervision, overseeing the national payment system);
+banker to other banks / lender of last resort; issuing (and destroying) banknotes and coins.
+ECON 122: Practice Examination – Memorandum
+19/37
+
+
+--- PAGE 20 ---
+QUESTION 5 / VRAAG 5 Market failure and government intervention
+[26]
+5.1
+Name and briefly explain four main causes (types) of market failure.
+(4)
+Monopoly and imperfect competition – a firm restricts output and charges high prices (1);
+public goods – non-rival and non-excludable, so markets under-provide them (1); externalities
+– costs/benefits borne by third parties not involved in the transaction (1); common property
+resources – rival but non-excludable resources that are over-used (tragedy of the commons)
+(1).
+5.2
+Classify each of the following according to rivalry and excludability, and name the type of
+good: (a) national defence; (b) a ticket to a movie at a cinema; (c) perlemoen (abalone)
+along the Cape coast; (d) a toll road that is not congested.
+(4)
+Good
+Rival?
+Excludable?
+Type of good
+(a) National defence
+No
+No
+Pure public good (1)
+(b) Cinema ticket
+Yes
+Yes
+Private good (1)
+(c) Perlemoen
+Yes
+No
+Common property resource (1)
+(d) Uncongested toll road
+No
+Yes
+Club/toll good (1)
+5.3
+With the aid of a clearly labelled graph, explain why a chemical factory that discharges
+waste into a river leads to an inefficient allocation of resources.
+(6)
+Price
+Quantity
+0
+S = MPC
+MSC
+D
+P1
+Q1
+P2
+Q2
+welfare loss
+Correct axes, D, S = MPC and MSC above MPC (2). The pollution imposes an external cost
+on third parties (water treatment, fishermen, recreation), so marginal social cost = MPC +
+external cost > MPC (1). The market produces where D = MPC at Q1 and P1 (½), but the
+socially efficient output is where D = MSC at Q2 and P2 (½). Q1 > Q2: the good is over-
+produced and under-priced (1); the shaded area is the welfare loss to society – a market
+failure (1).
+5.4
+Name two ways in which the government can reach the socially efficient output in
+Question 5.3.
+(2)
+ECON 122: Practice Examination – Memorandum
+20/37
+
+
+--- PAGE 21 ---
+Levy a tax on the polluter equal to the difference between MSC and MPC to internalise the
+external cost (1); direct controls/regulation (e.g. pollution limits, permits) (1). (Coase bargaining
+is possible only if parties can bargain – rarely in practice.)
+5.5
+Governments, like markets, can fail. Explain government failure with reference to the
+behaviour of politicians and bureaucrats, and rent seeking.
+(4)
+Government consists of people with their own motives. (½) Politicians aim to maximise votes
+and stay in office; they favour popular, short-term quick fixes (policy myopia) and are reluctant
+to admit mistakes. (1½) Bureaucrats maximise their status, salary and power, push for bigger
+budgets and staff, face no market competition and are less cost-conscious. (1) Rent seeking:
+firms, households and interest groups try to benefit at the expense of society through the
+political process (e.g. lobbying for protection), diverting resources to special interests. (1)
+5.6
+Briefly distinguish between the allocation, distribution and stabilisation functions of
+government.
+(3)
+Allocation – providing goods and services the market under-supplies (roads, education,
+health). (1) Distribution – redistributing income and wealth more fairly (progressive taxes,
+social grants). (1) Stabilisation – reducing fluctuations in output, employment and prices (fiscal
+policy over the cycle). (1)
+5.7
+Discuss the three criteria of a good tax.
+(3)
+Neutrality – minimal distortion of prices and economic decisions. (1) Equity – a fair burden:
+horizontal equity (same position, same tax), vertical equity (different positions, different tax /
+ability to pay) and the benefit principle. (1) Administrative simplicity – easy to understand and
+comply with, cheap to administer and hard to evade. (1)
+QUESTION 6 / VRAAG 6 Economic growth and business cycles
+[12]
+Study the diagram below and answer the questions that follow.
+Real GDP
+Time
+0
+trend
+A
+B
+C
+D
+6.1
+Name the turning points B and C and explain the economic activity that takes place
+between points A and B, and between points B and C.
+(4)
+B = peak (½); C = trough (½). A to B: upswing/expansion (recovery and boom) – production,
+income and spending increase and unemployment declines. (1½) B to C:
+ECON 122: Practice Examination – Memorandum
+21/37
+
+
+--- PAGE 22 ---
+downswing/contraction (recession) – falling production and incomes, rising unemployment; two
+successive quarters of negative growth = recession. (1½)
+6.2
+Classify each statement according to the theory of business cycles (classical, Keynesian
+or structuralist):
+(a) “The economy is inherently stable; cycles are caused by external factors such as
+droughts and wars, so government should leave the market alone.”
+(b) “Cycles are part of the way a market economy works; government should use fiscal
+and monetary policy to smooth peaks and troughs.”
+(c) “The market is neither inherently stable nor unstable; cycles result from structural
+changes and unpredictable events such as the 2008/9 financial crisis.”
+(3)
+(a) Classical (exogenous) (1); (b) Keynesian (endogenous) (1); (c) Structuralist
+(random/structural events) (1).
+6.3
+Classify each of the following as a leading, coincident or lagging business-cycle indicator:
+(a) the rand–dollar exchange rate; (b) the volume of industrial production; (c) the average
+duration of unemployment.
+(3)
+(a) Leading (1); (b) Coincident (1); (c) Lagging (1).
+6.4
+Name two supply-side and two demand-side sources of economic growth.
+(2)
+Supply (any two, ½ each): natural resources, labour (quantity and quality / human capital),
+capital (incl. technology), entrepreneurship. Demand (any two, ½ each): domestic demand (C,
+I, G), export demand (X), import substitution.
+QUESTION 7 / VRAAG 7 Inflation
+[18]
+Study the diagram below.
+P
+Y
+0
+AS
+AD1
+P1
+AD2
+P2
+AD3
+P3
+AD4
+P4
+Y1
+Y2
+Yf
+7.1
+Identify the type of inflation illustrated in the diagram and name any three factors that can
+cause this type of inflation. What happens when the economy moves from E3 to E4?
+(4)
+Demand-pull inflation (1). Causes (any three, ½ each): increase in C (more credit, higher
+wages), increase in I (lower interest rates, better profit expectations), increase in G, increase
+in export earnings (X), increase in the money stock. (1½) From E3 to E4 the economy is at full
+ECON 122: Practice Examination – Memorandum
+22/37
+
+
+--- PAGE 23 ---
+employment (Yf), so the increase in AD only raises the price level from P3 to P4 – output does
+not increase. (1½)
+7.2
+With the aid of a graph, explain cost-push inflation. Explain why restrictive monetary and
+fiscal policies are not appropriate to combat this type of inflation, and name the policy that
+is preferred.
+(6)
+P
+Y
+0
+AS0
+AS1
+AD
+E0
+P0
+Y0
+E1
+P1
+Y1
+Graph: AS shifts left from AS0 to AS1 with AD unchanged (1½). Prices are pushed up by
+increases in production costs (wages, imported inputs, profit margins, lower productivity,
+natural disasters) (1); the price level rises from P0 to P1 while output falls from Y0 to Y1 –
+stagflation (1). Restrictive monetary/fiscal policy would lower AD further and deepen the
+recession and unemployment (1½). Preferred: an incomes policy (agreement between
+government, employers and unions to limit wage and price increases) (1).
+7.3
+Explain the three sets of factors identified by the structuralist approach to inflation.
+(3)
+Underlying factors – the background that makes the economy vulnerable to inflation, e.g. lack
+of fiscal discipline, size of the public sector. (1) Initiating factors – trigger or intensify the
+inflation process (demand-pull, cost-push and other price shocks, e.g. a drought). (1)
+Propagating factors – spread and sustain the shock through the economy, e.g. inflationary
+expectations, indexation, wage-price spirals. (1)
+7.4
+Briefly explain the conflict approach to inflation.
+(2)
+Inflation is a symptom of disharmony between social groups (unions, firms, government) about
+the distribution of income. (1) Each group tries to claim a bigger share of national income than
+is available, which pushes up wages and prices; inflation reflects the lack of mechanisms to
+reconcile these claims. (1)
+7.5
+In tabular form, provide three differences between the consumer price index (CPI) and the
+producer price index (PPI).
+(3)
+ECON 122: Practice Examination – Memorandum
+23/37
+
+
+--- PAGE 24 ---
+CPI
+PPI
+Measures price changes facing households/consumers
+(cost of living) (½)
+Measures cost pressures facing
+producers (½)
+Basket of consumer goods and services (½)
+Basket of capital and intermediate
+goods (½)
+Retail/final prices including VAT (½)
+Wholesale/production prices, excluding
+VAT (½)
+QUESTION 8 / VRAAG 8 International trade and exchange rates
+[16]
+8.1
+Define globalisation and give two pieces of evidence of globalisation.
+(2)
+Globalisation is the process of deeper economic integration between countries and regions of
+the world. (1) Evidence (any two, ½ each): expanded trade, increased (integrated) capital
+markets, more tourism, new technology improving links, highly mobile factors of production,
+rapid spread of shocks (e.g. 2008/9 crisis).
+8.2
+Indicate whether each transaction represents a demand for or a supply of US dollars in the
+South African foreign exchange market:
+(a) A South African student pays her tuition at a US university.
+(b) A US investor buys Sasol shares on the JSE.
+(c) A South African mine sells platinum to an American car maker.
+(d) A South African investor expects the rand to depreciate against the dollar.
+(4)
+(a) Demand for dollars (1); (b) Supply of dollars (1); (c) Supply of dollars (1); (d) Demand for
+dollars (1).
+8.3
+Use a graph to illustrate the effect of a decrease in the supply of dollars on the rand–dollar
+exchange rate (initial rate $1 = R8). Has the rand appreciated or depreciated? What is the
+effect on South African exports and imports?
+(4)
+R per $
+Quantity of $
+0
+S
+S1
+D
+E
+R8
+E1
+R9
+Graph: S shifts left to S1, new equilibrium E1 at a higher rand price of dollars (e.g. $1 = R9)
+(2). The rand has depreciated (dollar appreciated) (1). SA exports become cheaper for
+ECON 122: Practice Examination – Memorandum
+24/37
+
+
+--- PAGE 25 ---
+foreigners (exports rise) and imports become more expensive (imports fall) – the current
+account tends to improve (1).
+8.4
+List two possible reasons for an appreciation of the rand against the US dollar.
+(2)
+Any two (1 each): higher prices of SA export commodities (gold, platinum); increase in SA
+exports; increased foreign investment in SA (portfolio or direct); higher SA interest rates
+relative to the USA; expectations that the rand will appreciate; increased tourism to SA;
+decrease in SA imports.
+8.5
+Discuss two arguments in favour of and two arguments against the use of trade barriers.
+(4)
+For (any two, 1 each): improve the balance of payments; protect against dumping; neutralise
+foreign export subsidies; protect infant industries; protect employment; raise government
+revenue; national security. Against (any two, 1 each): retaliation and trade wars; welfare cost –
+higher prices and less choice for consumers; inefficiency – protected firms have little incentive
+to innovate.
+QUESTION 9 / VRAAG 9 The Keynesian model
+[12]
+9.1
+Provide four assumptions of the simple Keynesian model.
+(2)
+Any four (½ each): only households and firms (no G, X, Z) initially; prices and wages are
+given/constant; the money stock and interest rates are given (exogenous); spending is the
+driving force in the economy (demand determines production); there are unemployed
+resources; investment is autonomous.
+9.2
+What is meant by the consumption function? Explain its three main characteristics and
+illustrate the function graphically.
+(5)
+The consumption function is the relationship between consumption expenditure by households
+and total income: C = C̄  + cY. (1) (i) Consumption increases as income increases (positive
+relationship). (½) (ii) Consumption is positive even when income is zero (autonomous
+consumption, financed by past savings or credit). (½) (iii) When income increases,
+consumption increases by less than the increase in income – 0 < c < 1; the rest is saved
+(slope = MPC = ΔC/ΔY). (1)
+C
+Y
+0
+45°
+C = C̄  + 
+C̄
+ΔY
+ΔC
+Graph: positive intercept C̄ , upward slope flatter than 45° (2).
+ECON 122: Practice Examination – Memorandum
+25/37
+
+
+--- PAGE 26 ---
+9.3
+Name three factors that determine investment spending by firms.
+(3)
+Any three (1 each): the interest rate (inverse relationship – cost of borrowing); the cost of
+capital goods; expected revenue/profit from capital goods; business confidence and
+willingness to take risks / expected future economic conditions.
+9.4
+Explain how (a) an increase in the tax rate and (b) an increase in government spending
+affect the multiplier.
+(2)
+(a) A higher tax rate increases leakages out of the circular flow, increasing the denominator 1 −
+c(1 − t) + m, so the multiplier becomes smaller. (1) (b) Government spending is autonomous –
+it does not change the multiplier; it increases equilibrium income by α × ΔG. (1)
+QUESTION 10 / VRAAG 10 Unemployment
+[12]
+10.1
+Identify the type of unemployment in each case and justify your answer:
+(a) Lerato, a new BCom graduate, is searching for her first job.
+(b) Mineworkers lose their jobs because a mine introduces automated drilling machines.
+(c) Waiters at a Durban beach resort have no work after the December holidays.
+(d) Workers at a furniture factory are laid off because sales fell during a recession.
+(4)
+(a) Frictional – time taken by first-time job seekers to find a job (1). (b) Structural – change in
+production methods (mechanisation) creates a skills mismatch (1). (c) Seasonal – tourism jobs
+required only for part of the year (1). (d) Cyclical (demand-deficient) – fall in total demand
+during a downswing (1).
+10.2
+Distinguish between the strict (narrow) and broad (expanded) definitions of unemployment.
+(2)
+Both: persons aged 15+ (15–64) who did not work in the reference week and were available to
+work. (½) Strict: must also have actively searched for work (or tried to start a business) in the
+four weeks before the survey. (½) Broad: drops the active-search requirement – only a desire
+to work is needed, so it includes discouraged work-seekers. (1)
+10.3
+Give two reasons why people enter the unemployment pool and two reasons why they
+leave it.
+(2)
+Enter (½ each): new entrants to the labour market; leaving a previous job to look for another;
+being retrenched/laid off; being fired. Leave (½ each): finding a new job/being hired; being
+recalled after a lay-off; becoming discouraged and stopping the search (leaving the labour
+force).
+10.4
+Name three possible causes of structural unemployment in South Africa and one policy
+aimed at the supply of labour that could reduce it.
+(4)
+Causes (any three, 1 each): lack of the required education, training or skills; changes in
+production methods (mechanisation/automation); changes in the goods and services
+demanded; foreign competition (e.g. dumping); structural decline of certain industries;
+discrimination. Policy (1): improve education, training and skills / retraining of workers (or limit
+population growth / stricter immigration control).
+ECON 122: Practice Examination – Memorandum
+26/37
+
+
+--- PAGE 27 ---
+SECTION C / AFDELING C — CALCULATIONS — MEMORANDUM
+[150]
+QUESTION 1 / VRAAG 1 GDP and related aggregates
+[20]
+Table 1 provides key national accounts data for a hypothetical South African economy in 2025. Use it to
+answer the questions that follow. Show all formulae and calculations.
+Item
+R million
+Household consumption expenditure
+2 480 000
+Gross capital formation (investment)
+620 000
+Government consumption expenditure
+760 000
+Exports of goods and services
+1 050 000
+Imports of goods and services
+1 010 000
+Taxes on production and imports
+455 000
+Subsidies on production
+38 000
+Consumption of fixed capital (depreciation)
+410 000
+Salaries earned by South African engineers working in Dubai
+96 000
+Dividends paid to British shareholders of South African mining companies
+214 000
+Population (persons)
+63 100 000
+1.1
+Calculate gross domestic expenditure (GDE) at market prices.
+(2)
+GDE = C + I + G (½)
+= 2 480 000 + 620 000 + 760 000 (1)
+= R3 860 000 million (½)
+1.2
+Calculate GDP at market prices using the expenditure method.
+(2)
+GDP@MP = C + I + G + X − Z (½)
+= 3 860 000 + 1 050 000 − 1 010 000 (1)
+= R3 900 000 million (½)
+1.3
+Calculate GDP at factor cost.
+(2)
+GDP@FC = GDP@MP − taxes on production and imports + subsidies (½)
+= 3 900 000 − 455 000 + 38 000 (1)
+= R3 483 000 million (½)
+1.4
+Calculate gross national income (GNI) at market prices.
+(3)
+GNI@MP = GDP@MP + primary income receipts − primary income payments (1)
+Receipts = salaries of SA engineers in Dubai = 96 000; payments = dividends to British
+ECON 122: Practice Examination – Memorandum
+27/37
+
+
+--- PAGE 28 ---
+shareholders = 214 000 (1)
+GNI@MP = 3 900 000 + 96 000 − 214 000 = R3 782 000 million (1)
+1.5
+Calculate net national income (national income) at factor cost.
+(3)
+NNI@FC = GNI@MP − depreciation − taxes + subsidies (1)
+= 3 782 000 − 410 000 − 455 000 + 38 000 (1)
+= R2 955 000 million (1)
+1.6
+Calculate net domestic product (NDP) at factor cost.
+(2)
+NDP@FC = GDP@FC − depreciation (½)
+= 3 483 000 − 410 000 (1)
+= R3 073 000 million (½)
+1.7
+Calculate GDP per capita (at market prices) in rand. Round your answer to two decimal
+places.
+(2)
+GDP per capita = GDP@MP ÷ population (½)
+= R3 900 000 000 000 ÷ 63 100 000 (1)
+= R61 806.66 per person (½)
+1.8
+Explain why GNI is smaller than GDP in this economy, and what the difference between
+GDP and GDE tells you about trade with the rest of the world.
+(4)
+GNI < GDP because primary income payments to foreigners (R214 000 m) exceed primary
+income received from abroad (R96 000 m): net primary income payments of R118 000 m flow
+out (2). GDP − GDE = X − Z = R40 000 m > 0: exports exceed imports, so the country has a
+trade surplus – production exceeds domestic spending (2).
+QUESTION 2 / VRAAG 2 GDP: the production and income methods
+[15]
+On 12 December 2025, Vaal Mining Ltd hosts its year-end gala and pays the event planner, Mosaic
+Events, R2 450 000 to organise it. Mosaic Events rents a hall for R180 000, hires 20 waiters at R4 500
+each, and pays R25 000 interest on a business loan. Mosaic Events contracts Chef Lerato to cater for
+the evening at a fee of R1 360 000. Chef Lerato rents a commercial kitchen for R75 000 and pays wages
+of R140 000. She buys all her ingredients from FreshMart Wholesalers for R640 000. FreshMart pays
+R48 000 rent and R112 000 wages, and buys its fresh produce from Lekoa Farms for R230 000. Lekoa
+Farms pays wages of R86 000 and R14 000 interest on a tractor loan. Lekoa Farms does not buy any
+intermediate goods. (Hint: profit is the balancing item.)
+2.1
+Complete the table in the Annexure and show the value of GDP according to the
+production (value-added) method.
+(6)
+ECON 122: Practice Examination – Memorandum
+28/37
+
+
+--- PAGE 29 ---
+Participant
+Sales
+Purchases
+Value
+added
+Wages
+Rent
+Interest
+Profit
+Income
+Lekoa Farms
+230 000
+0
+230 000
+86 000
+–
+14 000
+130 000
+230 000
+FreshMart
+640 000
+230 000
+410 000
+112
+000
+48
+000
+–
+250 000
+410 000
+Chef Lerato
+1 360
+000
+640 000
+720 000
+140
+000
+75
+000
+–
+505 000
+720 000
+Mosaic
+Events
+2 450
+000
+1 360 000
+1 090 000
+90 000
+180
+000
+25 000
+795 000
+1 090
+000
+TOTAL
+4 680
+000
+2 230 000
+2 450 000
+428
+000
+303
+000
+39 000
+1 680
+000
+2 450
+000
+Value added = sales − intermediate purchases for each participant (½ per correct value-added
+figure = 2); correct purchases column (2); GDP (production method) = R2 450 000 (2).
+2.2
+Use the table in the Annexure to show the value of GDP according to the income method.
+Show how you calculated the profit of each participant.
+(6)
+Profit = value added − wages − rent − interest
+Lekoa: 230 000 − 86 000 − 14 000 = 130 000 (1)
+FreshMart: 410 000 − 112 000 − 48 000 = 250 000 (1)
+Chef Lerato: 720 000 − 140 000 − 75 000 = 505 000 (1)
+Mosaic: 1 090 000 − 90 000 − 180 000 − 25 000 = 795 000 (1)
+GDP (income) = wages 428 000 + rent 303 000 + interest 39 000 + profit 1 680 000 = R2
+450 000 (2)
+2.3
+State GDP according to the expenditure method and explain why adding up the value of all
+sales would give a misleading figure.
+(3)
+Expenditure method: only the final sale counts – the R2 450 000 paid by Vaal Mining (1). Sum
+of all sales = R4 680 000 (½), which double counts intermediate goods (ingredients, catering)
+already included in the final price, overstating GDP by R2 230 000 (1½).
+QUESTION 3 / VRAAG 3 Nominal GDP, real GDP and the GDP deflator
+[15]
+A small economy produces only three goods. Use the information below to answer the questions. 2024
+is the base year.
+Good
+2024 quantity
+2024 price
+2025 quantity
+2025 price
+Bread (loaves)
+1 200
+R18.00
+1 300
+R19.80
+Airtime (vouchers)
+800
+R25.00
+850
+R26.50
+Taxi trips
+1 500
+R14.00
+1 560
+R15.40
+3.1
+Calculate nominal GDP for 2024 and 2025.
+(4)
+ECON 122: Practice Examination – Memorandum
+29/37
+
+
+--- PAGE 30 ---
+Nominal GDP = Σ (current P × current Q) (½)
+2024: (1 200 × 18) + (800 × 25) + (1 500 × 14) = 21 600 + 20 000 + 21 000 = R62 600 (1½)
+2025: (1 300 × 19.80) + (850 × 26.50) + (1 560 × 15.40) = 25 740 + 22 525 + 24 024 = R72
+289 (2)
+3.2
+Calculate real GDP for 2024 and 2025.
+(3)
+Real GDP = Σ (base-year P × current Q) (½)
+2024: = nominal GDP in base year = R62 600 (½)
+2025: (1 300 × 18) + (850 × 25) + (1 560 × 14) = 23 400 + 21 250 + 21 840 = R66 490 (2)
+3.3
+Calculate the growth rate of nominal GDP and of real GDP between 2024 and 2025.
+Which one measures economic growth? Explain.
+(4)
+Nominal growth = (72 289 − 62 600) ÷ 62 600 × 100 = 15.48% (1½)
+Real growth = (66 490 − 62 600) ÷ 62 600 × 100 = 6.21% (1½)
+Real growth (6.21%) measures economic growth – it removes the effect of price increases;
+nominal growth mixes growth and inflation (1)
+3.4
+Calculate the GDP deflator for 2024 and 2025, and the inflation rate for 2025.
+(4)
+Deflator = nominal GDP ÷ real GDP × 100 (½)
+2024: 62 600 ÷ 62 600 × 100 = 100.00 (½)
+2025: 72 289 ÷ 66 490 × 100 = 108.72 (1)
+Inflation 2025 = (108.72 − 100) ÷ 100 × 100 = 8.72% (2)
+QUESTION 4 / VRAAG 4 Measuring inflation with the CPI
+[12]
+The table shows hypothetical consumer price index (CPI) values (December 2024 = 100).
+Month
+CPI 2025
+CPI 2026
+January
+104.2
+107.8
+February
+104.9
+108.6
+March
+105.6
+109.3
+April
+105.9
+110.1
+4.1
+Calculate the year-on-year inflation rate for each month of 2026.
+(4)
+Y-o-y inflation = (CPI month 2026 − CPI same month 2025) ÷ CPI same month 2025 × 100
+January: (107.8 − 104.2) ÷ 104.2 × 100 = 3.45% (1)
+February: (108.6 − 104.9) ÷ 104.9 × 100 = 3.53% (1)
+March: (109.3 − 105.6) ÷ 105.6 × 100 = 3.50% (1)
+April: (110.1 − 105.9) ÷ 105.9 × 100 = 3.97% (1)
+4.2
+Calculate the month-on-month inflation rate for February, March and April 2026.
+(3)
+ECON 122: Practice Examination – Memorandum
+30/37
+
+
+--- PAGE 31 ---
+M-o-m inflation = (CPI this month − CPI previous month) ÷ CPI previous month × 100
+February: (108.6 − 107.8) ÷ 107.8 × 100 = 0.74% (1)
+March: (109.3 − 108.6) ÷ 108.6 × 100 = 0.64% (1)
+April: (110.1 − 109.3) ÷ 109.3 × 100 = 0.73% (1)
+4.3
+Using the inflation target range in your study material (3–6%), comment on whether the
+SARB is meeting its target in April 2026, and what the MPC would likely do if inflation rose
+above 6%.
+(2)
+April 2026 y-o-y inflation of 3.97% lies within the 3–6% target range, so the target is being met
+(1). If inflation rose above 6%, the MPC would likely raise the repo rate (contractionary
+monetary policy) to curb spending (1).
+4.4
+Explain why year-on-year rates are preferred to month-on-month rates when reporting
+inflation.
+(3)
+Month-on-month changes are small and volatile and are affected by seasonal factors (e.g.
+December spending, annual tariff increases in April) (1½). Comparing the same month a year
+apart removes seasonal effects and expresses inflation as an annual rate, making it
+comparable with the target and between years (1½).
+QUESTION 5 / VRAAG 5 The labour market
+[15]
+Labour market statistics for the fictional country of Mzansia for the third quarter of 2026 are as follows:
+Category
+Number (thousands)
+Employed
+16 800
+Unemployed (actively searched for work in the past four weeks)
+8 200
+Not economically active:
+  Discouraged work-seekers
+3 400
+  Full-time students
+6 900
+  Homemakers
+2 700
+  Ill or disabled
+1 500
+  Other (early retirees, etc.)
+1 700
+Working-age population (15–64)
+41 200
+5.1
+Calculate the labour force (economically active population) according to the strict
+definition.
+(2)
+Labour force = employed + unemployed (½)
+= 16 800 + 8 200 (1)
+= 25 000 thousand (25 million) (½)
+5.2
+Calculate the narrow (official) unemployment rate.
+(3)
+ECON 122: Practice Examination – Memorandum
+31/37
+
+
+--- PAGE 32 ---
+Narrow UR = unemployed ÷ labour force × 100 (1)
+= 8 200 ÷ 25 000 × 100 (1)
+= 32.80% (1)
+5.3
+Calculate the broad (expanded) unemployment rate.
+(4)
+Broad unemployed = 8 200 + 3 400 = 11 600 (1)
+Broad labour force = 25 000 + 3 400 = 28 400 (1)
+Broad UR = 11 600 ÷ 28 400 × 100 (1)
+= 40.85% (1)
+5.4
+Calculate the labour force participation rate (strict definition).
+(3)
+LFPR = labour force ÷ working-age population × 100 (1)
+= 25 000 ÷ 41 200 × 100 (1)
+= 60.68% (1)
+5.5
+Explain why the broad unemployment rate is higher than the narrow rate, and give one
+argument for using the broad definition in South Africa.
+(3)
+The broad definition adds discouraged work-seekers (who want work but have stopped
+searching) to both the number of unemployed and the labour force; since they are all
+unemployed, the rate rises (1½). Argument: in SA many people stop searching because jobs
+are scarce in their area or search is too costly (transport), so the narrow rate understates the
+true extent of joblessness (1½).
+QUESTION 6 / VRAAG 6 Money supply
+[9]
+Use the following hypothetical data for South Africa to answer the questions. Show all equations.
+Item
+R billion
+Coins and banknotes in circulation outside the banking sector
+140
+Banknotes and coins held in bank vaults
+30
+Demand deposits (cheque and transmission accounts) of the domestic private sector
+1 260
+Short- and medium-term deposits of the domestic private sector
+1 480
+Long-term deposits of the domestic private sector
+1 320
+Deposits of the central government with banks
+95
+6.1
+Calculate M1.
+(2)
+M1 = coins and notes in circulation + demand deposits (½)
+= 140 + 1 260 (1)
+= R1 400 billion (½)
+6.2
+Calculate M2.
+(2)
+ECON 122: Practice Examination – Memorandum
+32/37
+
+
+--- PAGE 33 ---
+M2 = M1 + short- and medium-term deposits (½)
+= 1 400 + 1 480 (1)
+= R2 880 billion (½)
+6.3
+Calculate M3.
+(2)
+M3 = M2 + long-term deposits (½)
+= 2 880 + 1 320 (1)
+= R4 200 billion (½)
+6.4
+Identify the items you excluded and explain why.
+(2)
+Notes and coins in bank vaults (R30 bn) – not in circulation; they are banks' cash reserves (1).
+Central government deposits (R95 bn) – money supply measures include only deposits of the
+domestic private sector (1).
+6.5
+Which measure of money corresponds most closely to money's function as a store of
+value? Explain.
+(1)
+M3 – it includes long-term deposits (longer than six months), which are held as a store of
+value rather than for spending. (1)
+QUESTION 7 / VRAAG 7 Taxation
+[16]
+The table below shows the SARS individual income tax rates for the 2024/25 tax year.
+Taxable income (R)
+Rates of tax (R)
+1 – 237 100
+18% of taxable income
+237 101 – 370 500
+42 678 + 26% of taxable income above 237 100
+370 501 – 512 800
+77 362 + 31% of taxable income above 370 500
+512 801 – 673 000
+121 475 + 36% of taxable income above 512 800
+673 001 – 857 900
+179 147 + 39% of taxable income above 673 000
+857 901 – 1 817 000
+251 258 + 41% of taxable income above 857 900
+1 817 001 and
+above
+644 489 + 45% of taxable income above 1 817 000
+Rebates
+Primary: R17 235  |  Secondary (65 and older): R9 444  |  Tertiary (75 and older): R3
+145
+7.1
+Naledi (42 years old) earns a monthly salary of R58 500. Calculate the total annual tax
+payable by Naledi.
+(4)
+Annual income = 58 500 × 12 = R702 000 (1)
+Tax = 179 147 + 0.39 × (702 000 − 673 000) − 17 235 (1)
+= 179 147 + 11 310 − 17 235 (1)
+= R173 222 (1)
+ECON 122: Practice Examination – Memorandum
+33/37
+
+
+--- PAGE 34 ---
+7.2
+Calculate Naledi's effective (average) tax rate.
+(2)
+ETR = tax payable ÷ taxable income × 100 (½)
+= 173 222 ÷ 702 000 × 100 (1)
+= 24.68% (½)
+7.3
+What is Naledi's marginal tax rate? Explain what it means.
+(1)
+39% (½) – each additional rand she earns is taxed at 39 cents (½).
+7.4
+Naledi's father, aged 68, has a taxable income of R310 000. Calculate his tax payable and
+his effective tax rate.
+(4)
+Tax = 42 678 + 0.26 × (310 000 − 237 100) − 17 235 − 9 444 (1½)
+= 42 678 + 18 954 − 26 679 = R34 953 (1)
+ETR = 34 953 ÷ 310 000 × 100 = 11.28% (1½)
+7.5
+Sipho earns R12 000 per month and spends all of it on goods subject to VAT. Thandeka
+earns R80 000 per month and spends 60% of her income on goods subject to VAT.
+Assume VAT of 15% is levied on the amount spent. Calculate the average VAT rate (VAT
+paid as a percentage of income) for each person and use your answer to classify VAT.
+(5)
+Sipho: VAT = 0.15 × 12 000 = R1 800; average rate = 1 800 ÷ 12 000 × 100 = 15% (2)
+Thandeka: spending = 0.6 × 80 000 = R48 000; VAT = 0.15 × 48 000 = R7 200; average
+rate = 7 200 ÷ 80 000 × 100 = 9% (2)
+VAT is regressive – it takes a bigger share of income from the lower-income earner (1)
+QUESTION 8 / VRAAG 8 International trade and exchange rates
+[18]
+South Africa and Brazil are the only two countries in the world, producing only citrus and coffee. The
+table shows the output of one worker per month if all of the worker's time is devoted to one good.
+Country
+Citrus (tonnes)
+Coffee (bags)
+South Africa
+60
+20
+Brazil
+80
+40
+8.1
+Which country has an absolute advantage in the production of each good? Explain.
+(2)
+Brazil has an absolute advantage in both citrus (80 > 60) and coffee (40 > 20) (1), because
+with the same resources it produces more of both goods (1).
+8.2
+Calculate the opportunity cost of producing 1 tonne of citrus and 1 bag of coffee in each
+country.
+(4)
+1 tonne citrus: SA = 20 ÷ 60 = 0.33 bags of coffee (1); Brazil = 40 ÷ 80 = 0.50 bags (1)
+1 bag coffee: SA = 60 ÷ 20 = 3 tonnes of citrus (1); Brazil = 80 ÷ 40 = 2 tonnes (1)
+ECON 122: Practice Examination – Memorandum
+34/37
+
+
+--- PAGE 35 ---
+8.3
+Which country has a comparative advantage in each good? Which good should each
+country specialise in and export?
+(2)
+South Africa has a comparative advantage in citrus (lower opportunity cost 0.33 < 0.50) and
+should export citrus (1). Brazil has a comparative advantage in coffee (2 < 3) and should
+export coffee (1).
+8.4
+Between which values must the international terms of trade for 1 bag of coffee lie for trade
+to be mutually beneficial?
+(2)
+2 tonnes of citrus < 1 bag of coffee < 3 tonnes of citrus (2). Brazil exports coffee only if it
+receives more than 2 tonnes; SA imports coffee only if it pays less than 3 tonnes.
+8.5
+Suppose the countries agree to trade at 1 bag of coffee = 2.5 tonnes of citrus. Show how
+both countries gain.
+(2)
+SA obtains a bag of coffee for 2.5 tonnes instead of the 3 tonnes it would sacrifice producing it
+itself – a gain of 0.5 tonnes per bag (1). Brazil receives 2.5 tonnes of citrus per bag instead of
+2 tonnes at home – a gain of 0.5 tonnes per bag (1).
+8.6
+South Africa's export price index is 128.4 and its import price index is 136.9. Calculate the
+terms of trade index and interpret your answer.
+(3)
+TOT = export price index ÷ import price index × 100 (1)
+= 128.4 ÷ 136.9 × 100 = 93.79 (1)
+TOT < 100: the terms of trade are unfavourable – SA must export more to buy the same
+quantity of imports; it is worse off (1)
+8.7
+A laptop costs US$1 250. Calculate its rand cost when $1 = R17.85 and when $1 = R18.60
+(ignore transport costs). What has happened to the rand?
+(3)
+1 250 × 17.85 = R22 312.50 (1)
+1 250 × 18.60 = R23 250.00 (1)
+The rand has depreciated – the laptop is R937.50 more expensive (1)
+QUESTION 9 / VRAAG 9 The Keynesian model: a closed economy
+[12]
+In the closed economy of Ditsobotla (no government or foreign sector), when total income increases from
+R800 million to R1 200 million, household consumption increases from R740 million to R1 060 million.
+Investment is autonomous at R180 million.
+9.1
+Calculate the marginal propensity to consume (MPC).
+(2)
+c = ΔC ÷ ΔY = (1 060 − 740) ÷ (1 200 − 800) (1)
+= 320 ÷ 400 = 0.8 (1)
+9.2
+Calculate the marginal propensity to save (MPS).
+(1)
+s = 1 − c = 1 − 0.8 = 0.2 (1)
+ECON 122: Practice Examination – Memorandum
+35/37
+
+
+--- PAGE 36 ---
+9.3
+Derive the consumption function.
+(2)
+C = C̄  + cY → 740 = C̄  + 0.8(800) (1)
+C̄  = 740 − 640 = 100, so C = 100 + 0.8Y (1)
+9.4
+Derive the savings function and calculate savings when income is R1 200 million.
+(2)
+S = −C̄  + sY = −100 + 0.2Y (1)
+S = −100 + 0.2(1 200) = R140 million (check: 1 200 − 1 060 = 140) (1)
+9.5
+Calculate the multiplier and equilibrium income.
+(3)
+α = 1 ÷ (1 − c) = 1 ÷ 0.2 = 5 (1)
+Y = α (C̄  + Ī) = 5 × (100 + 180) (1)
+= R1 400 million (check: S = −100 + 0.2 × 1 400 = 180 = I) (1)
+9.6
+Investment increases by R40 million. Calculate the change in equilibrium income and the
+new equilibrium income.
+(2)
+ΔY = α × ΔI = 5 × 40 = R200 million (1)
+Y1 = 1 400 + 200 = R1 600 million (1)
+QUESTION 10 / VRAAG 10 The Keynesian model: an open economy with government
+[18]
+The following information describes the economy of Thabong (R million):
+C = 120 + 0.85Yd     t = 0.2     I = 260     G = 310     X = 240     Z = 50 + 0.08Y
+(Yd = disposable income = (1 − t)Y.)
+10.1
+Calculate the value of the multiplier.
+(3)
+α = 1 ÷ [1 − c(1 − t) + m] (1)
+= 1 ÷ [1 − 0.85(0.8) + 0.08] = 1 ÷ [1 − 0.68 + 0.08] (1)
+= 1 ÷ 0.40 = 2.50 (1)
+10.2
+Use the multiplier to calculate equilibrium income.
+(2)
+Ā = 120 + 260 + 310 + 240 − 50 = 880 (1)
+Y = α × Ā = 2.5 × 880 = R2 200 million (1)
+10.3
+Calculate equilibrium income using the total (aggregate) expenditure approach.
+(3)
+Y = C + I + G + X − Z (½)
+Y = 120 + 0.85(1 − 0.2)Y + 260 + 310 + 240 − 50 − 0.08Y (1)
+Y = 880 + 0.68Y − 0.08Y → Y − 0.6Y = 880 → 0.4Y = 880 (1)
+Y = R2 200 million (½)
+ECON 122: Practice Examination – Memorandum
+36/37
+
+
+--- PAGE 37 ---
+10.4
+Calculate the government's tax revenue and its budget balance. Is it a surplus or a deficit?
+(2)
+T = tY = 0.2 × 2 200 = R440 million (1)
+T − G = 440 − 310 = R130 million surplus (1)
+10.5
+Calculate total household consumption at equilibrium.
+(2)
+C = 120 + 0.85(0.8)(2 200) (1)
+= 120 + 1 496 = R1 616 million (1)
+10.6
+The government introduces a basic income grant that increases government spending by
+R60 million, financed by raising the tax rate to 0.25. Calculate the new equilibrium income
+using the total expenditure approach.
+(4)
+Y = 120 + 0.85(1 − 0.25)Y + 260 + 370 + 240 − 50 − 0.08Y (1)
+Y = 940 + 0.6375Y − 0.08Y (1)
+Y − 0.5575Y = 940 → 0.4425Y = 940 (1)
+Y = R2 124.29 million (income falls by R75.71 m because the higher tax rate reduces the
+multiplier to 2.26) (1)
+10.7
+Illustrate your answer in Question 10.2 graphically. Indicate the intercept, the 45° line and
+the equilibrium point.
+(2)
+A
+Y
+0
+A = Y (45°)
+A0
+880
+E0
+Y0 = 2 200
+A = 880 + 0.6Y cuts the vertical axis at 880 (½); 45° line (½); equilibrium E0 at Y = 2 200
+where A = Y (1).
+END OF MEMORANDUM
+ECON 122: Practice Examination – Memorandum
+37/37

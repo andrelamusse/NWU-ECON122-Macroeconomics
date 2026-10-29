@@ -910,6 +910,7 @@
       });
       AudioEngine.playClick();
     }
+    switchPlatformView = switchView;
 
     navButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -945,15 +946,19 @@
       });
     });
 
-    // 3. Initialize all 6 Modules
-    updateKpiBanner();
+    // 3. Initialize all 8 Modules
     initVaultModule();
+    initExamScopeModule();
+    initExtremeExamModule();
     initSvgLabModule();
     initSolversModule();
     initQuizModule();
     initPastPapersModule();
     initCheatSheetModule();
+    updateKpiBanner();
   }
+
+  let switchPlatformView = function () {};
 
   function updateThemeButton(theme) {
     const icon = document.getElementById('theme-icon');
@@ -984,6 +989,9 @@
     const accEl = document.getElementById('kpi-user-accuracy');
     const ansEl = document.getElementById('kpi-user-answered');
     const ringEl = document.getElementById('kpi-accuracy-ring');
+    const scopeProgEl = document.getElementById('kpi-scope-progress');
+    const scopeSubEl = document.getElementById('kpi-scope-sub');
+    const extremeScoreEl = document.getElementById('kpi-extreme-score');
 
     if (totalEl && typeof ECON122_DATA !== 'undefined') {
       totalEl.textContent = ECON122_DATA.questions.length + ' Problems';
@@ -999,6 +1007,21 @@
         const circumference = 94.25;
         const offset = circumference * (1 - Math.max(0, Math.min(100, pct)) / 100);
         ringEl.setAttribute('stroke-dashoffset', offset.toFixed(2));
+      }
+    }
+    if (scopeProgEl && typeof ScopeEngine !== 'undefined') {
+      const stats = ScopeEngine.getSummaryStats();
+      scopeProgEl.textContent = `${stats.checkedCount} / ${stats.totalCount}`;
+      if (scopeSubEl) {
+        scopeSubEl.textContent = `${stats.pct}% Mastered • Saved to Device`;
+      }
+    }
+    if (extremeScoreEl && typeof ExtremeExamEngine !== 'undefined') {
+      const exStats = ExtremeExamEngine.getScoreSummary();
+      if (exStats.checkedPages > 0) {
+        extremeScoreEl.textContent = `${formatMark(exStats.totalEarned)} / 500`;
+      } else {
+        extremeScoreEl.textContent = '500 Marks';
       }
     }
   }
@@ -1292,14 +1315,34 @@
       </div>
     `).join('');
 
+    const beginnerGuideHtml = ch.beginnerGuide ? `
+      <div class="glass-card" style="margin-bottom: 1.35rem; border-left: 4px solid var(--accent-sky);">
+        <div class="meta-pill-row" style="margin-bottom: 0.45rem;">
+          <span class="badge badge-sky">💡 Beginner-Friendly Plain-English Intuition &amp; Variable Decoder</span>
+        </div>
+        <p style="font-size: 0.93rem; color: var(--text-primary); line-height: 1.6; margin-bottom: 0.9rem;">
+          <strong>Why These Formulas Work:</strong> ${renderInlineLatexText(ch.beginnerGuide.whyFormulasWork)}
+        </p>
+        <div class="variable-decoder-grid">
+          ${(ch.beginnerGuide.variables || []).map((v) => `
+            <div class="variable-decoder-card">
+              <div class="variable-symbol-pill">${v.symbol}</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">${v.name}</div>
+                <div style="font-size: 0.81rem; color: var(--text-secondary); line-height: 1.45; margin-top: 0.15rem;">${v.meaning}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    ` : '';
+
     stage.innerHTML = `
       <div class="glass-card chapter-header-card">
         <div>
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapter ${ch.number}</span>
-            <span class="badge badge-emerald">Chapter ${ch.number}</span>
             <span class="badge badge-indigo">${ch.pages || ch.shortTitle}</span>
-            <span class="badge badge-amber">${chQuestions.length} Standalone Problems</span>
           </div>
           <h2>Chapter ${ch.number}: ${ch.title}</h2>
           <p style="margin-top: 0.5rem; font-size: 0.95rem;">${renderInlineLatexText(ch.summary)}</p>
@@ -1324,6 +1367,7 @@
         </div>
       </div>
 
+      ${beginnerGuideHtml}
       ${outcomesHtml}
 
       <div class="section-header-bar">
@@ -2223,9 +2267,8 @@
       <div class="glass-card" id="active-quiz-card">
         <div class="quiz-toolbar" style="margin-bottom: 0.85rem;">
           <div class="meta-pill-row" style="margin-bottom: 0;">
-            <span class="badge badge-sky">Problem ${currentQuizIndex + 1} of ${totalCount} (${totalCount} Standalone Problems)</span>
+            <span class="badge badge-sky">Problem ${currentQuizIndex + 1} of ${totalCount}</span>
             <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
-            <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
             <span class="badge badge-amber">${q.difficulty}</span>
           </div>
           <div class="quiz-nav-btn-group">
@@ -2313,7 +2356,7 @@
 
         const refutationsHtml = q.shuffledOptions.map((o, i) => `
           <div class="refutation-item ${o.isCorrect ? 'is-correct' : 'is-wrong'}">
-            <strong>Option ${keys[i]} (${o.isCorrect ? 'Correct' : 'Distractor Refutation'}):</strong>
+            <strong>Option ${keys[i]} (${o.isCorrect ? 'Correct' : 'Why This Is Incorrect'}):</strong>
             ${renderInlineLatexText(o.refutation)}
           </div>
         `).join('');
@@ -2325,9 +2368,9 @@
               <div class="meta-pill-row" style="justify-content: space-between; align-items: center;">
                 <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                   <span class="badge ${isCorrect ? 'badge-emerald' : 'badge-rose'}">
-                    ${isCorrect ? '✅ First-Principles Mastery Verified' : '❌ Diagnostic Refutation & Step-by-Step Derivation'}
+                    ${isCorrect ? '✅ Correct — Step-by-Step Explanation' : '❌ Step-by-Step Solution & Explanation'}
                   </span>
-                  <span class="badge badge-sky">Core Concept: ${q.topic || q.citation || 'Core Principle'}</span>
+                  <span class="badge badge-sky">${q.topic || 'Core Principle'}</span>
                 </div>
                 <button type="button" class="btn-primary" id="btn-quiz-next-fb">${nextLabel}</button>
               </div>
@@ -2417,7 +2460,6 @@
     `).join('');
 
     const totalSuiteQ = linkedQuestions.length;
-    // Ensure options are dynamically shuffled for every suite question
     linkedQuestions.forEach((q) => {
       q.suiteShuffledOptions = fisherYatesShuffle(q.options);
     });
@@ -2437,7 +2479,6 @@
             <div class="meta-pill-row" style="margin-bottom: 0;">
               <span class="badge badge-sky">Suite Problem ${qIdx + 1} of ${totalSuiteQ}</span>
               <span class="badge badge-indigo">${q.source || q.topic || 'Core Macroeconomics'}</span>
-              <span class="badge badge-emerald">${q.citation || q.topic || 'Core Principle'}</span>
             </div>
             <div class="quiz-nav-btn-group">
               <button type="button" class="btn-ghost pp-nav-jump" data-target-idx="${qIdx - 1}" ${!hasPrev ? 'disabled' : ''}>← Previous Question</button>
@@ -2561,7 +2602,7 @@
 
       const cRows = (ch.concepts || []).map((c) => `
         <div style="margin-bottom: 0.5rem; font-size: 0.8rem;">
-          <strong>• ${c.title} (${c.tag || ''}):</strong> ${renderInlineLatexText(c.intuition || '')}
+          <strong>• ${c.title}:</strong> ${renderInlineLatexText(c.intuition || '')}
         </div>
       `).join('');
 
@@ -2578,7 +2619,6 @@
         <div class="glass-card cheat-block" style="margin-bottom: 1rem;">
           <div class="meta-pill-row">
             <span class="badge badge-sky">Chapter ${ch.number}</span>
-            <span class="badge badge-emerald">Chapter ${ch.number}</span>
             <span class="badge badge-indigo">${ch.pages || ch.shortTitle}</span>
           </div>
           <h3 style="margin-bottom: 0.5rem;">Ch ${ch.number}: ${ch.title}</h3>
@@ -2600,6 +2640,1530 @@
   }
 
   /* --------------------------------------------------------------------------
+     MODULE 7: Official Exam Scope Interactive Checklist (Device-Bound Persistence)
+     -------------------------------------------------------------------------- */
+  const ScopeEngine = (() => {
+    const FALLBACK_KEY = 'econ122_scope_progress_v1';
+    let scopeState = null;
+
+    function getDeviceId() {
+      const tState = TelemetryEngine.getState();
+      return (tState && tState.deviceId) ? tState.deviceId : 'DEV-LOCAL';
+    }
+
+    function getDeviceStorageKey() {
+      return `econ122_scope_progress_${getDeviceId()}`;
+    }
+
+    function getAllScopeItems() {
+      if (typeof ECON122_DATA === 'undefined' || !ECON122_DATA.examScope) return [];
+      const items = [];
+      (ECON122_DATA.examScope.sections || []).forEach((sec) => {
+        (sec.groups || []).forEach((grp) => {
+          (grp.items || []).forEach((it) => {
+            items.push({ ...it, sectionId: sec.id, groupId: grp.id });
+          });
+        });
+      });
+      return items;
+    }
+
+    function loadScopeState() {
+      const devId = getDeviceId();
+      const devKey = getDeviceStorageKey();
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const raw = localStorage.getItem(devKey) || localStorage.getItem(FALLBACK_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              scopeState = {
+                deviceId: devId,
+                checked: parsed.checked || {},
+                levels: parsed.levels || {},
+                priorities: parsed.priorities || {
+                  calc_1: '', calc_2: '', calc_3: '',
+                  theo_1: '', theo_2: '', theo_3: ''
+                },
+                updatedAt: parsed.updatedAt || new Date().toISOString()
+              };
+              return scopeState;
+            }
+          }
+        } catch (_) {}
+      }
+      scopeState = {
+        deviceId: devId,
+        checked: {},
+        levels: {},
+        priorities: {
+          calc_1: '', calc_2: '', calc_3: '',
+          theo_1: '', theo_2: '', theo_3: ''
+        },
+        updatedAt: new Date().toISOString()
+      };
+      saveScopeState();
+      return scopeState;
+    }
+
+    function saveScopeState() {
+      if (!scopeState) return;
+      scopeState.deviceId = getDeviceId();
+      scopeState.updatedAt = new Date().toISOString();
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const serialized = JSON.stringify(scopeState);
+          localStorage.setItem(getDeviceStorageKey(), serialized);
+          localStorage.setItem(FALLBACK_KEY, serialized);
+        } catch (_) {}
+      }
+    }
+
+    function toggleItemChecked(itemId, isChecked) {
+      if (!scopeState) loadScopeState();
+      const checkedVal = Boolean(isChecked);
+      scopeState.checked[itemId] = checkedVal;
+      scopeState.levels[itemId] = checkedVal ? 'well' : (scopeState.levels[itemId] === 'well' ? 'not_yet' : (scopeState.levels[itemId] || 'not_yet'));
+      saveScopeState();
+      return scopeState;
+    }
+
+    function setItemLevel(itemId, level) {
+      if (!scopeState) loadScopeState();
+      scopeState.levels[itemId] = level;
+      scopeState.checked[itemId] = (level === 'well');
+      saveScopeState();
+      return scopeState;
+    }
+
+    function setPriorityNote(slotKey, text) {
+      if (!scopeState) loadScopeState();
+      scopeState.priorities[slotKey] = String(text || '');
+      saveScopeState();
+    }
+
+    function resetAll() {
+      const devId = getDeviceId();
+      scopeState = {
+        deviceId: devId,
+        checked: {},
+        levels: {},
+        priorities: {
+          calc_1: '', calc_2: '', calc_3: '',
+          theo_1: '', theo_2: '', theo_3: ''
+        },
+        updatedAt: new Date().toISOString()
+      };
+      saveScopeState();
+      return scopeState;
+    }
+
+    function getSummaryStats() {
+      if (!scopeState) loadScopeState();
+      const all = getAllScopeItems();
+      const calcItems = all.filter((i) => i.sectionId === 'scope_calculations');
+      const theoItems = all.filter((i) => i.sectionId === 'scope_theory');
+
+      const checkedCount = all.filter((i) => Boolean(scopeState.checked[i.id])).length;
+      const calcChecked = calcItems.filter((i) => Boolean(scopeState.checked[i.id])).length;
+      const theoChecked = theoItems.filter((i) => Boolean(scopeState.checked[i.id])).length;
+      const partialCount = all.filter((i) => scopeState.levels[i.id] === 'partial' && !scopeState.checked[i.id]).length;
+      const totalCount = all.length || 46;
+      const pct = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+
+      return {
+        deviceId: scopeState.deviceId,
+        checkedCount,
+        totalCount,
+        pct,
+        calcChecked,
+        calcTotal: calcItems.length || 25,
+        theoChecked,
+        theoTotal: theoItems.length || 21,
+        partialCount
+      };
+    }
+
+    return {
+      loadScopeState,
+      saveScopeState,
+      toggleItemChecked,
+      setItemLevel,
+      setPriorityNote,
+      resetAll,
+      getSummaryStats,
+      getDeviceStorageKey
+    };
+  })();
+
+  let activeScopeFilter = 'all';
+
+  function initExamScopeModule() {
+    const stage = document.getElementById('scope-stage-container');
+    if (!stage || typeof ECON122_DATA === 'undefined' || !ECON122_DATA.examScope) return;
+    ScopeEngine.loadScopeState();
+    renderExamScopeStage();
+  }
+
+  function renderExamScopeStage() {
+    const stage = document.getElementById('scope-stage-container');
+    if (!stage || typeof ECON122_DATA === 'undefined' || !ECON122_DATA.examScope) return;
+
+    const scopeData = ECON122_DATA.examScope;
+    const state = ScopeEngine.loadScopeState();
+    const stats = ScopeEngine.getSummaryStats();
+
+    const sectionsHtml = (scopeData.sections || [])
+      .filter((sec) => {
+        if (activeScopeFilter === 'calc') return sec.id === 'scope_calculations';
+        if (activeScopeFilter === 'theory') return sec.id === 'scope_theory';
+        return true;
+      })
+      .map((sec) => {
+        const groupsHtml = (sec.groups || []).map((grp) => {
+          const visibleItems = (grp.items || []).filter((item) => {
+            if (activeScopeFilter === 'unmastered') {
+              return !state.checked[item.id];
+            }
+            return true;
+          });
+          if (visibleItems.length === 0) return '';
+
+          const groupCheckedCount = (grp.items || []).filter((it) => Boolean(state.checked[it.id])).length;
+          const groupTotalCount = (grp.items || []).length;
+
+          const itemsHtml = visibleItems.map((item) => {
+            const isChecked = Boolean(state.checked[item.id]);
+            const currLevel = state.levels[item.id] || (isChecked ? 'well' : 'not_yet');
+
+            return `
+              <div class="scope-checklist-item ${isChecked ? 'is-mastered' : (currLevel === 'partial' ? 'is-partial' : '')}" id="scope-item-card-${item.id}">
+                <div class="scope-item-top">
+                  <label class="scope-checkbox-label" for="scope-chk-${item.id}">
+                    <input
+                      type="checkbox"
+                      id="scope-chk-${item.id}"
+                      class="scope-item-checkbox"
+                      data-scope-check="${item.id}"
+                      ${isChecked ? 'checked' : ''}
+                    />
+                    <span class="scope-item-code">${item.code}</span>
+                    <span class="scope-item-topic">${item.topic}</span>
+                  </label>
+
+                  <div class="scope-level-pills" role="group" aria-label="Preparation level for ${item.code}">
+                    <button type="button" class="scope-level-btn ${currLevel === 'not_yet' ? 'active-not-yet' : ''}" data-scope-item="${item.id}" data-scope-level="not_yet">
+                      Not yet prepared
+                    </button>
+                    <button type="button" class="scope-level-btn ${currLevel === 'partial' ? 'active-partial' : ''}" data-scope-item="${item.id}" data-scope-level="partial">
+                      Partially prepared
+                    </button>
+                    <button type="button" class="scope-level-btn ${currLevel === 'well' ? 'active-well' : ''}" data-scope-item="${item.id}" data-scope-level="well">
+                      ✓ Well prepared
+                    </button>
+                  </div>
+                </div>
+
+                <div class="scope-item-guide">
+                  <div class="scope-formula-bar">
+                    <strong>Key Formula / Framework:</strong> <span>${item.formula}</span>
+                  </div>
+                  <div class="scope-beginner-tip">
+                    <strong>💡 Plain-English Breakdown:</strong> ${item.beginnerTip}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="glass-card scope-group-card">
+              <div class="scope-group-header">
+                <div>
+                  <div class="meta-pill-row" style="margin-bottom: 0.3rem;">
+                    <span class="badge badge-sky">${grp.chapterLabel}</span>
+                    <span class="badge ${groupCheckedCount === groupTotalCount ? 'badge-emerald' : 'badge-amber'}">
+                      ${groupCheckedCount} / ${groupTotalCount} Mastered
+                    </span>
+                  </div>
+                  <h3>${grp.number}. ${grp.title}</h3>
+                </div>
+                <div class="scope-group-actions">
+                  <button type="button" class="btn-ghost scope-jump-vault" data-ch-id="${grp.chapterId}">
+                    📖 Study ${grp.chapterLabel}
+                  </button>
+                  ${grp.solverId ? `
+                    <button type="button" class="btn-ghost scope-jump-solver" data-solver-id="${grp.solverId}">
+                      🧮 Open Solver
+                    </button>
+                  ` : ''}
+                  ${grp.extremePageId ? `
+                    <button type="button" class="btn-secondary scope-jump-extreme" data-page-id="${grp.extremePageId}">
+                      ⚡ Practice in Extreme Exam →
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+              <div class="scope-items-stack">
+                ${itemsHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="scope-section-block" style="margin-bottom: 2rem;">
+            <div class="section-header-bar" style="margin-bottom: 1rem;">
+              <div>
+                <h2 style="font-size: 1.35rem;">${sec.title}</h2>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">${sec.subtitle}</p>
+              </div>
+            </div>
+            ${groupsHtml || '<div class="glass-card"><p>All topics in this section are already checked off as mastered!</p></div>'}
+          </div>
+        `;
+      }).join('');
+
+    stage.innerHTML = `
+      <div class="glass-card scope-hero-card" style="margin-bottom: 1.5rem;">
+        <div class="scope-hero-top">
+          <div>
+            <div class="meta-pill-row">
+              <span class="badge badge-emerald">✓ Auto-Saved to Device (${stats.deviceId})</span>
+              <span class="badge badge-sky">46 Official Exam Scope Topics</span>
+            </div>
+            <h2>${scopeData.title}</h2>
+            <p style="margin-top: 0.35rem; font-size: 0.92rem; max-width: 78ch;">
+              ${scopeData.disclaimer}
+            </p>
+          </div>
+          <div class="scope-progress-summary-box">
+            <div class="scope-big-pct tabular-nums" id="scope-mastery-pct">${stats.pct}%</div>
+            <div class="scope-big-sub" id="scope-mastery-count">${stats.checkedCount} of ${stats.totalCount} Topics Mastered</div>
+          </div>
+        </div>
+
+        <div class="scope-progress-track" aria-label="Exam Scope Mastery Progress">
+          <div class="scope-progress-fill" id="scope-progress-fill" style="width: ${stats.pct}%;"></div>
+        </div>
+
+        <div class="scope-kpi-strip">
+          <div class="scope-mini-stat">
+            <span>Calculations Mastered:</span>
+            <strong class="tabular-nums">${stats.calcChecked} / ${stats.calcTotal}</strong>
+          </div>
+          <div class="scope-mini-stat">
+            <span>Theory Mastered:</span>
+            <strong class="tabular-nums">${stats.theoChecked} / ${stats.theoTotal}</strong>
+          </div>
+          <div class="scope-mini-stat">
+            <span>Partially Prepared:</span>
+            <strong class="tabular-nums">${stats.partialCount}</strong>
+          </div>
+        </div>
+
+        <div class="scope-toolbar">
+          <div class="scope-filter-group" role="tablist" aria-label="Filter Exam Scope">
+            <button type="button" class="btn-secondary ${activeScopeFilter === 'all' ? 'active-filter' : ''}" data-scope-filter="all">
+              All Topics (${stats.totalCount})
+            </button>
+            <button type="button" class="btn-secondary ${activeScopeFilter === 'calc' ? 'active-filter' : ''}" data-scope-filter="calc">
+              1. Calculations (${stats.calcTotal})
+            </button>
+            <button type="button" class="btn-secondary ${activeScopeFilter === 'theory' ? 'active-filter' : ''}" data-scope-filter="theory">
+              2. Theory (${stats.theoTotal})
+            </button>
+            <button type="button" class="btn-secondary ${activeScopeFilter === 'unmastered' ? 'active-filter' : ''}" data-scope-filter="unmastered">
+              Needs Revision Only (${stats.totalCount - stats.checkedCount})
+            </button>
+          </div>
+          <button type="button" class="btn-ghost" id="btn-scope-reset">
+            ↺ Reset Checklist
+          </button>
+        </div>
+      </div>
+
+      ${sectionsHtml}
+
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <h3>📝 My Revision Priorities (Saved Automatically to Your Device)</h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem; margin-bottom: 1rem;">
+          List the top 3 Calculation topics and top 3 Theory topics you need to revise most before the exam:
+        </p>
+        <div class="bento-grid-2">
+          <div>
+            <h4 style="margin-bottom: 0.6rem; color: var(--accent-sky);">Calculations Revision Priorities</h4>
+            <div style="display: grid; gap: 0.55rem;">
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_1" placeholder="1. e.g. Open-economy Keynesian multiplier with tax & imports..." value="${escapeAttr(state.priorities.calc_1)}" style="font-family: var(--font-sans);" />
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_2" placeholder="2. e.g. SARS personal income tax brackets & rebates..." value="${escapeAttr(state.priorities.calc_2)}" style="font-family: var(--font-sans);" />
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_3" placeholder="3. e.g. Comparative advantage opportunity cost ratios..." value="${escapeAttr(state.priorities.calc_3)}" style="font-family: var(--font-sans);" />
+            </div>
+          </div>
+          <div>
+            <h4 style="margin-bottom: 0.6rem; color: var(--accent-indigo);">Theory Revision Priorities</h4>
+            <div style="display: grid; gap: 0.55rem;">
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_1" placeholder="1. e.g. Negative externalities (MSC vs MPC) & Pigouvian tax graph..." value="${escapeAttr(state.priorities.theo_1)}" style="font-family: var(--font-sans);" />
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_2" placeholder="2. e.g. Demand-pull vs cost-push stagflation AD-AS graphs..." value="${escapeAttr(state.priorities.theo_2)}" style="font-family: var(--font-sans);" />
+              <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_3" placeholder="3. e.g. Active vs passive money demand & SARB repo rate..." value="${escapeAttr(state.priorities.theo_3)}" style="font-family: var(--font-sans);" />
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Wire checkboxes
+    stage.querySelectorAll('[data-scope-check]').forEach((chk) => {
+      chk.addEventListener('change', () => {
+        const itemId = chk.getAttribute('data-scope-check');
+        ScopeEngine.toggleItemChecked(itemId, chk.checked);
+        if (chk.checked) AudioEngine.playSuccess();
+        else AudioEngine.playClick();
+        updateKpiBanner();
+        renderExamScopeStage();
+      });
+    });
+
+    // Wire 3-level preparation buttons
+    stage.querySelectorAll('[data-scope-level]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const itemId = btn.getAttribute('data-scope-item');
+        const level = btn.getAttribute('data-scope-level');
+        ScopeEngine.setItemLevel(itemId, level);
+        if (level === 'well') AudioEngine.playSuccess();
+        else AudioEngine.playClick();
+        updateKpiBanner();
+        renderExamScopeStage();
+      });
+    });
+
+    // Wire filter buttons
+    stage.querySelectorAll('[data-scope-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeScopeFilter = btn.getAttribute('data-scope-filter') || 'all';
+        AudioEngine.playClick();
+        renderExamScopeStage();
+      });
+    });
+
+    // Wire reset button
+    const resetBtn = document.getElementById('btn-scope-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        ScopeEngine.resetAll();
+        AudioEngine.playClick();
+        updateKpiBanner();
+        renderExamScopeStage();
+      });
+    }
+
+    // Wire priority inputs
+    stage.querySelectorAll('.scope-priority-input').forEach((inp) => {
+      inp.addEventListener('input', () => {
+        const slot = inp.getAttribute('data-priority-slot');
+        ScopeEngine.setPriorityNote(slot, inp.value);
+      });
+    });
+
+    // Wire quick jump buttons to Vault, Solver, or Extreme Exam Page
+    stage.querySelectorAll('.scope-jump-vault').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const chId = btn.getAttribute('data-ch-id');
+        const ch = ECON122_DATA.chapters.find((c) => c.id === chId);
+        if (ch) {
+          activeChapterId = ch.id;
+          initVaultModule();
+          switchPlatformView('vault');
+        }
+      });
+    });
+
+    stage.querySelectorAll('.scope-jump-solver').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sId = btn.getAttribute('data-solver-id');
+        if (sId) {
+          activeSolverId = sId;
+          initSolversModule();
+          switchPlatformView('solvers');
+        }
+      });
+    });
+
+    stage.querySelectorAll('.scope-jump-extreme').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const pageId = btn.getAttribute('data-page-id');
+        if (pageId) {
+          ExtremeExamEngine.jumpToPageId(pageId);
+          switchPlatformView('extreme');
+        }
+      });
+    });
+  }
+
+  function escapeAttr(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  /* --------------------------------------------------------------------------
+     MODULE 8: Extreme Exam Prep (500 Marks) & Interactive Memo Workbench
+     -------------------------------------------------------------------------- */
+  function formatMark(val) {
+    const n = Number(val) || 0;
+    const rounded = Math.round(n * 2) / 2;
+    const whole = Math.floor(rounded);
+    const isHalf = Math.abs(rounded - whole - 0.5) < 1e-6;
+    if (isHalf) {
+      return whole === 0 ? '½' : `${whole}½`;
+    }
+    return String(whole);
+  }
+
+  function normalizeForMatch(str) {
+    return String(str || '')
+      .toLowerCase()
+      .replace(/[\u2212\u2013\u2014]/g, '-')
+      .replace(/[^\w\s.%+-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function gradeTheoryKeywords(userText, keywords, maxMarks) {
+    const kws = Array.isArray(keywords) ? keywords : [];
+    const totalM = Number(maxMarks) || 1;
+    const normUser = normalizeForMatch(userText);
+    const matched = [];
+    const missed = [];
+
+    kws.forEach((kw) => {
+      const normKw = normalizeForMatch(kw);
+      if (!normKw) return;
+      if (normUser.includes(normKw)) {
+        matched.push(kw);
+        return;
+      }
+      // Check word-stem matching for multi-word or inflected keywords
+      const words = normKw.split(' ').filter((w) => w.length >= 3);
+      if (words.length > 0) {
+        const hitCount = words.filter((w) => {
+          const stem = w.length >= 6 ? w.slice(0, w.length - 2) : (w.length >= 5 ? w.slice(0, w.length - 1) : w);
+          return normUser.includes(stem);
+        }).length;
+        if (hitCount >= Math.ceil(words.length * 0.75)) {
+          matched.push(kw);
+          return;
+        }
+      }
+      missed.push(kw);
+    });
+
+    const ratio = kws.length > 0 ? matched.length / kws.length : 0;
+    const rawScore = ratio * totalM;
+    const autoMarks = Math.min(totalM, Math.round(rawScore * 2) / 2);
+
+    return {
+      matched,
+      missed,
+      ratio,
+      autoMarks,
+      maxMarks: totalM
+    };
+  }
+
+  function evaluateCalculationRubric(userText, rubricSteps) {
+    const steps = Array.isArray(rubricSteps) ? rubricSteps : [];
+    const rawUser = String(userText || '').toLowerCase().replace(/[\u2212\u2013\u2014]/g, '-');
+    const compactUser = rawUser.replace(/(\d)[\s,]+(?=\d)/g, '$1');
+    const matchedMap = {};
+
+    steps.forEach((st) => {
+      const hints = Array.isArray(st.matchHints) ? st.matchHints : [];
+      let hit = false;
+      for (let i = 0; i < hints.length; i++) {
+        const h = String(hints[i] || '').toLowerCase().replace(/[\u2212\u2013\u2014]/g, '-');
+        const compactH = h.replace(/(\d)[\s,]+(?=\d)/g, '$1');
+        if (h && (rawUser.includes(h) || compactUser.includes(compactH))) {
+          hit = true;
+          break;
+        }
+      }
+      matchedMap[st.id] = hit;
+    });
+
+    return matchedMap;
+  }
+
+  const CALC_SYMBOL_TOOLBAR = [
+    { label: '×', insert: ' × ', title: 'Multiply (×)' },
+    { label: '÷', insert: ' ÷ ', title: 'Divide (÷)' },
+    { label: '+', insert: ' + ', title: 'Plus (+)' },
+    { label: '−', insert: ' − ', title: 'Minus (−)' },
+    { label: '=', insert: ' = ', title: 'Equals (=)' },
+    { label: 'Δ', insert: 'Δ', title: 'Change in (Δ)' },
+    { label: '%', insert: '%', title: 'Percentage (%)' },
+    { label: 'R', insert: 'R', title: 'Rand (R)' },
+    { label: '(a ÷ b)', insert: '() ÷ ()', title: 'Fraction template' },
+    { label: '₀', insert: '₀', title: 'Subscript 0' },
+    { label: '₁', insert: '₁', title: 'Subscript 1' },
+    { label: '₂', insert: '₂', title: 'Subscript 2' },
+    { label: '²', insert: '²', title: 'Superscript 2' },
+    { label: 'Y', insert: 'Y', title: 'National Income / Output (Y)' },
+    { label: 'C', insert: 'C', title: 'Consumption (C)' },
+    { label: 'I', insert: 'I', title: 'Investment (I)' },
+    { label: 'G', insert: 'G', title: 'Government Spending (G)' },
+    { label: 'X', insert: 'X', title: 'Exports (X)' },
+    { label: 'Z', insert: 'Z', title: 'Imports (Z)' },
+    { label: 'C̄', insert: 'C̄', title: 'Autonomous Consumption (C̄)' },
+    { label: 'Ī', insert: 'Ī', title: 'Autonomous Investment (Ī)' },
+    { label: 'Ā', insert: 'Ā', title: 'Autonomous Spending (Ā)' },
+    { label: 'Yd', insert: 'Yd', title: 'Disposable Income (Yd)' },
+    { label: 'α', insert: 'α', title: 'Multiplier (α)' },
+    { label: 'MPC', insert: 'MPC', title: 'Marginal Propensity to Consume' },
+    { label: 'MPS', insert: 'MPS', title: 'Marginal Propensity to Save' },
+    { label: 'GDPmp', insert: 'GDP@MP', title: 'GDP at Market Prices' },
+    { label: 'GDPbp', insert: 'GDP@BP', title: 'GDP at Basic Prices' },
+    { label: 'GDPfc', insert: 'GDP@FC', title: 'GDP at Factor Cost' },
+    { label: 'GDE', insert: 'GDE', title: 'Gross Domestic Expenditure' },
+    { label: 'GNI', insert: 'GNI', title: 'Gross National Income' },
+    { label: 'M1', insert: 'M1', title: 'M1 Money Supply' },
+    { label: 'M2', insert: 'M2', title: 'M2 Money Supply' },
+    { label: 'M3', insert: 'M3', title: 'M3 Money Supply' },
+    { label: 'CPI', insert: 'CPI', title: 'Consumer Price Index' },
+    { label: 'TOT', insert: 'TOT', title: 'Terms of Trade' },
+    { label: 'UR', insert: 'UR', title: 'Unemployment Rate' },
+    { label: 'LFPR', insert: 'LFPR', title: 'Labour Force Participation Rate' }
+  ];
+
+  const ExtremeExamEngine = (() => {
+    let sectionFilter = 'ALL'; // 'ALL' | 'A' | 'B' | 'C'
+    let currentPageIndex = 0;
+    let showSummaryView = false;
+    let shuffledMcqMap = {}; // partId -> [{ text, isCorrect }, ...]
+    let sessionState = null;
+
+    function getDeviceStorageKey() {
+      const tState = TelemetryEngine.getState();
+      const devId = (tState && tState.deviceId) ? tState.deviceId : 'DEV-LOCAL';
+      return `econ122_extreme_prep_${devId}`;
+    }
+
+    function getAllPages() {
+      if (typeof ECON122_DATA === 'undefined' || !ECON122_DATA.extremeExam) return [];
+      return ECON122_DATA.extremeExam.pages || [];
+    }
+
+    function getFilteredPages() {
+      const all = getAllPages();
+      if (sectionFilter === 'ALL') return all;
+      return all.filter((p) => p.section === sectionFilter);
+    }
+
+    function initShuffledOptions() {
+      shuffledMcqMap = {};
+      getAllPages().forEach((page) => {
+        (page.parts || []).forEach((part) => {
+          if (part.type === 'mcq' && Array.isArray(part.options)) {
+            shuffledMcqMap[part.id] = fisherYatesShuffle(part.options);
+          }
+        });
+      });
+    }
+
+    function getShuffledOptionsForPart(part) {
+      if (!shuffledMcqMap[part.id]) {
+        shuffledMcqMap[part.id] = fisherYatesShuffle(part.options || []);
+      }
+      return shuffledMcqMap[part.id];
+    }
+
+    function loadSessionState() {
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const raw = localStorage.getItem(getDeviceStorageKey());
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              sessionState = {
+                checkedPages: parsed.checkedPages || {},
+                mcqChoices: parsed.mcqChoices || {},
+                textAnswers: parsed.textAnswers || {},
+                theorySelfMarks: parsed.theorySelfMarks || {},
+                calcRubricChecks: parsed.calcRubricChecks || {}
+              };
+              return sessionState;
+            }
+          }
+        } catch (_) {}
+      }
+      sessionState = {
+        checkedPages: {},
+        mcqChoices: {},
+        textAnswers: {},
+        theorySelfMarks: {},
+        calcRubricChecks: {}
+      };
+      return sessionState;
+    }
+
+    function saveSessionState() {
+      if (!sessionState || typeof localStorage === 'undefined') return;
+      try {
+        localStorage.setItem(getDeviceStorageKey(), JSON.stringify(sessionState));
+      } catch (_) {}
+    }
+
+    function getPartScore(part, isPageChecked) {
+      if (!sessionState) loadSessionState();
+      if (!isPageChecked) return 0;
+
+      if (part.type === 'mcq') {
+        const chosenIdx = sessionState.mcqChoices[part.id];
+        const opts = getShuffledOptionsForPart(part);
+        if (typeof chosenIdx === 'number' && opts[chosenIdx] && opts[chosenIdx].isCorrect) {
+          return part.marks || 2;
+        }
+        return 0;
+      }
+
+      if (part.type === 'theory') {
+        if (typeof sessionState.theorySelfMarks[part.id] === 'number') {
+          return Math.min(part.marks, Math.max(0, sessionState.theorySelfMarks[part.id]));
+        }
+        const userTxt = sessionState.textAnswers[part.id] || '';
+        const res = gradeTheoryKeywords(userTxt, part.keywords, part.marks);
+        return res.autoMarks;
+      }
+
+      if (part.type === 'calculation') {
+        const stepChecks = sessionState.calcRubricChecks[part.id] || {};
+        let sum = 0;
+        (part.rubricSteps || []).forEach((st) => {
+          if (stepChecks[st.id]) {
+            sum += Number(st.marks) || 0;
+          }
+        });
+        return Math.min(part.marks, sum);
+      }
+
+      return 0;
+    }
+
+    function getPageScore(page) {
+      if (!sessionState) loadSessionState();
+      const isChecked = Boolean(sessionState.checkedPages[page.pageId]);
+      let earned = 0;
+      (page.parts || []).forEach((pt) => {
+        earned += getPartScore(pt, isChecked);
+      });
+      return {
+        earned,
+        total: page.totalMarks || 0,
+        isChecked
+      };
+    }
+
+    function getScoreSummary() {
+      if (!sessionState) loadSessionState();
+      const allPages = getAllPages();
+      const bySection = {
+        A: { earned: 0, total: 200, checkedPages: 0, totalPages: 0 },
+        B: { earned: 0, total: 150, checkedPages: 0, totalPages: 0 },
+        C: { earned: 0, total: 150, checkedPages: 0, totalPages: 0 }
+      };
+      const byChapter = {};
+      let totalEarned = 0;
+      let checkedPages = 0;
+
+      allPages.forEach((p) => {
+        const sec = p.section || 'A';
+        if (bySection[sec]) bySection[sec].totalPages += 1;
+        const pScore = getPageScore(p);
+        if (pScore.isChecked) {
+          checkedPages += 1;
+          if (bySection[sec]) bySection[sec].checkedPages += 1;
+        }
+        totalEarned += pScore.earned;
+        if (bySection[sec]) bySection[sec].earned += pScore.earned;
+
+        const chId = p.chapterId || 'ch13';
+        if (!byChapter[chId]) {
+          byChapter[chId] = {
+            chapterId: chId,
+            chapterTitle: p.chapterTitle || chId.toUpperCase(),
+            earned: 0,
+            total: 0
+          };
+        }
+        byChapter[chId].earned += pScore.earned;
+        byChapter[chId].total += p.totalMarks || 0;
+      });
+
+      return {
+        totalEarned,
+        totalPossible: 500,
+        pct: Math.round((totalEarned / 500) * 100),
+        checkedPages,
+        totalPages: allPages.length,
+        bySection,
+        byChapter
+      };
+    }
+
+    function checkCurrentPage(page) {
+      if (!sessionState) loadSessionState();
+      sessionState.checkedPages[page.pageId] = true;
+      (page.parts || []).forEach((pt) => {
+        if (pt.type === 'calculation' && !sessionState.calcRubricChecks[pt.id]) {
+          const userTxt = sessionState.textAnswers[pt.id] || '';
+          sessionState.calcRubricChecks[pt.id] = evaluateCalculationRubric(userTxt, pt.rubricSteps);
+        }
+      });
+      saveSessionState();
+    }
+
+    function resetExam() {
+      initShuffledOptions();
+      sessionState = {
+        checkedPages: {},
+        mcqChoices: {},
+        textAnswers: {},
+        theorySelfMarks: {},
+        calcRubricChecks: {}
+      };
+      currentPageIndex = 0;
+      showSummaryView = false;
+      saveSessionState();
+    }
+
+    function jumpToPageId(targetPageId) {
+      sectionFilter = 'ALL';
+      showSummaryView = false;
+      const pages = getFilteredPages();
+      const idx = pages.findIndex((p) => p.pageId === targetPageId);
+      if (idx >= 0) {
+        currentPageIndex = idx;
+      }
+      renderExtremeExamStage();
+    }
+
+    return {
+      initShuffledOptions,
+      loadSessionState,
+      saveSessionState,
+      getAllPages,
+      getFilteredPages,
+      getShuffledOptionsForPart,
+      getPartScore,
+      getPageScore,
+      getScoreSummary,
+      checkCurrentPage,
+      resetExam,
+      jumpToPageId,
+      getState: () => sessionState || loadSessionState(),
+      getSectionFilter: () => sectionFilter,
+      setSectionFilter: (f) => { sectionFilter = f; currentPageIndex = 0; showSummaryView = false; },
+      getCurrentPageIndex: () => currentPageIndex,
+      setCurrentPageIndex: (idx) => { currentPageIndex = idx; showSummaryView = false; },
+      isSummaryView: () => showSummaryView,
+      setSummaryView: (val) => { showSummaryView = Boolean(val); }
+    };
+  })();
+
+  function initExtremeExamModule() {
+    const stage = document.getElementById('extreme-stage-container');
+    if (!stage || typeof ECON122_DATA === 'undefined' || !ECON122_DATA.extremeExam) return;
+    ExtremeExamEngine.initShuffledOptions();
+    ExtremeExamEngine.loadSessionState();
+    renderExtremeExamStage();
+  }
+
+  function renderExtremeExamStage() {
+    const stage = document.getElementById('extreme-stage-container');
+    if (!stage || typeof ECON122_DATA === 'undefined' || !ECON122_DATA.extremeExam) return;
+
+    const summary = ExtremeExamEngine.getScoreSummary();
+    const secFilter = ExtremeExamEngine.getSectionFilter();
+    const pages = ExtremeExamEngine.getFilteredPages();
+    const isSummary = ExtremeExamEngine.isSummaryView();
+
+    // Top control bar shared across Workbench & Summary
+    const headerBarHtml = `
+      <div class="glass-card extreme-header-card" style="margin-bottom: 1.35rem;">
+        <div class="extreme-header-top">
+          <div>
+            <div class="meta-pill-row">
+              <span class="badge badge-sky">500 Marks Total • 117 Interactive Pages</span>
+              <span class="badge badge-emerald">Section A (200) • Section B (150) • Section C (150)</span>
+            </div>
+            <h2>Extreme Exam Prep &amp; Interactive Memorandum Workbench</h2>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Complete each question or multi-part scenario, click <strong>Check Answer</strong> to grade your work and unlock the official memorandum + beginner-friendly explanation, then click <strong>Next Question →</strong>.
+            </p>
+          </div>
+          <div class="extreme-score-badge-box">
+            <div class="extreme-score-label">Live Exam Score</div>
+            <div class="extreme-score-val tabular-nums" id="extreme-live-score">${formatMark(summary.totalEarned)} / 500</div>
+            <div class="extreme-score-sub">${summary.checkedPages} of ${summary.totalPages} Pages Graded (${summary.pct}%)</div>
+          </div>
+        </div>
+
+        <div class="extreme-section-tabs" role="tablist" aria-label="Exam Section Filter">
+          <button type="button" class="btn-secondary ${!isSummary && secFilter === 'ALL' ? 'active-filter' : ''}" data-extreme-sec="ALL">
+            All Sections (500 Marks)
+          </button>
+          <button type="button" class="btn-secondary ${!isSummary && secFilter === 'A' ? 'active-filter' : ''}" data-extreme-sec="A">
+            Section A: 100 MCQs (${formatMark(summary.bySection.A.earned)} / 200)
+          </button>
+          <button type="button" class="btn-secondary ${!isSummary && secFilter === 'B' ? 'active-filter' : ''}" data-extreme-sec="B">
+            Section B: Theory (${formatMark(summary.bySection.B.earned)} / 150)
+          </button>
+          <button type="button" class="btn-secondary ${!isSummary && secFilter === 'C' ? 'active-filter' : ''}" data-extreme-sec="C">
+            Section C: Calculations (${formatMark(summary.bySection.C.earned)} / 150)
+          </button>
+          <button type="button" class="btn-primary ${isSummary ? 'active-filter' : ''}" id="btn-extreme-view-summary">
+            🏆 Final Score Summary
+          </button>
+          <button type="button" class="btn-ghost" id="btn-extreme-reset">
+            🔀 Reset &amp; Reshuffle
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (isSummary || pages.length === 0) {
+      stage.innerHTML = headerBarHtml + renderExtremeSummaryHtml(summary);
+      bindExtremeHeaderEvents(stage);
+      const retryBtn = document.getElementById('btn-extreme-summary-retry');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+          ExtremeExamEngine.resetExam();
+          AudioEngine.playClick();
+          updateKpiBanner();
+          renderExtremeExamStage();
+        });
+      }
+      const resumeBtn = document.getElementById('btn-extreme-summary-resume');
+      if (resumeBtn) {
+        resumeBtn.addEventListener('click', () => {
+          ExtremeExamEngine.setSummaryView(false);
+          AudioEngine.playClick();
+          renderExtremeExamStage();
+        });
+      }
+      return;
+    }
+
+    const pageIdx = Math.max(0, Math.min(pages.length - 1, ExtremeExamEngine.getCurrentPageIndex()));
+    const page = pages[pageIdx];
+    const sState = ExtremeExamEngine.getState();
+    const isPageChecked = Boolean(sState.checkedPages[page.pageId]);
+    const pageScore = ExtremeExamEngine.getPageScore(page);
+    const isFirstPage = pageIdx === 0;
+    const isLastPage = pageIdx === pages.length - 1;
+
+    const jumpOptionsHtml = pages.map((p, idx) => {
+      const checkedMark = sState.checkedPages[p.pageId] ? '✓ ' : '';
+      return `<option value="${idx}" ${idx === pageIdx ? 'selected' : ''}>${checkedMark}Page ${idx + 1}/${pages.length}: ${p.title} (${p.totalMarks}m)</option>`;
+    }).join('');
+
+    const partsHtml = (page.parts || []).map((part) => {
+      return renderExtremePartHtml(part, isPageChecked, sState);
+    }).join('');
+
+    stage.innerHTML = `
+      ${headerBarHtml}
+
+      <div class="glass-card extreme-page-card" id="extreme-active-page" data-page-id="${page.pageId}">
+        <div class="quiz-toolbar" style="margin-bottom: 1rem; padding-bottom: 0.85rem; border-bottom: 1px solid var(--border-subtle);">
+          <div>
+            <div class="meta-pill-row" style="margin-bottom: 0.35rem;">
+              <span class="badge badge-sky">${page.sectionTitle}</span>
+              <span class="badge badge-indigo">${page.chapterTitle}</span>
+              <span class="badge ${isPageChecked ? 'badge-emerald' : 'badge-amber'}">
+                ${isPageChecked ? `Graded: ${formatMark(pageScore.earned)} / ${page.totalMarks} Marks` : `${page.totalMarks} Marks`}
+              </span>
+            </div>
+            <h3 style="font-size: 1.22rem;">${page.title}</h3>
+          </div>
+
+          <div class="quiz-nav-btn-group">
+            <select id="extreme-page-select" class="select-input" aria-label="Jump to Exam Page" style="width: auto; max-width: 310px; font-size: 0.82rem;">
+              ${jumpOptionsHtml}
+            </select>
+            <button type="button" class="btn-secondary" id="btn-extreme-prev-top" ${isFirstPage ? 'disabled' : ''}>
+              ← Prev
+            </button>
+            <button type="button" class="btn-secondary" id="btn-extreme-next-top">
+              ${isLastPage ? 'Final Summary →' : 'Next Question →'}
+            </button>
+          </div>
+        </div>
+
+        ${page.sharedContextHtml ? `
+          <div class="extreme-shared-context">
+            ${page.sharedContextHtml}
+          </div>
+        ` : ''}
+
+        <div class="extreme-parts-stack">
+          ${partsHtml}
+        </div>
+
+        <div class="extreme-action-footer">
+          <button type="button" class="btn-secondary" id="btn-extreme-prev-bottom" ${isFirstPage ? 'disabled' : ''}>
+            ← Previous Question
+          </button>
+
+          <div class="extreme-footer-center">
+            <button type="button" class="${isPageChecked ? 'btn-secondary' : 'btn-primary'} btn-lg-action" id="btn-extreme-check">
+              <span>${isPageChecked ? '✓ Update Grade & Memo' : '✓ Check Answer'}</span>
+            </button>
+            ${isPageChecked ? `
+              <span class="badge badge-emerald" style="font-size: 0.88rem; padding: 0.45rem 0.85rem;">
+                Page Score: ${formatMark(pageScore.earned)} / ${page.totalMarks} Marks
+              </span>
+            ` : ''}
+          </div>
+
+          <button type="button" class="${isPageChecked ? 'btn-primary' : 'btn-secondary'} btn-lg-action" id="btn-extreme-next">
+            <span>${isLastPage ? 'Finish & View Summary →' : 'Next Question →'}</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    bindExtremeHeaderEvents(stage);
+    bindExtremePageEvents(stage, page, pages, pageIdx);
+  }
+
+  function renderExtremePartHtml(part, isPageChecked, sState) {
+    const partEarned = ExtremeExamEngine.getPartScore(part, isPageChecked);
+
+    if (part.type === 'mcq') {
+      const opts = ExtremeExamEngine.getShuffledOptionsForPart(part);
+      const letters = ['A', 'B', 'C', 'D'];
+      const chosenIdx = sState.mcqChoices[part.id];
+      const correctIdx = opts.findIndex((o) => o.isCorrect);
+      const correctLetter = correctIdx >= 0 ? letters[correctIdx] : 'A';
+      const correctOpt = correctIdx >= 0 ? opts[correctIdx] : opts[0];
+
+      const optionsHtml = opts.map((opt, idx) => {
+        let stateClass = '';
+        if (isPageChecked) {
+          if (opt.isCorrect) stateClass = 'correct';
+          else if (chosenIdx === idx) stateClass = 'wrong';
+        } else if (chosenIdx === idx) {
+          stateClass = 'selected-choice';
+        }
+        return `
+          <button
+            type="button"
+            class="option-btn extreme-mcq-opt ${stateClass}"
+            data-part-id="${part.id}"
+            data-opt-idx="${idx}"
+          >
+            <span class="option-key">${letters[idx]}</span>
+            <span>${renderInlineLatexText(opt.text)}</span>
+          </button>
+        `;
+      }).join('');
+
+      const memoHtml = isPageChecked ? `
+        <div class="extreme-memo-box">
+          <div class="extreme-memo-header">
+            <span class="badge ${partEarned > 0 ? 'badge-emerald' : 'badge-rose'}">
+              ${partEarned > 0 ? `✓ Correct (+${part.marks} / ${part.marks} Marks)` : `✗ Incorrect (0 / ${part.marks} Marks)`}
+            </span>
+            <span class="badge badge-sky">Official Memo Answer: Option ${correctLetter}</span>
+          </div>
+          <div class="extreme-official-memo">
+            <strong>Official Memorandum (${correctLetter} — ${correctOpt ? correctOpt.text : ''}):</strong>
+            <p style="margin-top: 0.25rem;">${part.officialMemo}</p>
+          </div>
+          <div class="extreme-beginner-box">
+            <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
+            <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
+          </div>
+        </div>
+      ` : '';
+
+      return `
+        <div class="extreme-part-block" id="extreme-part-${part.id}">
+          <div class="extreme-part-header">
+            <span class="extreme-part-num">${part.number}</span>
+            <span class="extreme-part-marks">[${part.marks} marks]</span>
+          </div>
+          <p class="extreme-part-stem">${renderInlineLatexText(part.stem)}</p>
+          <div class="option-list">${optionsHtml}</div>
+          ${memoHtml}
+        </div>
+      `;
+    }
+
+    if (part.type === 'theory') {
+      const userTxt = sState.textAnswers[part.id] || '';
+      const kwResult = gradeTheoryKeywords(userTxt, part.keywords, part.marks);
+      const isSelfMarkedFull = sState.theorySelfMarks[part.id] === part.marks;
+
+      let memoHtml = '';
+      if (isPageChecked) {
+        const matchedPills = kwResult.matched.map((k) => `<span class="kw-pill kw-hit">✓ ${k}</span>`).join('');
+        const missedPills = kwResult.missed.map((k) => `<span class="kw-pill kw-miss">○ ${k}</span>`).join('');
+
+        // Generate fine-grained score buttons (0, half-marks, integer marks up to part.marks)
+        const markChoices = [];
+        for (let m = 0; m <= part.marks; m += (part.marks <= 3 ? 0.5 : 1)) {
+          markChoices.push(m);
+        }
+        if (!markChoices.includes(part.marks)) markChoices.push(part.marks);
+
+        const markBtnsHtml = markChoices.map((m) => `
+          <button
+            type="button"
+            class="self-mark-btn ${Math.abs(partEarned - m) < 1e-6 ? 'active' : ''}"
+            data-theory-part="${part.id}"
+            data-theory-mark="${m}"
+          >
+            ${formatMark(m)} / ${part.marks}
+          </button>
+        `).join('');
+
+        memoHtml = `
+          <div class="extreme-memo-box">
+            <div class="extreme-memo-header">
+              <span class="badge ${partEarned >= part.marks * 0.7 ? 'badge-emerald' : (partEarned > 0 ? 'badge-amber' : 'badge-rose')}">
+                Awarded: ${formatMark(partEarned)} / ${part.marks} Marks
+              </span>
+              <span class="badge badge-sky">
+                Keyword Match: ${kwResult.matched.length} / ${(part.keywords || []).length} Core Concepts Detected
+              </span>
+            </div>
+
+            <div class="extreme-kw-row">
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.35rem;">
+                Essential Concept Keywords (Matched vs. To Review):
+              </div>
+              <div class="kw-pills-wrap">
+                ${matchedPills}
+                ${missedPills}
+              </div>
+            </div>
+
+            <div class="extreme-self-mark-bar">
+              <label class="scope-checkbox-label" style="font-size: 0.85rem;">
+                <input
+                  type="checkbox"
+                  class="scope-item-checkbox"
+                  data-theory-full-toggle="${part.id}"
+                  data-max-marks="${part.marks}"
+                  ${isSelfMarkedFull ? 'checked' : ''}
+                />
+                <span>I phrased this accurately in my own words — Award full marks (${part.marks}/${part.marks})</span>
+              </label>
+              <div class="self-mark-btn-row">
+                <span style="font-size: 0.78rem; color: var(--text-muted);">Or set exact marks:</span>
+                ${markBtnsHtml}
+              </div>
+            </div>
+
+            <div class="extreme-official-memo">
+              <strong>Official Memorandum Answer (${part.number}):</strong>
+              <div style="margin-top: 0.35rem; white-space: pre-line;">${part.officialMemo}</div>
+              ${part.officialMemoHtml || ''}
+            </div>
+
+            <div class="extreme-beginner-box">
+              <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
+              <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="extreme-part-block" id="extreme-part-${part.id}">
+          <div class="extreme-part-header">
+            <span class="extreme-part-num">Question ${part.number}</span>
+            <span class="extreme-part-marks">[${part.marks} marks]</span>
+          </div>
+          <p class="extreme-part-stem">${part.prompt}</p>
+          <textarea
+            class="extreme-textarea"
+            id="extreme-input-${part.id}"
+            data-text-part="${part.id}"
+            rows="3"
+            placeholder="Type your definition or theoretical explanation in your own words (graded by core economic keywords)..."
+          >${userTxt}</textarea>
+          ${memoHtml}
+        </div>
+      `;
+    }
+
+    // Calculation & Quantitative Part (Section C)
+    const userTxt = sState.textAnswers[part.id] || '';
+    const stepChecks = sState.calcRubricChecks[part.id] || {};
+
+    const toolbarButtonsHtml = CALC_SYMBOL_TOOLBAR.map((sym) => `
+      <button
+        type="button"
+        class="symbol-toolbar-btn"
+        data-target-input="extreme-input-${part.id}"
+        data-insert-symbol="${escapeAttr(sym.insert)}"
+        title="${escapeAttr(sym.title)}"
+      >${sym.label}</button>
+    `).join('');
+
+    let memoHtml = '';
+    if (isPageChecked) {
+      const rubricItemsHtml = (part.rubricSteps || []).map((st) => {
+        const isTicked = Boolean(stepChecks[st.id]);
+        return `
+          <label class="rubric-step-item ${isTicked ? 'is-ticked' : ''}">
+            <input
+              type="checkbox"
+              class="scope-item-checkbox"
+              data-rubric-part="${part.id}"
+              data-rubric-step="${st.id}"
+              ${isTicked ? 'checked' : ''}
+            />
+            <span class="rubric-step-label">${st.label}</span>
+          </label>
+        `;
+      }).join('');
+
+      memoHtml = `
+        <div class="extreme-memo-box">
+          <div class="extreme-memo-header">
+            <span class="badge ${partEarned >= part.marks ? 'badge-emerald' : (partEarned > 0 ? 'badge-amber' : 'badge-rose')}">
+              Calculation Score: ${formatMark(partEarned)} / ${part.marks} Marks
+            </span>
+            <span class="badge badge-sky">Tick Each Step You Got Right Below</span>
+          </div>
+
+          <div class="rubric-checklist-box">
+            <div style="font-size: 0.83rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.45rem;">
+              ☑️ Interactive Self-Marking Memo Breakdown (Tick the steps your working earned):
+            </div>
+            <div class="rubric-steps-stack">
+              ${rubricItemsHtml}
+            </div>
+          </div>
+
+          <div class="extreme-official-memo">
+            <strong>Official Memorandum Working (${part.number}):</strong>
+            <div style="margin-top: 0.35rem; white-space: pre-line; font-family: var(--font-mono); font-size: 0.88rem;">${part.officialMemo}</div>
+            ${part.officialMemoHtml || ''}
+          </div>
+
+          <div class="extreme-beginner-box">
+            <strong>💡 Beginner-Friendly Step-by-Step Explanation:</strong>
+            <p style="margin-top: 0.25rem;">${part.beginnerExplanation}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="extreme-part-block" id="extreme-part-${part.id}">
+        <div class="extreme-part-header">
+          <span class="extreme-part-num">Question ${part.number}</span>
+          <span class="extreme-part-marks">[${part.marks} marks]</span>
+        </div>
+        <p class="extreme-part-stem">${part.prompt}</p>
+
+        <div class="symbol-toolbar" role="toolbar" aria-label="Math and Economic Symbol Toolbar for Question ${part.number}">
+          <span class="symbol-toolbar-title">Insert Symbol:</span>
+          ${toolbarButtonsHtml}
+        </div>
+
+        <textarea
+          class="extreme-textarea calc-textarea"
+          id="extreme-input-${part.id}"
+          data-text-part="${part.id}"
+          rows="3"
+          placeholder="Write your formula, substitution, and final answer here (click any symbol above to insert at cursor)..."
+        >${userTxt}</textarea>
+        ${memoHtml}
+      </div>
+    `;
+  }
+
+  function renderExtremeSummaryHtml(summary) {
+    const chRowsHtml = Object.values(summary.byChapter).map((ch) => {
+      const chPct = ch.total > 0 ? Math.round((ch.earned / ch.total) * 100) : 0;
+      return `
+        <tr>
+          <td><strong>${ch.chapterTitle}</strong></td>
+          <td class="tabular-nums">${formatMark(ch.earned)} / ${ch.total}</td>
+          <td class="tabular-nums">${chPct}%</td>
+          <td>
+            <span class="badge ${chPct >= 75 ? 'badge-emerald' : (chPct >= 50 ? 'badge-amber' : 'badge-rose')}">
+              ${chPct >= 75 ? 'Distinction Ready' : (chPct >= 50 ? 'Pass — Keep Practising' : 'Priority Revision')}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    const verdict = summary.pct >= 75
+      ? 'Distinction Readiness (≥ 75%) — Outstanding command of both theoretical and quantitative macroeconomics!'
+      : (summary.pct >= 50
+        ? 'Solid Foundation (50%–74%) — Review missed keywords and calculation steps to push into distinction territory.'
+        : 'In Progress (< 50%) — Work through the remaining pages and use the beginner-friendly explanations to master each topic.');
+
+    return `
+      <div class="glass-card extreme-summary-card" id="extreme-summary-view">
+        <div class="meta-pill-row">
+          <span class="badge badge-emerald">Final Exam Performance Report</span>
+          <span class="badge badge-sky">${summary.checkedPages} of ${summary.totalPages} Pages Completed</span>
+        </div>
+        <h2>Final Score &amp; Performance Summary</h2>
+        <p style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.35rem;">
+          ${verdict}
+        </p>
+
+        <div class="kpi-bento-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin: 1.25rem 0;">
+          <div class="kpi-tile">
+            <div class="kpi-label">Total Exam Score</div>
+            <div class="kpi-value tabular-nums">${formatMark(summary.totalEarned)} / 500</div>
+            <div class="kpi-sub">${summary.pct}% Overall Score</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Section A (100 MCQs)</div>
+            <div class="kpi-value tabular-nums">${formatMark(summary.bySection.A.earned)} / 200</div>
+            <div class="kpi-sub">${Math.round((summary.bySection.A.earned / 200) * 100)}% (${summary.bySection.A.checkedPages}/97 Pages)</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Section B (Theory)</div>
+            <div class="kpi-value tabular-nums">${formatMark(summary.bySection.B.earned)} / 150</div>
+            <div class="kpi-sub">${Math.round((summary.bySection.B.earned / 150) * 100)}% (${summary.bySection.B.checkedPages}/10 Pages)</div>
+          </div>
+          <div class="kpi-tile">
+            <div class="kpi-label">Section C (Calculations)</div>
+            <div class="kpi-value tabular-nums">${formatMark(summary.bySection.C.earned)} / 150</div>
+            <div class="kpi-sub">${Math.round((summary.bySection.C.earned / 150) * 100)}% (${summary.bySection.C.checkedPages}/10 Pages)</div>
+          </div>
+        </div>
+
+        <h3 style="margin: 1.25rem 0 0.65rem;">Breakdown by Chapter (Ch 13–22)</h3>
+        <div class="table-scroll-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Chapter</th>
+                <th>Marks Earned</th>
+                <th>Percentage</th>
+                <th>Readiness Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${chRowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; margin-top: 1.35rem;">
+          <button type="button" class="btn-primary" id="btn-extreme-summary-resume">
+            ← Return to Questions &amp; Memo Workbench
+          </button>
+          <button type="button" class="btn-secondary" id="btn-extreme-summary-retry">
+            🔀 Retry Exam (Reset Scores &amp; Reshuffle All MCQs)
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindExtremeHeaderEvents(stage) {
+    stage.querySelectorAll('[data-extreme-sec]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sec = btn.getAttribute('data-extreme-sec');
+        ExtremeExamEngine.setSectionFilter(sec);
+        AudioEngine.playClick();
+        renderExtremeExamStage();
+      });
+    });
+
+    const sumBtn = document.getElementById('btn-extreme-view-summary');
+    if (sumBtn) {
+      sumBtn.addEventListener('click', () => {
+        ExtremeExamEngine.setSummaryView(true);
+        AudioEngine.playClick();
+        renderExtremeExamStage();
+      });
+    }
+
+    const resetBtn = document.getElementById('btn-extreme-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        ExtremeExamEngine.resetExam();
+        AudioEngine.playClick();
+        updateKpiBanner();
+        renderExtremeExamStage();
+      });
+    }
+  }
+
+  function bindExtremePageEvents(stage, page, pages, pageIdx) {
+    const sState = ExtremeExamEngine.getState();
+
+    // Page Jump select
+    const pageSel = document.getElementById('extreme-page-select');
+    if (pageSel) {
+      pageSel.addEventListener('change', () => {
+        const target = parseInt(pageSel.value, 10);
+        if (!Number.isNaN(target) && target >= 0 && target < pages.length) {
+          ExtremeExamEngine.setCurrentPageIndex(target);
+          AudioEngine.playClick();
+          renderExtremeExamStage();
+        }
+      });
+    }
+
+    // Prev / Next buttons
+    const goPrev = () => {
+      if (pageIdx > 0) {
+        ExtremeExamEngine.setCurrentPageIndex(pageIdx - 1);
+        AudioEngine.playClick();
+        renderExtremeExamStage();
+      }
+    };
+    const goNext = () => {
+      if (pageIdx < pages.length - 1) {
+        ExtremeExamEngine.setCurrentPageIndex(pageIdx + 1);
+        AudioEngine.playClick();
+        renderExtremeExamStage();
+      } else {
+        ExtremeExamEngine.setSummaryView(true);
+        AudioEngine.playSuccess();
+        renderExtremeExamStage();
+      }
+    };
+
+    ['btn-extreme-prev-top', 'btn-extreme-prev-bottom'].forEach((id) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener('click', goPrev);
+    });
+    ['btn-extreme-next-top', 'btn-extreme-next'].forEach((id) => {
+      const b = document.getElementById(id);
+      if (b) b.addEventListener('click', goNext);
+    });
+
+    // Check Answer button
+    const checkBtn = document.getElementById('btn-extreme-check');
+    if (checkBtn) {
+      checkBtn.addEventListener('click', () => {
+        ExtremeExamEngine.checkCurrentPage(page);
+        const pScore = ExtremeExamEngine.getPageScore(page);
+        if (pScore.earned > 0) AudioEngine.playSuccess();
+        else AudioEngine.playClick();
+        updateKpiBanner();
+        renderExtremeExamStage();
+      });
+    }
+
+    // MCQ Option selection
+    stage.querySelectorAll('.extreme-mcq-opt').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const partId = btn.getAttribute('data-part-id');
+        const optIdx = parseInt(btn.getAttribute('data-opt-idx'), 10);
+        sState.mcqChoices[partId] = optIdx;
+        ExtremeExamEngine.saveSessionState();
+        AudioEngine.playClick();
+        renderExtremeExamStage();
+      });
+    });
+
+    // Textarea input persistence (Theory & Calculation)
+    stage.querySelectorAll('[data-text-part]').forEach((ta) => {
+      ta.addEventListener('input', () => {
+        const partId = ta.getAttribute('data-text-part');
+        sState.textAnswers[partId] = ta.value;
+        ExtremeExamEngine.saveSessionState();
+      });
+    });
+
+    // Math & Economic Symbol Toolbar insertion at cursor
+    stage.querySelectorAll('[data-insert-symbol]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target-input');
+        const sym = btn.getAttribute('data-insert-symbol') || '';
+        const inputEl = document.getElementById(targetId);
+        if (inputEl) {
+          const start = typeof inputEl.selectionStart === 'number' ? inputEl.selectionStart : inputEl.value.length;
+          const end = typeof inputEl.selectionEnd === 'number' ? inputEl.selectionEnd : inputEl.value.length;
+          const before = inputEl.value.slice(0, start);
+          const after = inputEl.value.slice(end);
+          inputEl.value = before + sym + after;
+          const partId = inputEl.getAttribute('data-text-part');
+          if (partId) {
+            sState.textAnswers[partId] = inputEl.value;
+            ExtremeExamEngine.saveSessionState();
+          }
+          inputEl.focus();
+          const newCursor = start + sym.length;
+          if (typeof inputEl.setSelectionRange === 'function') {
+            inputEl.setSelectionRange(newCursor, newCursor);
+          }
+          AudioEngine.playClick();
+        }
+      });
+    });
+
+    // Section B Self-Mark Full Marks toggle
+    stage.querySelectorAll('[data-theory-full-toggle]').forEach((chk) => {
+      chk.addEventListener('change', () => {
+        const partId = chk.getAttribute('data-theory-full-toggle');
+        const maxM = parseFloat(chk.getAttribute('data-max-marks')) || 1;
+        if (chk.checked) {
+          sState.theorySelfMarks[partId] = maxM;
+          AudioEngine.playSuccess();
+        } else {
+          delete sState.theorySelfMarks[partId];
+          AudioEngine.playClick();
+        }
+        ExtremeExamEngine.saveSessionState();
+        updateKpiBanner();
+        renderExtremeExamStage();
+      });
+    });
+
+    // Section B exact self-mark buttons
+    stage.querySelectorAll('[data-theory-mark]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const partId = btn.getAttribute('data-theory-part');
+        const m = parseFloat(btn.getAttribute('data-theory-mark'));
+        if (!Number.isNaN(m)) {
+          sState.theorySelfMarks[partId] = m;
+          ExtremeExamEngine.saveSessionState();
+          AudioEngine.playClick();
+          updateKpiBanner();
+          renderExtremeExamStage();
+        }
+      });
+    });
+
+    // Section C Interactive Self-Marking Rubric Checkboxes
+    stage.querySelectorAll('[data-rubric-step]').forEach((chk) => {
+      chk.addEventListener('change', () => {
+        const partId = chk.getAttribute('data-rubric-part');
+        const stepId = chk.getAttribute('data-rubric-step');
+        if (!sState.calcRubricChecks[partId]) {
+          sState.calcRubricChecks[partId] = {};
+        }
+        sState.calcRubricChecks[partId][stepId] = chk.checked;
+        ExtremeExamEngine.saveSessionState();
+        if (chk.checked) AudioEngine.playSuccess();
+        else AudioEngine.playClick();
+        updateKpiBanner();
+        renderExtremeExamStage();
+      });
+    });
+  }
+
+  /* --------------------------------------------------------------------------
      6. Export Pure Functions for Automated Node.js VM Sandbox Verification
      -------------------------------------------------------------------------- */
   const ECON122_ENGINE = {
@@ -2612,7 +4176,12 @@
     solveLabourMarket,
     solveMonetaryAggregates,
     resolveLabelCollisions,
-    computeSvgLabCoordinates
+    computeSvgLabCoordinates,
+    gradeTheoryKeywords,
+    evaluateCalculationRubric,
+    formatMark,
+    ScopeEngine,
+    ExtremeExamEngine
   };
 
   globalScope.ECON122_ENGINE = ECON122_ENGINE;
@@ -2620,3 +4189,4 @@
     module.exports = ECON122_ENGINE;
   }
 })(typeof window !== 'undefined' ? window : globalThis);
+

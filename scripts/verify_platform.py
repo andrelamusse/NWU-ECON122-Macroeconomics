@@ -14,7 +14,7 @@ PDF_GUIDE = os.path.join(ROOT, "ECON122_Master_Study_Guide.pdf")
 NODE_TEST_JS = os.path.join(ROOT, "scripts", "run_vm_tests.js")
 
 FORBIDDEN_REGEX = re.compile(
-    r"(Past[\s-]Paper|\bExam\b|\bTutorial\b|\bSection [A-C]\b|\bQ\d+\.\d+|Question \d|201[6-9]|202[0-5]|Mahikeng|Potchefstroom|Vanderbijlpark|\bMohr\b|\bTextbook\b|\bStudy Unit\b|\bNotional\b)",
+    r"(Past[\s-]Paper|\b1st Opportunity\b|\b2nd Opportunity\b|\bTutorial\b|Mahikeng|Potchefstroom|Vanderbijlpark|\bMohr\b|\bPhilip Mohr\b|\bTextbook\b|\bStudy Unit\b|\bNotional\b)",
     re.IGNORECASE,
 )
 
@@ -32,10 +32,18 @@ const dataCode = fs.readFileSync(path.join(root, 'data.js'), 'utf8');
 const appCode = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const adminCode = fs.readFileSync(path.join(root, 'admin.html'), 'utf8');
 
+const mockStorage = {};
+const localStorageMock = {
+  getItem: (k) => (k in mockStorage ? mockStorage[k] : null),
+  setItem: (k, v) => { mockStorage[k] = String(v); },
+  removeItem: (k) => { delete mockStorage[k]; }
+};
+
 const sandbox = {
   module: { exports: {} },
   exports: {},
   console,
+  localStorage: localStorageMock,
   Math,
   Number,
   String,
@@ -66,9 +74,85 @@ for (const ch of DATA.chapters) {
   assert(Array.isArray(ch.learningOutcomes) && ch.learningOutcomes.length >= 2, `Chapter ${ch.id} must have learningOutcomes`);
   assert(Array.isArray(ch.formulas) && ch.formulas.length >= 2, `Chapter ${ch.id} must have formulas`);
   assert(Array.isArray(ch.concepts) && ch.concepts.length >= 2, `Chapter ${ch.id} must have concepts`);
+  assert(ch.beginnerGuide && ch.beginnerGuide.whyFormulasWork && Array.isArray(ch.beginnerGuide.variables), `Chapter ${ch.id} must have beginnerGuide`);
 }
 assert.strictEqual(DATA.questions.length, 150, 'Must have all 150 verified standalone questions');
 assert.strictEqual(DATA.pastPapers.length, 5, 'Must have 5 synthesis suites');
+
+// Verify Exam Scope Dataset & Device-Bound Persistence Engine
+assert(DATA.examScope && Array.isArray(DATA.examScope.sections), 'ECON122_DATA.examScope must exist');
+assert.strictEqual(DATA.examScope.sections.length, 2, 'Exam Scope must have Calculations and Theory sections');
+let totalScopeItems = 0;
+for (const sec of DATA.examScope.sections) {
+  for (const grp of sec.groups) {
+    for (const item of grp.items) {
+      totalScopeItems += 1;
+      assert(item.id && item.code && item.topic && item.formula && item.beginnerTip, `Scope item ${item.id} missing fields`);
+    }
+  }
+}
+assert.strictEqual(totalScopeItems, 46, 'Exam Scope must have all 46 items (25 Calculations + 21 Theory)');
+
+ENGINE.ScopeEngine.resetAll();
+let sStats = ENGINE.ScopeEngine.getSummaryStats();
+assert.strictEqual(sStats.checkedCount, 0, 'Initial checked count must be 0');
+assert.strictEqual(sStats.totalCount, 46, 'Total scope items must be 46');
+ENGINE.ScopeEngine.toggleItemChecked('calc_1_1', true);
+ENGINE.ScopeEngine.setItemLevel('theo_3_1', 'well');
+ENGINE.ScopeEngine.setItemLevel('calc_7_4', 'partial');
+ENGINE.ScopeEngine.setPriorityNote('calc_1', 'Master Keynesian multiplier');
+sStats = ENGINE.ScopeEngine.getSummaryStats();
+assert.strictEqual(sStats.checkedCount, 2, 'Checked count must be 2 after checking calc_1_1 and setting theo_3_1 to well');
+assert.strictEqual(sStats.partialCount, 1, 'Partial count must be 1');
+const devKey = ENGINE.ScopeEngine.getDeviceStorageKey();
+assert(devKey.startsWith('econ122_scope_progress_DEV-'), `Device key must bind to Device ID: ${devKey}`);
+const storedScope = JSON.parse(localStorageMock.getItem(devKey));
+assert.strictEqual(storedScope.checked['calc_1_1'], true, 'Device-bound localStorage must persist calc_1_1');
+assert.strictEqual(storedScope.priorities['calc_1'], 'Master Keynesian multiplier', 'Device-bound localStorage must persist priorities');
+ENGINE.ScopeEngine.resetAll();
+
+// Verify Extreme Exam Prep (117 pages, 500 marks) & Grading Engines
+assert(DATA.extremeExam && Array.isArray(DATA.extremeExam.pages), 'ECON122_DATA.extremeExam must exist');
+assert.strictEqual(DATA.extremeExam.totalMarks, 500, 'Extreme Exam totalMarks must be 500');
+assert.strictEqual(DATA.extremeExam.pages.length, 117, 'Extreme Exam must have 117 pages (97 Sec A + 10 Sec B + 10 Sec C)');
+
+// Check grouped follow-up pages in Section A
+const p44_45 = DATA.extremeExam.pages.find(p => p.pageId === 'A_44_45');
+const p47_48 = DATA.extremeExam.pages.find(p => p.pageId === 'A_47_48');
+const p68_69 = DATA.extremeExam.pages.find(p => p.pageId === 'A_68_69');
+assert(p44_45 && p44_45.parts.length === 2, 'Questions 44 & 45 must be grouped on single page A_44_45');
+assert(p47_48 && p47_48.parts.length === 2, 'Questions 47 & 48 must be grouped on single page A_47_48');
+assert(p68_69 && p68_69.parts.length === 2, 'Questions 68 & 69 must be grouped on single page A_68_69');
+
+// Test Section B Keyword Grader
+const kwEmpty = ENGINE.gradeTheoryKeywords('', ['economic growth', 'full employment', 'price stability'], 5);
+assert.strictEqual(kwEmpty.autoMarks, 0, 'Empty theory answer must score 0');
+const kwFull = ENGINE.gradeTheoryKeywords(
+  'The five objectives are economic growth, full employment, price stability, balance of payments stability, and equitable distribution of income.',
+  ['economic growth', 'full employment', 'price stability', 'balance of payments', 'distribution of income'],
+  5
+);
+assert.strictEqual(kwFull.autoMarks, 5, 'Full keyword match must score 5/5');
+assert.strictEqual(kwFull.missed.length, 0, 'Full keyword match must have 0 missed keywords');
+
+// Test Section C Calculation Rubric Evaluator
+const c1_1 = DATA.extremeExam.pages.find(p => p.pageId === 'C1').parts[0];
+const rubHit = ENGINE.evaluateCalculationRubric('GDE = C + I + G = 2 480 000 + 620 000 + 760 000 = R3,860,000 million', c1_1.rubricSteps);
+assert.strictEqual(rubHit['C1_1_s1'], true, 'Rubric step 1 (formula) must match');
+assert.strictEqual(rubHit['C1_1_s2'], true, 'Rubric step 2 (substitution with space-grouped numbers) must match');
+assert.strictEqual(rubHit['C1_1_s3'], true, 'Rubric step 3 (final answer 3,860,000) must match');
+
+// Test ExtremeExamEngine MCQ Shuffling & Page Scoring
+ENGINE.ExtremeExamEngine.resetExam();
+const firstPage = DATA.extremeExam.pages[0];
+const firstPart = firstPage.parts[0];
+const shufOpts = ENGINE.ExtremeExamEngine.getShuffledOptionsForPart(firstPart);
+const correctIdx = shufOpts.findIndex(o => o.isCorrect);
+assert(correctIdx >= 0 && correctIdx <= 3, 'Shuffled MCQ must have a valid correct option index');
+ENGINE.ExtremeExamEngine.getState().mcqChoices[firstPart.id] = correctIdx;
+ENGINE.ExtremeExamEngine.checkCurrentPage(firstPage);
+assert.strictEqual(ENGINE.ExtremeExamEngine.getPageScore(firstPage).earned, 2, 'Selecting shuffled correct MCQ option must award 2 marks');
+ENGINE.ExtremeExamEngine.resetExam();
 
 const suiteQIds = new Set();
 for (const pp of DATA.pastPapers) {
@@ -119,30 +203,25 @@ assert.strictEqual(ENGINE.parseNumSafe('', 42), 42, 'Empty string should return 
 assert.strictEqual(ENGINE.parseNumSafe(NaN, 42), 42, 'NaN should return fallback');
 
 // 3. Bidirectional Solvers Mathematical Verification
-// 3a. Simple Closed Economy with 0 government and 0 foreign sector (t=0, m=0, G0=0, X0=0, Z0=0)
 const kClosed = ENGINE.solveKeynesianModel({ C0: 120, c: 0.75, I0: 80, G0: 0, t: 0, T0: 0, X0: 0, Z0: 0, m: 0, Yf: 1000 });
 assert(Math.abs(kClosed.alphaExact - 4.0) < 1e-6, 'Closed economy multiplier must be 4.0');
 assert(Math.abs(kClosed.Y0_exact - 800.0) < 1e-6, 'Closed economy Y0 must be 800.0');
 assert(Math.abs(kClosed.requiredDeltaG_exact - 50.0) < 1e-6, 'Required Delta G for Yf=1000 must be 50.0');
 
-// 3b. Open Economy Model (Portofino)
 const kPortofino = ENGINE.solveKeynesianModel({ C0: 100, c: 0.8, I0: 100, G0: 250, t: 0.2, T0: 0, X0: 300, Z0: 20, m: 0.1, Yf: 1909.6 });
 assert.strictEqual(kPortofino.alphaRounded2, 2.17, 'Portofino rounded multiplier must be 2.17');
 assert(Math.abs(kPortofino.Y0_memoRounded - 1584.10) < 0.05, 'Portofino Y0 must be 1584.10');
 
-// 3c. Open Economy Model with Imports on Disposable Income (Z = 30 + 0.3Yd)
 const kItaly = ENGINE.solveKeynesianModel({ C0: 85, c: 0.5, I0: 75, G0: 70, t: 0.25, T0: 0, X0: 30, Z0: 30, m: 0.3, Yf: 300, importsOnYd: true });
 assert(Math.abs(kItaly.Y0_exact - 270.588) < 0.01, 'Y0 must be 270.59');
 assert(Math.abs(kItaly.budgetBalance - (-2.353)) < 0.01, 'Budget balance must be -2.35');
 
-// 3c-ii. Study Unit 3.2 Open Economy of Islamabad (T = 20 + 0.2Y, Z = 50 + 0.2Y)
 const kIslamabad = ENGINE.solveKeynesianModel({ C0: 150, c: 0.8, I0: 250, G0: 450, t: 0.2, T0: 20, X0: 325, Z0: 50, m: 0.2, Yf: 2087.5 });
 assert(Math.abs(kIslamabad.A_bar - 1109.0) < 1e-6, 'Islamabad A_bar must be 1109.0');
 assert(Math.abs(kIslamabad.inducedSlope - 0.44) < 1e-6, 'Islamabad induced slope must be 0.44');
 assert.strictEqual(kIslamabad.alphaRounded2, 1.79, 'Islamabad rounded multiplier must be 1.79');
 assert(Math.abs(kIslamabad.Y0_exact - 1980.357) < 0.01, 'Islamabad exact Y0 must be 1980.36');
 
-// 3d. National Accounts Solver
 const naModel = ENGINE.solveNationalAccounts({
   GDPmp: 1530580, taxesOnProducts: 205562, subsidiesOnProducts: 11433,
   taxesOnProd: 0, subsidiesOnProd: 0, depreciation: 170986,
@@ -151,7 +230,6 @@ const naModel = ENGINE.solveNationalAccounts({
 assert.strictEqual(naModel.GDPfc, 1336451, 'GDPfc must be 1,336,451');
 assert.strictEqual(naModel.GNImp, 1530280, 'GNImp must be 1,530,280');
 
-// 3e. SARS Tax Solver (Zero income edge case + R825k + R315,850 + Study Unit 2.2 Jerome Muller & Sally Moloi)
 const taxZero = ENGINE.solveSarsTax({ tableKey: 'schedule_a', income: 0, age: 30 });
 assert.strictEqual(taxZero.netTax, 0, 'Zero income must yield R0 net tax');
 const taxHigh = ENGINE.solveSarsTax({ tableKey: 'schedule_a', income: 825000, age: 35 });
@@ -197,7 +275,7 @@ assert(adminCode.includes(expectedHash2), 'admin.html must contain SHA-256 diges
 assert(adminCode.includes(expectedHash3), 'admin.html must contain SHA-256 digest 3');
 assert(adminCode.includes('VALID_PASSCODE_HASHES.includes(digest)'), 'admin.html must verify SHA-256 digest');
 
-console.log('NODE_VM_SANDBOX_PASS: All 150 questions (x50 shuffle rounds = 7,500 checks), 150 unique topics, learning outcomes, zero-input edge cases, 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
+console.log('NODE_VM_SANDBOX_PASS: All 150 core questions, 46 Exam Scope items (device-bound persistence), 117 Extreme Exam pages (500 marks, MCQ shuffle, keyword & rubric grading), 6 solvers, 6 SVG labs, and SHA-256 gate verified!');
 """
     with open(NODE_TEST_JS, "w", encoding="utf-8") as f:
         f.write(node_script)
@@ -219,7 +297,7 @@ def audit_html_css_and_dereferencing():
             txt = f.read()
         matches = FORBIDDEN_REGEX.findall(txt)
         assert not matches, f"DE-REFERENCING VIOLATION in {name}: {matches[:10]}"
-    print("DEREFERENCING_AUDIT_PASS: 0 exam/tutorial/date/campus/section/question-number references in data.js, index.html, and app.js.")
+    print("DEREFERENCING_AUDIT_PASS: 0 textbook author / past-paper / campus / boilerplate references in data.js, index.html, and app.js.")
 
     with open(INDEX_HTML, "r", encoding="utf-8") as f:
         idx_html = f.read()
@@ -239,7 +317,8 @@ def audit_html_css_and_dereferencing():
     assert "backdrop-filter: blur(24px) saturate(180%)" in css, "Missing frosted glassmorphism"
     assert "-webkit-backdrop-filter: blur(24px) saturate(180%)" in css, "Missing webkit frosted glassmorphism"
     assert "@media print" in css, "Missing @media print rules"
-    print("CSS_DESIGN_SYSTEM_PASS: Cupertino glassmorphism, responsive guardrails, and @media print verified.")
+    assert ".symbol-toolbar-btn" in css and ".scope-checklist-item" in css, "Missing Exam Scope & Extreme Exam Prep styles"
+    print("CSS_DESIGN_SYSTEM_PASS: Cupertino glassmorphism, Exam Scope & Extreme Exam Prep workbench styles, and @media print verified.")
 
 
 def audit_compiled_pdf():
@@ -257,10 +336,9 @@ def audit_compiled_pdf():
         assert len(txt) >= 1000, f"Page {i+1} has low density or is blank/spillover ({len(txt)} chars)"
         assert "\\" not in txt, f"Page {i+1} contains unrendered raw LaTeX backslash"
         matches = FORBIDDEN_REGEX.findall(txt)
-        assert not matches, f"Page {i+1} of PDF has forbidden exam/date/campus reference: {matches[:5]}"
+        assert not matches, f"Page {i+1} of PDF has forbidden reference: {matches[:5]}"
 
-        # Horizontal bounding-box & margin clipping check
-        max_allowed_x1 = page.rect.width - 28.0  # A4 594.96pt - 28.35pt (10mm right margin)
+        max_allowed_x1 = page.rect.width - 28.0
         for b in page.get_text("blocks"):
             x0, y0, x1, y1, b_txt = b[0], b[1], b[2], b[3], b[4]
             if x1 > global_max_x1:
@@ -300,10 +378,15 @@ def audit_headless_browser_dom():
     )
     dom = res.stdout
     assert "Chapter 13: Measuring the Performance of the Economy" in dom, "Vault DOM did not render Chapter 13"
+    assert "Beginner-Friendly Plain-English Intuition" in dom, "Vault DOM did not render Beginner Variable Decoder"
     assert "Key Learning Objectives" in dom, "Vault DOM did not render Learning Objectives card"
     assert "chapter-schematic-frame" in dom and "Lorenz Curve" in dom, "Vault DOM did not render Chapter 13 SVG schematic"
+    assert 'id="nav-scope"' in dom and 'id="view-scope"' in dom, "DOM missing Exam Scope navigation or view"
+    assert "46 Official Exam Scope Topics" in dom and "scope-checklist-item" in dom, "Exam Scope DOM did not render 46 checklist items"
+    assert 'id="nav-extreme"' in dom and 'id="view-extreme"' in dom, "DOM missing Extreme Exam Prep navigation or view"
+    assert "500 Marks Total • 117 Interactive Pages" in dom and 'id="extreme-active-page"' in dom, "Extreme Exam Prep DOM did not render active page"
     assert "svg" in dom and "E0 (Y* =" in dom, "2D Vector SVG Lab did not render equilibrium E0"
-    assert "Problem 1 of 150 (150 Standalone Problems)" in dom, "Quiz engine did not render 150 Standalone Problems deck"
+    assert "Problem 1 of 150" in dom, "Quiz engine did not render 150 Problems deck"
     assert 'id="btn-quiz-next"' in dom and 'id="btn-quiz-next-bottom"' in dom and "Next Question →" in dom, "Quiz engine missing Next Question navigation buttons"
     assert 'id="btn-quiz-prev"' in dom and 'id="btn-quiz-prev-bottom"' in dom and "← Previous Question" in dom, "Quiz engine missing Previous Question navigation buttons"
     assert ">undefined<" not in dom, "Rendered DOM contains literal undefined badge"
@@ -317,7 +400,7 @@ def audit_headless_browser_dom():
     assert "SHA-256 Cryptographic Gate" in dom_adm, "admin.html DOM did not render SHA-256 gate"
     assert "Active Device IP Counter" in dom_adm, "admin.html DOM did not render Active Device IP Counter"
     assert "Total Active Time" in dom_adm, "admin.html DOM did not render Total Active Time"
-    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Cupertino Vault with Study Guide Learning Outcomes & SVG Schematics, 2D SVG Lab, Solvers, 150-problem Quiz with Next/Previous Question buttons, and Admin Console with 0 runtime errors!")
+    print("HEADLESS_BROWSER_DOM_PASS: Real browser execution rendered Study Vault (with Plain-English Variable Decoder), Exam Scope Checklist (46 items), Extreme Exam Prep Workbench (500 marks), 2D SVG Lab, Solvers, 150-problem Quiz, and Admin Console with 0 runtime errors!")
 
 
 if __name__ == "__main__":
@@ -326,3 +409,4 @@ if __name__ == "__main__":
     audit_compiled_pdf()
     audit_headless_browser_dom()
     print("ALL_PLATFORM_VERIFICATIONS_PASSED!")
+
