@@ -3311,15 +3311,16 @@
       if (!scopeState) loadScopeState();
       const checkedVal = Boolean(isChecked);
       scopeState.checked[itemId] = checkedVal;
-      scopeState.levels[itemId] = checkedVal ? 'well' : (scopeState.levels[itemId] === 'well' ? 'not_yet' : (scopeState.levels[itemId] || 'not_yet'));
+      scopeState.levels[itemId] = checkedVal ? 'well' : (scopeState.levels[itemId] === 'well' ? '' : (scopeState.levels[itemId] || ''));
       saveScopeState();
       return scopeState;
     }
 
     function setItemLevel(itemId, level) {
       if (!scopeState) loadScopeState();
-      scopeState.levels[itemId] = level;
-      scopeState.checked[itemId] = (level === 'well');
+      const cleanLevel = level || '';
+      scopeState.levels[itemId] = cleanLevel;
+      scopeState.checked[itemId] = (cleanLevel === 'well');
       saveScopeState();
       return scopeState;
     }
@@ -3356,6 +3357,7 @@
       const calcChecked = calcItems.filter((i) => Boolean(scopeState.checked[i.id])).length;
       const theoChecked = theoItems.filter((i) => Boolean(scopeState.checked[i.id])).length;
       const partialCount = all.filter((i) => scopeState.levels[i.id] === 'partial' && !scopeState.checked[i.id]).length;
+      const notYetCount = all.filter((i) => scopeState.levels[i.id] === 'not_yet' && !scopeState.checked[i.id]).length;
       const totalCount = all.length || 46;
       const pct = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
 
@@ -3368,7 +3370,8 @@
         calcTotal: calcItems.length || 25,
         theoChecked,
         theoTotal: theoItems.length || 21,
-        partialCount
+        partialCount,
+        notYetCount
       };
     }
 
@@ -3386,6 +3389,8 @@
   })();
 
   let activeScopeFilter = 'all';
+  const openScopeDropdowns = new Set();
+  let allScopeDropdownsExpanded = false;
 
   function initExamScopeModule() {
     const stage = document.getElementById('scope-stage-container');
@@ -3409,6 +3414,14 @@
         return true;
       })
       .map((sec) => {
+        const isCalcSec = sec.id === 'scope_calculations';
+        const prepKeysHtml = (sec.preparationKey || []).map((pk) => `
+          <div class="scope-prep-key-item">
+            <span class="scope-prep-key-box" aria-hidden="true">☐</span>
+            <span><strong>${pk.label}:</strong> ${pk.desc}</span>
+          </div>
+        `).join('');
+
         const groupsHtml = (sec.groups || []).map((grp) => {
           const visibleItems = (grp.items || []).filter((item) => {
             if (activeScopeFilter === 'unmastered') {
@@ -3423,74 +3436,141 @@
 
           const itemsHtml = visibleItems.map((item) => {
             const isChecked = Boolean(state.checked[item.id]);
-            const currLevel = state.levels[item.id] || (isChecked ? 'well' : 'not_yet');
-            const decodedScopeVars = decodeVariablesForText(`${item.formula || ''} ${item.topic || ''} ${item.beginnerTip || ''}`, grp.chapterId);
+            const currLevel = state.levels[item.id] || (isChecked ? 'well' : '');
+            const isOpen = allScopeDropdownsExpanded || openScopeDropdowns.has(item.id);
+            const decodedScopeVars = decodeVariablesForText(
+              `${item.formula || ''} ${item.topic || ''} ${item.beginnerTip || ''} ${(item.knowledgePoints || []).join(' ')} ${item.workedExample || ''}`,
+              grp.chapterId
+            );
+            const kPointsHtml = (item.knowledgePoints || []).map((kp) => `
+              <li>${renderInlineLatexText(kp)}</li>
+            `).join('');
 
             return `
-              <div class="scope-checklist-item ${isChecked ? 'is-mastered' : (currLevel === 'partial' ? 'is-partial' : '')}" id="scope-item-card-${item.id}">
-                <div class="scope-item-top">
-                  <label class="scope-checkbox-label" for="scope-chk-${item.id}">
-                    <input
-                      type="checkbox"
-                      id="scope-chk-${item.id}"
-                      class="scope-item-checkbox"
-                      data-scope-check="${item.id}"
-                      ${isChecked ? 'checked' : ''}
-                    />
-                    <span class="scope-item-code">${item.code}</span>
-                    <span class="scope-item-topic">${item.topic}</span>
-                  </label>
-
-                  <div class="scope-level-pills" role="group" aria-label="Preparation level for ${item.code}">
-                    <button type="button" class="scope-level-btn ${currLevel === 'not_yet' ? 'active-not-yet' : ''}" data-scope-item="${item.id}" data-scope-level="not_yet">
-                      Not yet prepared
-                    </button>
-                    <button type="button" class="scope-level-btn ${currLevel === 'partial' ? 'active-partial' : ''}" data-scope-item="${item.id}" data-scope-level="partial">
-                      Partially prepared
-                    </button>
-                    <button type="button" class="scope-level-btn ${currLevel === 'well' ? 'active-well' : ''}" data-scope-item="${item.id}" data-scope-level="well">
-                      ✓ Well prepared
-                    </button>
+              <div class="scope-checklist-item ${isChecked ? 'is-mastered' : (currLevel === 'partial' ? 'is-partial' : (currLevel === 'not_yet' ? 'is-not-yet' : ''))}" id="scope-item-card-${item.id}">
+                <div class="scope-table-row">
+                  <div class="scope-col-no tabular-nums">${item.code}</div>
+                  <div class="scope-col-topic">
+                    <div class="scope-topic-title-line">
+                      <label class="scope-checkbox-label" for="scope-chk-${item.id}">
+                        <span class="scope-item-topic">${item.topic}</span>
+                      </label>
+                      <button type="button" class="scope-dropdown-trigger-btn" data-toggle-dropdown="${item.id}" aria-expanded="${isOpen ? 'true' : 'false'}">
+                        <span>📚 Knowledge Needed to Check Box</span>
+                        <span class="scope-chevron">${isOpen ? '▴' : '▾'}</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="scope-col-check">
+                    <label class="scope-box-cell ${currLevel === 'not_yet' ? 'checked-not-yet' : ''}" title="Not yet prepared (${item.code})">
+                      <input
+                        type="checkbox"
+                        class="scope-level-checkbox"
+                        data-scope-item="${item.id}"
+                        data-scope-level="not_yet"
+                        ${currLevel === 'not_yet' ? 'checked' : ''}
+                      />
+                      <span class="scope-mobile-col-label">Not yet prepared</span>
+                    </label>
+                  </div>
+                  <div class="scope-col-check">
+                    <label class="scope-box-cell ${currLevel === 'partial' ? 'checked-partial' : ''}" title="Partially prepared (${item.code})">
+                      <input
+                        type="checkbox"
+                        class="scope-level-checkbox"
+                        data-scope-item="${item.id}"
+                        data-scope-level="partial"
+                        ${currLevel === 'partial' ? 'checked' : ''}
+                      />
+                      <span class="scope-mobile-col-label">Partially prepared</span>
+                    </label>
+                  </div>
+                  <div class="scope-col-check">
+                    <label class="scope-box-cell ${isChecked || currLevel === 'well' ? 'checked-well' : ''}" title="Well prepared (${item.code})">
+                      <input
+                        type="checkbox"
+                        id="scope-chk-${item.id}"
+                        class="scope-item-checkbox scope-level-checkbox"
+                        data-scope-check="${item.id}"
+                        data-scope-item="${item.id}"
+                        data-scope-level="well"
+                        ${isChecked || currLevel === 'well' ? 'checked' : ''}
+                      />
+                      <span class="scope-mobile-col-label">Well prepared</span>
+                    </label>
                   </div>
                 </div>
 
-                <div class="scope-item-guide">
-                  <div class="scope-formula-bar">
-                    <strong>Key Formula / Framework:</strong> <span>${item.formula}</span>
+                <details class="scope-knowledge-dropdown" data-dropdown-id="${item.id}" ${isOpen ? 'open' : ''}>
+                  <summary class="scope-knowledge-summary">
+                    <span>💡 Click to ${isOpen ? 'hide' : 'view'} the exact formulas, concepts &amp; worked example needed to check <strong>${item.code} ${item.topic}</strong></span>
+                  </summary>
+                  <div class="scope-item-guide">
+                    <div class="scope-formula-bar">
+                      <strong>📐 Core Formula / Framework:</strong> <span>${item.formula}</span>
+                    </div>
+                    <div class="scope-beginner-tip">
+                      <strong>💡 Plain-English Intuition:</strong> ${item.beginnerTip}
+                    </div>
+                    ${kPointsHtml ? `
+                      <div class="scope-knowledge-box">
+                        <div class="scope-knowledge-heading">✅ Knowledge Needed to Check This Box (Must-Know Checklist):</div>
+                        <ul class="scope-knowledge-list">
+                          ${kPointsHtml}
+                        </ul>
+                      </div>
+                    ` : ''}
+                    ${item.workedExample ? `
+                      <div class="scope-example-box">
+                        <div class="scope-example-heading">📝 Step-by-Step Worked Exam Example:</div>
+                        <div class="scope-example-body">${escapeAttr(item.workedExample).replace(/\n/g, '<br/>')}</div>
+                      </div>
+                    ` : ''}
+                    ${renderDecoderPillsHtml(decodedScopeVars, 'Plain-English Variable Decoder:')}
+                    <div class="scope-dropdown-footer">
+                      <button type="button" class="btn-secondary scope-mark-well-btn" data-scope-item="${item.id}" data-scope-level="well" data-force-well="true">
+                        <span>${isChecked ? '✓ Marked as Well Prepared' : '☑️ I Understand This Content — Tick "Well Prepared"'}</span>
+                      </button>
+                      <button type="button" class="btn-ghost scope-jump-vault" data-ch-id="${grp.chapterId}">
+                        📖 Open ${grp.chapterLabel} in Vault
+                      </button>
+                      ${grp.solverId ? `
+                        <button type="button" class="btn-ghost scope-jump-solver" data-solver-id="${grp.solverId}">
+                          🧮 Open Interactive Solver
+                        </button>
+                      ` : ''}
+                      ${grp.extremePageId ? `
+                        <button type="button" class="btn-ghost scope-jump-extreme" data-page-id="${grp.extremePageId}">
+                          ⚡ Practice in Extreme Exam (${grp.extremePageId}) →
+                        </button>
+                      ` : ''}
+                    </div>
                   </div>
-                  <div class="scope-beginner-tip">
-                    <strong>💡 Plain-English Breakdown:</strong> ${item.beginnerTip}
-                  </div>
-                  ${renderDecoderPillsHtml(decodedScopeVars, 'Plain-English Variable Decoder:')}
-                </div>
+                </details>
               </div>
             `;
           }).join('');
 
           return `
-            <div class="glass-card scope-group-card">
-              <div class="scope-group-header">
-                <div>
-                  <div class="meta-pill-row" style="margin-bottom: 0.3rem;">
-                    <span class="badge badge-sky">${grp.chapterLabel}</span>
-                    <span class="badge ${groupCheckedCount === groupTotalCount ? 'badge-emerald' : 'badge-amber'}">
-                      ${groupCheckedCount} / ${groupTotalCount} Mastered
-                    </span>
-                  </div>
-                  <h3>${grp.number}. ${grp.title}</h3>
+            <div class="scope-group-section">
+              <div class="scope-group-banner">
+                <div class="scope-group-banner-left">
+                  <span class="scope-group-num tabular-nums">${grp.number}</span>
+                  <strong class="scope-group-title">${grp.title}</strong>
+                  <span class="badge badge-sky">${grp.chapterLabel}</span>
+                  <span class="badge ${groupCheckedCount === groupTotalCount ? 'badge-emerald' : 'badge-amber'}">
+                    ${groupCheckedCount}/${groupTotalCount} Well Prepared
+                  </span>
                 </div>
                 <div class="scope-group-actions">
-                  <button type="button" class="btn-ghost scope-jump-vault" data-ch-id="${grp.chapterId}">
-                    📖 Study ${grp.chapterLabel}
-                  </button>
                   ${grp.solverId ? `
-                    <button type="button" class="btn-ghost scope-jump-solver" data-solver-id="${grp.solverId}">
-                      🧮 Open Solver
+                    <button type="button" class="btn-ghost scope-jump-solver" data-solver-id="${grp.solverId}" style="padding: 0.25rem 0.6rem; font-size: 0.76rem;">
+                      🧮 Solver
                     </button>
                   ` : ''}
                   ${grp.extremePageId ? `
-                    <button type="button" class="btn-secondary scope-jump-extreme" data-page-id="${grp.extremePageId}">
-                      ⚡ Practice in Extreme Exam →
+                    <button type="button" class="btn-ghost scope-jump-extreme" data-page-id="${grp.extremePageId}" style="padding: 0.25rem 0.6rem; font-size: 0.76rem;">
+                      ⚡ Practice (${grp.extremePageId})
                     </button>
                   ` : ''}
                 </div>
@@ -3502,15 +3582,67 @@
           `;
         }).join('');
 
-        return `
-          <div class="scope-section-block" style="margin-bottom: 2rem;">
-            <div class="section-header-bar" style="margin-bottom: 1rem;">
-              <div>
-                <h2 style="font-size: 1.35rem;">${sec.title}</h2>
-                <p style="font-size: 0.9rem; color: var(--text-secondary);">${sec.subtitle}</p>
+        const prioritiesHtml = isCalcSec ? `
+          <div class="scope-priorities-block">
+            <h4>My revision priorities</h4>
+            <div class="scope-priorities-grid">
+              <div class="scope-priority-row">
+                <label>1. The topic I need to spend the most time on:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_1" placeholder="Write calculation topic here..." value="${escapeAttr(state.priorities.calc_1)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div class="scope-priority-row">
+                <label>2. The topic I need to practise more:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_2" placeholder="Write calculation topic here..." value="${escapeAttr(state.priorities.calc_2)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div class="scope-priority-row">
+                <label>3. The topic I feel most confident about:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_3" placeholder="Write calculation topic here..." value="${escapeAttr(state.priorities.calc_3)}" style="font-family: var(--font-sans);" />
               </div>
             </div>
-            ${groupsHtml || '<div class="glass-card"><p>All topics in this section are already checked off as mastered!</p></div>'}
+          </div>
+        ` : `
+          <div class="scope-priorities-block">
+            <h4>My revision priorities</h4>
+            <div class="scope-priorities-grid">
+              <div class="scope-priority-row">
+                <label>1. The topic I need to spend the most time on:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_1" placeholder="Write theory topic here..." value="${escapeAttr(state.priorities.theo_1)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div class="scope-priority-row">
+                <label>2. The topic I need to practise explaining or discussing:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_2" placeholder="Write theory topic here..." value="${escapeAttr(state.priorities.theo_2)}" style="font-family: var(--font-sans);" />
+              </div>
+              <div class="scope-priority-row">
+                <label>3. The topic I feel most confident about:</label>
+                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_3" placeholder="Write theory topic here..." value="${escapeAttr(state.priorities.theo_3)}" style="font-family: var(--font-sans);" />
+              </div>
+            </div>
+          </div>
+        `;
+
+        return `
+          <div class="glass-card scope-section-block" style="margin-bottom: 2rem;">
+            <div class="scope-official-sec-header">
+              <h2>${sec.title}</h2>
+              <p class="scope-sec-instructions">${sec.instructions || sec.subtitle}</p>
+              <div class="scope-prep-key-box-wrap">
+                <div style="font-weight: 700; font-size: 0.84rem; margin-bottom: 0.35rem; color: var(--text-primary);">Preparation key:</div>
+                ${prepKeysHtml}
+              </div>
+            </div>
+
+            <div class="scope-table-frame">
+              <div class="scope-table-header">
+                <div class="scope-col-no">No.</div>
+                <div class="scope-col-topic">Topic <span style="font-weight: 400; font-size: 0.78rem; color: var(--text-secondary);">(Click dropdown under any topic for full study notes &amp; worked examples)</span></div>
+                <div class="scope-col-check">Not yet<br/>prepared</div>
+                <div class="scope-col-check">Partially<br/>prepared</div>
+                <div class="scope-col-check">Well<br/>prepared</div>
+              </div>
+              ${groupsHtml || '<div style="padding: 1.25rem;"><p>All topics in this section are already checked off as Well Prepared!</p></div>'}
+            </div>
+
+            ${prioritiesHtml}
           </div>
         `;
       }).join('');
@@ -3522,15 +3654,18 @@
             <div class="meta-pill-row">
               <span class="badge badge-emerald">✓ Auto-Saved to Device (${stats.deviceId})</span>
               <span class="badge badge-sky">46 Official Exam Scope Topics</span>
+              <a href="exam-scope.html" target="_blank" rel="noopener" class="badge badge-indigo" style="text-decoration: none; cursor: pointer;">
+                ↗ Open Standalone Local Checkbox App (exam-scope.html)
+              </a>
             </div>
             <h2>${scopeData.title}</h2>
-            <p style="margin-top: 0.35rem; font-size: 0.92rem; max-width: 78ch;">
+            <p style="margin-top: 0.35rem; font-size: 0.88rem; max-width: 85ch; color: var(--text-secondary);">
               ${scopeData.disclaimer}
             </p>
           </div>
           <div class="scope-progress-summary-box">
             <div class="scope-big-pct tabular-nums" id="scope-mastery-pct">${stats.pct}%</div>
-            <div class="scope-big-sub" id="scope-mastery-count">${stats.checkedCount} of ${stats.totalCount} Topics Mastered</div>
+            <div class="scope-big-sub" id="scope-mastery-count">${stats.checkedCount} of ${stats.totalCount} Topics Well Prepared</div>
           </div>
         </div>
 
@@ -3540,16 +3675,20 @@
 
         <div class="scope-kpi-strip">
           <div class="scope-mini-stat">
-            <span>Calculations Mastered:</span>
+            <span>Calculations (Well Prepared):</span>
             <strong class="tabular-nums">${stats.calcChecked} / ${stats.calcTotal}</strong>
           </div>
           <div class="scope-mini-stat">
-            <span>Theory Mastered:</span>
+            <span>Theory (Well Prepared):</span>
             <strong class="tabular-nums">${stats.theoChecked} / ${stats.theoTotal}</strong>
           </div>
           <div class="scope-mini-stat">
             <span>Partially Prepared:</span>
             <strong class="tabular-nums">${stats.partialCount}</strong>
+          </div>
+          <div class="scope-mini-stat">
+            <span>Not Yet Prepared:</span>
+            <strong class="tabular-nums">${stats.notYetCount}</strong>
           </div>
         </div>
 
@@ -3568,84 +3707,81 @@
               Needs Revision Only (${stats.totalCount - stats.checkedCount})
             </button>
           </div>
-          <button type="button" class="btn-ghost" id="btn-scope-reset">
-            ↺ Reset Checklist
-          </button>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn-secondary" id="btn-scope-expand-all">
+              ${allScopeDropdownsExpanded ? '📁 Collapse All Knowledge Dropdowns' : '📂 Expand All Knowledge Dropdowns'}
+            </button>
+            <button type="button" class="btn-ghost" id="btn-scope-reset">
+              ↺ Reset Checklist
+            </button>
+          </div>
         </div>
       </div>
 
       ${sectionsHtml}
-
-      <div class="glass-card" style="margin-top: 1.5rem;">
-        <h3>📝 My Revision Priorities (Saved Automatically to Your Device)</h3>
-        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem; margin-bottom: 1rem;">
-          Reflect on your checklist progress and record your top 3 Calculation and Theory revision priorities before the exam:
-        </p>
-        <div class="bento-grid-2">
-          <div>
-            <h4 style="margin-bottom: 0.6rem; color: var(--accent-sky);">Calculations — My Revision Priorities</h4>
-            <div style="display: grid; gap: 0.65rem;">
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">1. The topic I need to spend the most time on:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_1" placeholder="e.g. Open-economy Keynesian multiplier with tax & imports..." value="${escapeAttr(state.priorities.calc_1)}" style="font-family: var(--font-sans);" />
-              </div>
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">2. The topic I need to practise more:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_2" placeholder="e.g. SARS personal income tax brackets & rebates..." value="${escapeAttr(state.priorities.calc_2)}" style="font-family: var(--font-sans);" />
-              </div>
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">3. The topic I feel most confident about:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="calc_3" placeholder="e.g. Comparative advantage opportunity cost ratios..." value="${escapeAttr(state.priorities.calc_3)}" style="font-family: var(--font-sans);" />
-              </div>
-            </div>
-          </div>
-          <div>
-            <h4 style="margin-bottom: 0.6rem; color: var(--accent-indigo);">Theory — My Revision Priorities</h4>
-            <div style="display: grid; gap: 0.65rem;">
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">1. The topic I need to spend the most time on:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_1" placeholder="e.g. Negative externalities (MSC vs MPC) & Pigouvian tax graph..." value="${escapeAttr(state.priorities.theo_1)}" style="font-family: var(--font-sans);" />
-              </div>
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">2. The topic I need to practise explaining or discussing:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_2" placeholder="e.g. Demand-pull vs cost-push stagflation AD-AS graphs..." value="${escapeAttr(state.priorities.theo_2)}" style="font-family: var(--font-sans);" />
-              </div>
-              <div>
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.25rem;">3. The topic I feel most confident about:</label>
-                <input type="text" class="num-input scope-priority-input" data-priority-slot="theo_3" placeholder="e.g. Active vs passive money demand & SARB repo rate..." value="${escapeAttr(state.priorities.theo_3)}" style="font-family: var(--font-sans);" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     `;
 
-    // Wire checkboxes
-    stage.querySelectorAll('[data-scope-check]').forEach((chk) => {
+    stage.querySelectorAll('details.scope-knowledge-dropdown').forEach((det) => {
+      det.addEventListener('toggle', () => {
+        const id = det.getAttribute('data-dropdown-id');
+        if (!id) return;
+        if (det.open) openScopeDropdowns.add(id);
+        else openScopeDropdowns.delete(id);
+        const btn = stage.querySelector(`[data-toggle-dropdown="${id}"]`);
+        if (btn) {
+          btn.setAttribute('aria-expanded', det.open ? 'true' : 'false');
+          const chev = btn.querySelector('.scope-chevron');
+          if (chev) chev.textContent = det.open ? '▴' : '▾';
+        }
+      });
+    });
+
+    stage.querySelectorAll('[data-toggle-dropdown]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = btn.getAttribute('data-toggle-dropdown');
+        const det = stage.querySelector(`details.scope-knowledge-dropdown[data-dropdown-id="${id}"]`);
+        if (det) {
+          det.open = !det.open;
+          if (det.open) openScopeDropdowns.add(id);
+          else openScopeDropdowns.delete(id);
+        }
+      });
+    });
+
+    stage.querySelectorAll('.scope-level-checkbox').forEach((chk) => {
       chk.addEventListener('change', () => {
-        const itemId = chk.getAttribute('data-scope-check');
-        ScopeEngine.toggleItemChecked(itemId, chk.checked);
-        if (chk.checked) AudioEngine.playSuccess();
+        const itemId = chk.getAttribute('data-scope-item');
+        const level = chk.getAttribute('data-scope-level');
+        const newLevel = chk.checked ? level : '';
+        ScopeEngine.setItemLevel(itemId, newLevel);
+        if (newLevel === 'well') AudioEngine.playSuccess();
         else AudioEngine.playClick();
         updateKpiBanner();
         renderExamScopeStage();
       });
     });
 
-    // Wire 3-level preparation buttons
-    stage.querySelectorAll('[data-scope-level]').forEach((btn) => {
+    stage.querySelectorAll('.scope-mark-well-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const itemId = btn.getAttribute('data-scope-item');
-        const level = btn.getAttribute('data-scope-level');
-        ScopeEngine.setItemLevel(itemId, level);
-        if (level === 'well') AudioEngine.playSuccess();
-        else AudioEngine.playClick();
+        ScopeEngine.setItemLevel(itemId, 'well');
+        AudioEngine.playSuccess();
         updateKpiBanner();
         renderExamScopeStage();
       });
     });
 
-    // Wire filter buttons
+    const expandAllBtn = document.getElementById('btn-scope-expand-all');
+    if (expandAllBtn) {
+      expandAllBtn.addEventListener('click', () => {
+        allScopeDropdownsExpanded = !allScopeDropdownsExpanded;
+        if (!allScopeDropdownsExpanded) openScopeDropdowns.clear();
+        AudioEngine.playClick();
+        renderExamScopeStage();
+      });
+    }
+
     stage.querySelectorAll('[data-scope-filter]').forEach((btn) => {
       btn.addEventListener('click', () => {
         activeScopeFilter = btn.getAttribute('data-scope-filter') || 'all';
@@ -3654,7 +3790,6 @@
       });
     });
 
-    // Wire reset button
     const resetBtn = document.getElementById('btn-scope-reset');
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
@@ -3665,7 +3800,6 @@
       });
     }
 
-    // Wire priority inputs
     stage.querySelectorAll('.scope-priority-input').forEach((inp) => {
       inp.addEventListener('input', () => {
         const slot = inp.getAttribute('data-priority-slot');
@@ -3673,7 +3807,6 @@
       });
     });
 
-    // Wire quick jump buttons to Vault, Solver, or Extreme Exam Page
     stage.querySelectorAll('.scope-jump-vault').forEach((btn) => {
       btn.addEventListener('click', () => {
         const chId = btn.getAttribute('data-ch-id');
